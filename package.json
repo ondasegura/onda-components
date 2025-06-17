@@ -1,5 +1,5 @@
 {
-    "name": "@meu-org/meu-design-system",
+    "name": "@onda/onda-components",
     "version": "0.1.0",
     "type": "module",
     "main": "./dist/index.js",
