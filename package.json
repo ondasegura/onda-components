@@ -13,7 +13,8 @@
     "build": "rsbuild build",
     "dev": "rsbuild dev --port 3002 --open",
     "preview": "rsbuild preview",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
