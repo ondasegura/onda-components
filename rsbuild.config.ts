@@ -1,4 +1,3 @@
-// rsbuild.config.ts
 import {defineConfig} from "@rsbuild/core";
 import {pluginReact} from "@rsbuild/plugin-react";
 
@@ -22,5 +21,14 @@ export default defineConfig({
     },
     tools: {
         htmlPlugin: false,
+        rspack(config) {
+            config.output.library = {
+                type: "module",
+            };
+            config.experiments = {
+                ...config.experiments,
+                outputModule: true,
+            };
+        },
     },
 });
