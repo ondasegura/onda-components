@@ -16,10 +16,9 @@
         "dist"
     ],
     "scripts": {
-        "clean": "rimraf ./dist",
         "build:js": "rsbuild build",
         "build:types": "tsc -p tsconfig.types.json",
-        "build": "npm run clean && npm run build:js && npm run build:types"
+        "build": "npm run build:js && npm run build:types"
     },
     "peerDependencies": {
         "react": "^18.0.0",
