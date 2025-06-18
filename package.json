@@ -17,7 +17,9 @@
         "dist"
     ],
     "scripts": {
-        "build": "rsbuild build && tsc",
+        "build:js": "rsbuild build",
+        "build:types": "tsc -p tsconfig.types.json",
+        "build": "npm run build:js && npm run build:types",
         "prepublishOnly": "npm run build"
     },
     "peerDependencies": {
