@@ -7,7 +7,7 @@ export default defineConfig({
     distPath: { root: './dist' },
     cleanDistPath: true,
     filename: {
-      js: 'index.js'
+      js: '[name].[hash:8].js'
     },
     assetPrefix: './',
   },
