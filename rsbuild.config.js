@@ -1,5 +1,7 @@
 import {defineConfig} from "@rsbuild/core";
 import {pluginReact} from "@rsbuild/plugin-react";
+import tailwindcssPlugin from "@tailwindcss/postcss";
+import autoprefixer from "autoprefixer";
 
 export default defineConfig({
     plugins: [pluginReact()],
@@ -14,9 +16,9 @@ export default defineConfig({
             js: "",
         },
         cleanDistPath: true,
-        filename: {
-            js: "index.js",
-        },
+        // filename: {
+        //     js: "index.js",
+        // },
         filenameHash: false,
     },
     tools: {
@@ -29,6 +31,9 @@ export default defineConfig({
                 ...config.experiments,
                 outputModule: true,
             };
+        },
+        postcss: (config) => {
+            config.postcssOptions.plugins = [tailwindcssPlugin(), autoprefixer()];
         },
     },
 });

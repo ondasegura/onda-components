@@ -1,3 +1,5 @@
-export {default as FinanceiroFormularioRecebedor} from "./financeiro/formulario/FinanceiroFormularioRecebedor/index";
+// export {default as FinanceiroFormularioRecebedor} from "./financeiro/componentes/formulario/FinanceiroFormularioRecebedor/index";
 // export * from "../dist/index";
 // export * from "../src";
+export {default as FormularioFinanceiroContaPagar} from "./financeiro/componentes/formulario/FinanceiroFormularioContaPagar";
+export {default as controller_conta_pagar} from "./financeiro/controllers/contas_pagar";
