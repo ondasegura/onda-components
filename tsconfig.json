@@ -10,9 +10,7 @@
         "strict": true,
         "skipLibCheck": true,
         "isolatedModules": true,
-        "rootDir": "src",
-        "noImplicitAny": false,
-        "suppressImplicitAnyIndexErrors": true
+        "rootDir": "src"
     },
     "include": ["src/**/*", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
 }
