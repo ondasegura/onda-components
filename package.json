@@ -1,25 +1,34 @@
 {
-  "name": "onda-components",
-  "version": "0.1.0",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "rsbuild build src/index.ts",
-    "watch": "rsbuild build --watch src/index.ts"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
-  },
-  "dependencies": {
-    "@rsbuild/core": "^1.3.22",
-    "@rsbuild/plugin-react": "^1.3.2"
-  },
-  "devDependencies": {
-    "@types/react": "^19.1.8"
-  }
+    "name": "onda-components",
+    "version": "0.1.0",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "module": "src/index.ts",
+    "exports": {
+        ".": {
+            "types": "./src/index.ts",
+            "import": "./src/index.ts",
+            "require": "./src/index.ts",
+            "default": "./src/index.ts"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "src"
+    ],
+    "scripts": {
+        "build": "rsbuild build src/index.ts",
+        "watch": "rsbuild build --watch src/index.ts"
+    },
+    "peerDependencies": {
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
+    },
+    "dependencies": {
+        "@rsbuild/core": "^1.3.22",
+        "@rsbuild/plugin-react": "^1.3.2"
+    },
+    "devDependencies": {
+        "@types/react": "^19.1.8"
+    }
 }
