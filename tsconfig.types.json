@@ -1,13 +1,16 @@
 {
     "compilerOptions": {
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
         "declaration": true,
         "emitDeclarationOnly": true,
         "outDir": "dist",
         "jsx": "react-jsx",
         "module": "ESNext",
         "target": "ESNext",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
         "strict": true
     },
     "include": ["src"],
