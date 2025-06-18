@@ -11,11 +11,15 @@ export default defineConfig({
         },
     },
     output: {
-        distPath: {root: "./dist"},
+        distPath: {
+            root: "./dist",
+            js: "",
+        },
         cleanDistPath: true,
         filename: {
             js: "index.js",
         },
+        filenameHash: false,
     },
     tools: {
         htmlPlugin: false,
