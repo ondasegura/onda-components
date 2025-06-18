@@ -18,7 +18,7 @@
     "scripts": {
         "build:js": "rsbuild build",
         "build:types": "tsc -p tsconfig.types.json",
-        "build": "npm run build:js"
+        "build": "npm run build:js && npm run build:types"
     },
     "peerDependencies": {
         "react": "^18.0.0",
@@ -43,7 +43,7 @@
         "@hookform/resolvers": "^5.1.1",
         "immer": "^10.1.1",
         "lucide-react": "^0.517.0",
-        "onda-utils": "^1.13.0",
+        "onda-utils": "^1.14.0",
         "react-hook-form": "^7.58.1",
         "zod": "^3.25.67",
         "zustand": "^5.0.5"
