@@ -2,8 +2,13 @@ import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 
 export default defineConfig({
-  plugins: [
-    pluginReact()
-  ],
-  // ... resto da configuração permanece igual
+  plugins: [pluginReact()],
+  output: {
+    distPath: { root: './dist' },
+    cleanDistPath: true,
+    filename: {
+      js: 'index.js'
+    },
+    assetPrefix: './',
+  },
 });

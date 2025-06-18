@@ -1,3 +1,29 @@
-# Instalar componentes de onda-components
+# Rsbuild project
 
-npm install git+https://github.com/ondasegura/onda-components.git
+## Setup
+
+Install the dependencies:
+
+```bash
+pnpm install
+```
+
+## Get started
+
+Start the dev server:
+
+```bash
+pnpm dev
+```
+
+Build the app for production:
+
+```bash
+pnpm build
+```
+
+Preview the production build locally:
+
+```bash
+pnpm preview
+```

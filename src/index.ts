@@ -1,2 +1,2 @@
-export * from './components/Button';
-// Exporte outros componentes aqui
+export { Button } from './components/Button';
+
