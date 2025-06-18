@@ -4,19 +4,12 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rsbuild build",
-    "dev": "rsbuild dev"
+    "build": "rsbuild build src/index.ts",
+    "watch": "rsbuild build --watch src/index.ts"
   },
   "peerDependencies": {
     "react": "^18.0.0",
