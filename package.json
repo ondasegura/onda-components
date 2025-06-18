@@ -17,9 +17,9 @@
         "src"
     ],
     "scripts": {
-        "build": "rsbuild build src/index.ts",
-        "watch": "rsbuild build --watch src/index.ts"
+        "build": "rsbuild build src/index.ts"
     },
+    "type": "module",
     "peerDependencies": {
         "react": "^18.0.0",
         "react-dom": "^18.0.0"
