@@ -1,7 +1,7 @@
+// src/financeiro/controllers/contas_pagar.ts - O CÓDIGO CORRETO E COMPLETO
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
 import t from "onda-types";
-
 import utils from "onda-utils";
 
 const PUBLIC_BASE_URL_BACKEND = process.env.PUBLIC_BASE_URL_BACKEND;
@@ -54,14 +54,11 @@ const controller_conta_pagar = class controller_conta_pagar {
     static api = class api {
         static async criar(props: t.Banco.Controllers.ContaPagar.Criar.Input): Promise<t.Banco.Controllers.ContaPagar.Criar.Output> {
             await new Promise((resolve) => setTimeout(resolve, 2000));
-
             const response = await utils.api.servidor_backend.post(String(PUBLIC_BASE_URL_BACKEND), "/conta-pagar", props, true);
             const results: t.Banco.Controllers.ContaPagar.Criar.Output | undefined = response?.results;
-
             store.setState((state) => {
                 state.states.modal.loading = true;
             });
-
             if (results?.data?.conta_pagar) {
                 store.setState((state) => {
                     state.states.pagina.conta_pagar.data.conta_pagar = utils.update_context.update_array_itens({
@@ -74,7 +71,6 @@ const controller_conta_pagar = class controller_conta_pagar {
                     set_paginacao.total_itens_pagina_atual = set_paginacao.total_itens_pagina_atual + 1;
                 });
             }
-
             return results as t.Banco.Controllers.ContaPagar.Criar.Output;
         }
 
@@ -82,20 +78,16 @@ const controller_conta_pagar = class controller_conta_pagar {
             store.setState((state) => {
                 state.states.pagina.loading = true;
             });
-
             const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND), "/contas-pagar", true, props.filtros.conta_pagar);
             const results: t.Banco.Controllers.ContaPagar.BuscarPeloFiltro.Output | undefined = response?.results;
-
             if (results?.data?.conta_pagar) {
                 store.setState((state) => {
                     state.states.pagina.conta_pagar = results;
                 });
             }
-
             store.setState((state) => {
                 state.states.pagina.loading = false;
             });
-
             return results as t.Banco.Controllers.ContaPagar.BuscarPeloFiltro.Output;
         }
 
@@ -103,19 +95,15 @@ const controller_conta_pagar = class controller_conta_pagar {
             store.setState((state) => {
                 state.states.modal.loading = true;
             });
-
             const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND), `/conta-pagar/${props.data._id}`, true, {});
             const results: t.Banco.Controllers.ContaPagar.BuscarPeloId.Output | undefined = response?.results;
-
             if (results?.data?.conta_pagar)
                 store.setState((state) => {
                     state.states.modal.conta_pagar_item = results;
                 });
-
             store.setState((state) => {
                 state.states.modal.loading = false;
             });
-
             return results as t.Banco.Controllers.ContaPagar.BuscarPeloId.Output;
         }
 
@@ -123,12 +111,9 @@ const controller_conta_pagar = class controller_conta_pagar {
             store.setState((state) => {
                 state.states.modal.loading = true;
             });
-
             const response = await utils.api.servidor_backend.patch(String(PUBLIC_BASE_URL_BACKEND), `/conta-pagar/${props.data.conta_pagar._id}`, {data: props.data}, true);
             const results: t.Banco.Controllers.ContaPagar.AtualizarPeloId.Output | undefined = response?.results;
-
             const contaPagarAtualizada = results?.data.conta_pagar || (results?.data as any)?.conta_pagar;
-
             if (contaPagarAtualizada) {
                 store.setState((state) => {
                     state.states.pagina.conta_pagar.data.conta_pagar = utils.update_context.update_array_itens({
@@ -140,18 +125,15 @@ const controller_conta_pagar = class controller_conta_pagar {
                     }
                 });
             }
-
             store.setState((state) => {
                 state.states.pagina.loading = false;
             });
-
             return results as t.Banco.Controllers.ContaPagar.AtualizarPeloId.Output;
         }
 
         static async deletar_pelo_id(props: t.Banco.Controllers.ContaPagar.DeletarPeloId.Input): Promise<t.Banco.Controllers.ContaPagar.DeletarPeloId.Output> {
             const response = await utils.api.servidor_backend.delete(String(PUBLIC_BASE_URL_BACKEND), `/conta-pagar/${props._id}`);
             const results: t.Banco.Controllers.ContaPagar.DeletarPeloId.Output | undefined = response?.results;
-
             store.setState((state) => {
                 state.states.pagina.conta_pagar.data.conta_pagar = utils.update_context.remover_item_pelo_id({
                     oldArray: state.states.pagina.conta_pagar.data.conta_pagar,
@@ -162,7 +144,6 @@ const controller_conta_pagar = class controller_conta_pagar {
                 set_paginacao.total_itens = set_paginacao.total_itens - 1;
                 set_paginacao.total_itens_pagina_atual = set_paginacao.total_itens_pagina_atual - 1;
             });
-
             return results as t.Banco.Controllers.ContaPagar.DeletarPeloId.Output;
         }
     };
@@ -172,11 +153,9 @@ const controller_conta_pagar = class controller_conta_pagar {
             static get_formulario(): ZustandStore["states"]["formulario"] {
                 return store((state) => state.states.formulario);
             }
-
             static get_pagina(): ZustandStore["states"]["pagina"] {
                 return store((state) => state.states.pagina);
             }
-
             static get_modal(): ZustandStore["states"]["modal"] {
                 return store((state) => state.states.modal);
             }
@@ -186,19 +165,16 @@ const controller_conta_pagar = class controller_conta_pagar {
             static reset() {
                 store.setState(() => ({states: initialStates}));
             }
-
             static set_conta_pagar_item(contaPagarData: t.Banco.Controllers.ContaPagar.BuscarPeloId.Output) {
                 store.setState((state) => {
                     state.states.modal.conta_pagar_item = contaPagarData;
                 });
             }
-
             static set_conta_pagar(contaPagarData: t.Banco.Controllers.ContaPagar.BuscarPeloFiltro.Output) {
                 store.setState((state) => {
                     state.states.pagina.conta_pagar = contaPagarData;
                 });
             }
-
             static async set_open_formulario(conta_pagar_id?: string) {
                 store.setState((state) => {
                     (state.states.formulario.loading = true), (state.states.formulario.open = true);
@@ -223,26 +199,21 @@ const controller_conta_pagar = class controller_conta_pagar {
                         console.error("Erro ao buscar conta a pagar:", error);
                     }
                 }
-
                 store.setState((state) => {
                     state.states.formulario.loading = false;
                 });
             }
-
             static set_close_formulario() {
                 store.setState((state) => {
                     (state.states.formulario.loading = false), (state.states.formulario.open = false);
                 });
             }
-
             static get_state_formulario(): ZustandStore["states"]["formulario"] {
                 return store.getState().states.formulario;
             }
-
             static get_state_modal(): ZustandStore["states"]["modal"] {
                 return store.getState().states.modal;
             }
-
             static get_state_pagina(): ZustandStore["states"]["pagina"] {
                 return store.getState().states.pagina;
             }
@@ -251,4 +222,5 @@ const controller_conta_pagar = class controller_conta_pagar {
 
     static websocket = class websocket {};
 };
+
 export default controller_conta_pagar;

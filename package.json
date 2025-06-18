@@ -16,7 +16,7 @@
         "dist"
     ],
     "scripts": {
-        "build:js": "rsbuild build",
+        "build:js": "rsbuild build --config ./rsbuild.config.js",
         "build:types": "tsc -p tsconfig.types.json",
         "build": "npm run build:js && npm run build:types"
     },

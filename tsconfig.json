@@ -12,5 +12,5 @@
         "isolatedModules": true,
         "rootDir": "src"
     },
-    "include": ["src/**/*", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+    "include": ["src/**/*", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "postcss.config.cjs"]
 }
