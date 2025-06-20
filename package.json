@@ -1,6 +1,6 @@
 {
-    "name": "minha-lib-componentes",
-    "version": "1.0.4",
+    "name": "onda-components",
+    "version": "1.0.6",
     "description": "Biblioteca de componentes React com Tailwind CSS",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -14,7 +14,7 @@
             "import": "./dist/index.js",
             "types": "./dist/types/index.d.ts"
         },
-        "./styles.css": "./dist/styles.css",
+        "./styles": "./dist/styles.css",
         "./package.json": "./package.json"
     },
     "files": [
@@ -23,17 +23,16 @@
         "LICENSE"
     ],
     "scripts": {
-        "build": "npm run build:clean && npm run build:types && npm run build:lib && npm run build:css",
+        "build": "npm run build:clean && npm run build:lib && npm run build:types && npm run build:css",
         "build:clean": "rimraf dist",
-        "build:types": "tsc --emitDeclarationOnly --declarationDir dist/types",
         "build:lib": "rsbuild build",
-        "build:css": "tailwindcss -i ./src/styles/globals.css -o ./dist/styles.css --minify",
+        "build:types": "tsc --emitDeclarationOnly --declarationDir dist/types",
+        "build:css": "npx tailwindcss -i ./src/styles/globals.css -o ./dist/styles.css --minify",
         "dev": "rsbuild dev",
         "preview": "rsbuild preview",
         "prepublishOnly": "npm run build",
         "test:build": "npm run build && node -e \"console.log('Build concluído com sucesso!')\"",
-        "check-types": "tsc --noEmit",
-        "build:watch": "npm run build:types -- --watch"
+        "check-types": "tsc --noEmit"
     },
     "peerDependencies": {
         "react": ">=16.8.0",

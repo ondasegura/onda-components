@@ -17,9 +17,12 @@ export default defineConfig({
     target: 'web',
     filename: {
       js: '[name].js',
+      css: '[name].css',
     },
     // Remove hash dos arquivos para biblioteca
     filenameHash: false,
+    // Remove geração de HTML para biblioteca
+
   },
 
   tools: {
@@ -50,6 +53,7 @@ export default defineConfig({
         ...config.optimization,
         splitChunks: false,
         sideEffects: false,
+        minimize: false, // Deixar a minificação para quem usar a lib
       };
 
       return config;
