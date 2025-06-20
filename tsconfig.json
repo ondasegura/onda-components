@@ -16,8 +16,15 @@
         "jsx": "react-jsx",
         "declaration": true,
         "declarationMap": true,
-        "outDir": "dist"
+        "declarationDir": "dist/types",
+        "outDir": "dist",
+        "rootDir": "src",
+        "sourceMap": true,
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "incremental": true,
+        "tsBuildInfoFile": "dist/.tsbuildinfo"
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist", "src/App.jsx"]
+    "exclude": ["node_modules", "dist", "src/App.jsx", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
 }

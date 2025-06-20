@@ -1,17 +1,20 @@
 {
     "name": "minha-lib-componentes",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "description": "Biblioteca de componentes React com Tailwind CSS",
     "main": "dist/index.js",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
+    "module": "dist/index.js",
+    "types": "dist/types/index.d.ts",
+    "type": "module",
+    "sideEffects": [
+        "**/*.css"
+    ],
     "exports": {
         ".": {
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
+            "import": "./dist/index.js",
+            "types": "./dist/types/index.d.ts"
         },
-        "./styles": "./dist/styles.css",
+        "./styles.css": "./dist/styles.css",
         "./package.json": "./package.json"
     },
     "files": [
@@ -20,14 +23,17 @@
         "LICENSE"
     ],
     "scripts": {
-        "build": "npm run build:clean && npm run build:lib && npm run build:css",
+        "build": "npm run build:clean && npm run build:types && npm run build:lib && npm run build:css",
         "build:clean": "rimraf dist",
-        "build:lib": "tsc && rsbuild build",
+        "build:types": "tsc --emitDeclarationOnly --declarationDir dist/types",
+        "build:lib": "rsbuild build",
         "build:css": "tailwindcss -i ./src/styles/globals.css -o ./dist/styles.css --minify",
         "dev": "rsbuild dev",
         "preview": "rsbuild preview",
         "prepublishOnly": "npm run build",
-        "test:build": "npm run build && node -e \"console.log('Build concluído com sucesso!')\""
+        "test:build": "npm run build && node -e \"console.log('Build concluído com sucesso!')\"",
+        "check-types": "tsc --noEmit",
+        "build:watch": "npm run build:types -- --watch"
     },
     "peerDependencies": {
         "react": ">=16.8.0",
@@ -44,8 +50,8 @@
         "postcss": "^8.4.0",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
-        "rimraf": "^5.0.0",
-        "tailwindcss": "^3.4.0",
+        "rimraf": "^5.0.10",
+        "tailwindcss": "^4.1.10",
         "typescript": "^5.0.0"
     },
     "keywords": [
