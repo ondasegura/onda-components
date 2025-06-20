@@ -19,21 +19,19 @@ export default defineConfig({
       js: '[name].js',
       css: '[name].css',
     },
-    // Remove hash dos arquivos para biblioteca
     filenameHash: false,
-    // Remove geração de HTML para biblioteca
-
+    // Não gerar HTML para biblioteca
+    emitHtml: false,
   },
 
   tools: {
     rspack: (config) => {
-      // Configuração para biblioteca
+      // Configuração para biblioteca ES Module
       config.output = {
         ...config.output,
         library: {
           type: 'module',
         },
-        chunkFormat: 'module',
       };
 
       // Externals - não incluir React no bundle
@@ -45,6 +43,7 @@ export default defineConfig({
 
       // Habilitar ES modules
       config.experiments = {
+        ...config.experiments,
         outputModule: true,
       };
 
@@ -53,7 +52,7 @@ export default defineConfig({
         ...config.optimization,
         splitChunks: false,
         sideEffects: false,
-        minimize: false, // Deixar a minificação para quem usar a lib
+        minimize: true, // Minificar para produção
       };
 
       return config;

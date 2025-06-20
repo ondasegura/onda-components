@@ -1,12 +1,20 @@
-// Importar estilos CSS (importante para bibliotecas)
+// Importar estilos CSS primeiro (importante para bibliotecas)
 import './styles/globals.css';
 
 // Exportar componentes do banco
 export { Pagina, type PaginaProps } from './banco/componentes/pagina';
 
-// Re-exportar tudo da pasta banco para facilitar imports
+// Exportar funções utilitárias
+export {
+    formatarMoeda,
+    formatarCPF,
+    formatarCNPJ,
+    validarEmail,
+    gerarId,
+    capitalizarPalavras,
+    removerAcentos
+} from './banco/utils';
+
+// Re-exportar tudo das pastas para facilitar imports
 export * from './banco/componentes/pagina';
-
-// Exemplo de como exportar funções utilitárias
 export * from './banco/utils';
-

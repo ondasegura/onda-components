@@ -1,20 +1,21 @@
 {
     "name": "onda-components",
-    "version": "1.0.6",
+    "version": "1.0.8",
     "description": "Biblioteca de componentes React com Tailwind CSS",
     "main": "dist/index.js",
     "module": "dist/index.js",
     "types": "dist/types/index.d.ts",
     "type": "module",
     "sideEffects": [
-        "**/*.css"
+        "**/*.css",
+        "./src/styles/globals.css"
     ],
     "exports": {
         ".": {
             "import": "./dist/index.js",
             "types": "./dist/types/index.d.ts"
         },
-        "./styles": "./dist/styles.css",
+        "./dist/index.css": "./dist/index.css",
         "./package.json": "./package.json"
     },
     "files": [
@@ -23,11 +24,10 @@
         "LICENSE"
     ],
     "scripts": {
-        "build": "npm run build:clean && npm run build:lib && npm run build:types && npm run build:css",
+        "build": "npm run build:clean && npm run build:lib && npm run build:types",
         "build:clean": "rimraf dist",
         "build:lib": "rsbuild build",
         "build:types": "tsc --emitDeclarationOnly --declarationDir dist/types",
-        "build:css": "npx tailwindcss -i ./src/styles/globals.css -o ./dist/styles.css --minify",
         "dev": "rsbuild dev",
         "preview": "rsbuild preview",
         "prepublishOnly": "npm run build",
@@ -41,16 +41,13 @@
     "devDependencies": {
         "@rsbuild/core": "^1.0.0",
         "@rsbuild/plugin-react": "^1.0.0",
-        "@tailwindcss/postcss": "^4.1.10",
         "@types/node": "^20.0.0",
         "@types/react": "^18.0.0",
         "@types/react-dom": "^18.0.0",
-        "autoprefixer": "^10.4.0",
-        "postcss": "^8.4.0",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
         "rimraf": "^5.0.10",
-        "tailwindcss": "^4.1.10",
+        "tailwindcss": "^3.4.0",
         "typescript": "^5.0.0"
     },
     "keywords": [
@@ -65,10 +62,10 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/seu-usuario/minha-lib-componentes.git"
+        "url": "https://github.com/seu-usuario/onda-components.git"
     },
     "bugs": {
-        "url": "https://github.com/seu-usuario/minha-lib-componentes/issues"
+        "url": "https://github.com/seu-usuario/onda-components/issues"
     },
-    "homepage": "https://github.com/seu-usuario/minha-lib-componentes#readme"
+    "homepage": "https://github.com/seu-usuario/onda-components#readme"
 }

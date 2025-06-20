@@ -1,15 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-        "./src/**/*.{js,ts,jsx,tsx}",
-        // Importante: incluir os caminhos onde a biblioteca será usada
-        "./dist/**/*.{js,ts,jsx,tsx}",
-    ],
+    content: ["./src/**/*.{js,ts,jsx,tsx}", "./dist/**/*.{js,ts,jsx,tsx}"],
     theme: {
         extend: {
-            // Suas customizações do tema aqui
             colors: {
-                // Exemplo de cores customizadas para a biblioteca
                 primary: {
                     50: "#eff6ff",
                     500: "#3b82f6",
@@ -20,21 +14,41 @@ module.exports = {
         },
     },
     plugins: [],
-    // Para bibliotecas, é recomendado usar um prefix para evitar conflitos
-    // Descomente a linha abaixo se quiser usar um prefix
-    // prefix: 'mylib-',
 
     // Configuração importante para bibliotecas - preserva todas as classes usadas
     safelist: [
-        // Classes que sempre devem ser incluídas no CSS final
+        // Classes base do componente Pagina
+        "min-h-screen",
+        "w-full",
+        "p-6",
+        "mb-8",
+        "border-b",
+        "border-gray-200",
+        "pb-4",
+        "text-3xl",
+        "font-bold",
+        "text-gray-900",
+        "container",
+        "mx-auto",
+        "max-w-7xl",
+
+        // Variantes de background
+        "bg-gray-50",
+        "bg-white",
+        "bg-gradient-to-br",
+        "from-blue-50",
+        "to-indigo-100",
+
+        // Variantes de texto
+        "text-gray-800",
+        "text-gray-900",
+
+        // Padrões dinâmicos
         {
             pattern: /bg-(gray|blue|indigo)-(50|100|200|800|900)/,
         },
         {
             pattern: /text-(gray|blue)-(800|900)/,
-        },
-        {
-            pattern: /(min-h-screen|w-full|p-6|mb-8|pb-4|container|mx-auto|max-w-7xl)/,
         },
     ],
 };
