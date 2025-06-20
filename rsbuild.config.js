@@ -17,10 +17,10 @@ export default defineConfig({
         library: {
             type: "module",
         },
-        filename: {
-            js: "index.js",
-            css: "index.css",
-        },
+        // filename: {
+        //     js: "index.js",
+        //     css: "index.css",
+        // },
         filenameHash: false,
     },
     tools: {
