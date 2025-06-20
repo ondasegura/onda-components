@@ -21,7 +21,7 @@ bunx npm version patch --no-git-tag-version --no-git-checks
 git init
 git add .
 git commit -m "💄 feat: "
-git push -u origin guilherme
+git push -u origin producao
 
 # PADRÃO DO CRUD NAS CONTROLLERS E MODELS
 
@@ -69,7 +69,7 @@ acesso do parceiro advogados - ele vai receber as liminares -
         # Configuração do sistema
 
 -   Pagar o lucro do advogado, lucro do banco, lucro franqueado
--                                           # Consulta nome
+-                                             # Consulta nome
 
     1º Vai gerar um link no parme
     2º Depois que pagar Vai bater na API do analisando e retonar um PDF # Limpa nome

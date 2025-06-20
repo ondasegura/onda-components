@@ -16,11 +16,10 @@ export default defineConfig({
     },
     target: 'web',
     filename: {
-      js: '[name].js',
-      css: '[name].css',
+      js: 'index.js',
+      css: 'index.css',
     },
     filenameHash: false,
-    // Não gerar HTML para biblioteca
     emitHtml: false,
   },
 
