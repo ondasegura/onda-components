@@ -1,6 +1,6 @@
 {
     "name": "onda-components",
-    "version": "4.0.9",
+    "version": "4.4.0",
     "description": "Biblioteca de componentes React",
     "type": "module",
     "main": "./dist/index.js",
