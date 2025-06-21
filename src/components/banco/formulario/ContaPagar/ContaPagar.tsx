@@ -5,12 +5,12 @@ import { X, Save, Loader2, DollarSign, Calendar, User, Tag, FileText } from "luc
 import t from "onda-types";
 
 //CONTROLLERS
-import controller_conta_pagar from "@/controllers/banco/controller_contas_pagar";
+import { banco_controller_contas_pagar } from "@/controllers/banco/banco_controller_contas_pagar";
 //COMPONENTES
 import FormLoadingSubmit from "@/geral/FormLoadingSubmit";
 
-const BancoFormularioContaPagar: React.FC = () => {
-    const formulario = controller_conta_pagar.contexto.jsx.get_formulario();
+export const BancoFormularioContaPagar: React.FC = () => {
+    const formulario = banco_controller_contas_pagar.contexto.jsx.get_formulario();
 
     const {
         register,
@@ -82,7 +82,7 @@ const BancoFormularioContaPagar: React.FC = () => {
 
     const onSubmit = async (data: t.Banco.Controllers.ContaPagar.Criar.Input | t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input | any) => {
         if (formulario.conta_pagar_id) {
-            await controller_conta_pagar.api.atualizar_pelo_id({
+            await banco_controller_contas_pagar.api.atualizar_pelo_id({
                 data: {
                     conta_pagar: {
                         ...data.data.conta_pagar,
@@ -91,7 +91,7 @@ const BancoFormularioContaPagar: React.FC = () => {
                 },
             } as t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input);
         } else {
-            await controller_conta_pagar.api.criar({
+            await banco_controller_contas_pagar.api.criar({
                 data: {
                     conta_pagar: {
                         ...data.data.conta_pagar,
@@ -99,12 +99,12 @@ const BancoFormularioContaPagar: React.FC = () => {
                 },
             } as t.Banco.Controllers.ContaPagar.Criar.Input);
         }
-        controller_conta_pagar.contexto.state.set_close_formulario();
+        banco_controller_contas_pagar.contexto.state.set_close_formulario();
     };
 
     const handleClose = () => {
         if (!formulario.loading) {
-            controller_conta_pagar.contexto.state.set_close_formulario();
+            banco_controller_contas_pagar.contexto.state.set_close_formulario();
         }
     };
 
@@ -329,5 +329,3 @@ const BancoFormularioContaPagar: React.FC = () => {
         </>
     );
 };
-
-export default BancoFormularioContaPagar;

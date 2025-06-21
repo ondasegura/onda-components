@@ -50,7 +50,7 @@ const store = create<ZustandStore>()(
     }))
 );
 
-const controller_conta_pagar = class controller_conta_pagar {
+export const banco_controller_contas_pagar = class banco_controller_contas_pagar {
     static api = class api {
         static async criar(props: t.Banco.Controllers.ContaPagar.Criar.Input) {
             try {
@@ -181,7 +181,7 @@ const controller_conta_pagar = class controller_conta_pagar {
                 if (conta_pagar_id) {
 
                     try {
-                        const result = await controller_conta_pagar.api.buscar_pelo_id({ data: { _id: conta_pagar_id } });
+                        const result = await banco_controller_contas_pagar.api.buscar_pelo_id({ data: { _id: conta_pagar_id } });
                         if (result?.data?.conta_pagar) {
                             store.setState((state) => {
                                 state.states.formulario.conta_pagar = result;
@@ -213,4 +213,3 @@ const controller_conta_pagar = class controller_conta_pagar {
 
     static websocket = class websocket { };
 }
-export default controller_conta_pagar;
