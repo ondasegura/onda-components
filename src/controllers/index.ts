@@ -1,0 +1,1 @@
+export * from "./banco/controller_contas_pagar"
