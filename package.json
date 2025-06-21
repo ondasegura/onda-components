@@ -1,36 +1,60 @@
 {
-    "name": "onda-components",
-    "version": "3.0.2",
-    "private": false,
+    "name": "@seu-nome/component-library",
+    "version": "0.1.1",
+    "description": "Biblioteca de componentes React",
     "type": "module",
-    "main": "dist/paginaTeste.cjs.js",
-    "module": "dist/paginaTeste.esm.js",
-    "types": "dist/index.d.ts",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/index.esm.js",
-            "require": "./dist/index.cjs.js"
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        },
+        "./styles": {
+            "import": "./dist/index.css",
+            "require": "./dist/index.css"
         }
     },
+    "files": [
+        "dist"
+    ],
     "scripts": {
-        "build": "rsbuild build",
-        "dev": "rsbuild dev --open",
-        "preview": "rsbuild preview"
+        "dev": "rsbuild dev",
+        "build": "rslib build",
+        "build:watch": "rslib build --watch",
+        "prepublishOnly": "npm run build"
     },
     "peerDependencies": {
-        "react": ">=18.0.0",
-        "react-dom": ">=18.0.0"
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
     },
     "dependencies": {
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0"
+        "lucide-react": "^0.519.0",
+        "zustand": "^5.0.5"
     },
     "devDependencies": {
         "@rsbuild/core": "^1.3.22",
         "@rsbuild/plugin-react": "^1.3.2",
         "@rslib/core": "^0.10.2",
-        "@types/react": "^19.1.6",
+        "@tailwindcss/postcss": "^4.1.10",
+        "@types/node": "^24.0.3",
+        "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
+        "autoprefixer": "^10.4.21",
+        "postcss": "^8.5.6",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "tailwindcss": "^4.1.10",
         "typescript": "^5.8.3"
-    }
+    },
+    "keywords": [
+        "react",
+        "components",
+        "ui",
+        "library"
+    ],
+    "author": "Seu Nome",
+    "license": "MIT"
 }
