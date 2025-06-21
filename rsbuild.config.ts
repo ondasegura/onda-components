@@ -11,17 +11,5 @@ export default defineConfig({
   html: {
     template: './dev/index.html',
   },
-  tools: {
-    postcss: {
-      postcssOptions: {
-        plugins: [
-          require('tailwindcss'),
-          require('autoprefixer'),
-        ],
-      },
-    },
-  },
-  server: {
-    port: 3000,
-  },
+
 });

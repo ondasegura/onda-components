@@ -2,6 +2,12 @@
 
 ## Setup
 
+bunx npm version patch --no-git-tag-version --no-git-checks
+git init
+git add .
+git commit -m "💄 feat: "
+git push -u origin producao
+
 Install the dependencies:
 
 ```bash

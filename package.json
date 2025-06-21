@@ -1,6 +1,6 @@
 {
-    "name": "@seu-nome/component-library",
-    "version": "0.1.1",
+    "name": "onda-components",
+    "version": "4.0.5",
     "description": "Biblioteca de componentes React",
     "type": "module",
     "main": "./dist/index.js",
@@ -25,10 +25,6 @@
         "build": "rslib build",
         "build:watch": "rslib build --watch",
         "prepublishOnly": "npm run build"
-    },
-    "peerDependencies": {
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0"
     },
     "dependencies": {
         "lucide-react": "^0.519.0",
