@@ -1,14 +1,14 @@
 {
     "name": "onda-components",
-    "version": "4.0.5",
+    "version": "4.0.9",
     "description": "Biblioteca de componentes React",
     "type": "module",
     "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/index.mjs",
+            "import": "./dist/index.js",
             "require": "./dist/index.js",
             "types": "./dist/index.d.ts"
         },
