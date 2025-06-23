@@ -1,6 +1,6 @@
 {
     "name": "onda-components",
-    "version": "4.20.0",
+    "version": "4.20.1",
     "description": "Biblioteca de componentes React",
     "type": "module",
     "main": "./dist/index.js",
@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^5.1.1",
+        "immer": "^10.1.1",
         "lucide-react": "^0.522.0",
         "onda-utils": "^1.14.0",
         "react-hook-form": "^7.58.1",
