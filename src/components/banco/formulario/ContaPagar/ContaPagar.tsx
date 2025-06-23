@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X, Save, Loader2, DollarSign, Calendar, User, Tag, FileText } from "lucide-react";
@@ -9,7 +9,7 @@ import { banco_controller_contas_pagar } from "@/controllers/banco/banco_control
 //COMPONENTES
 import FormLoadingSubmit from "@/geral/FormLoadingSubmit";
 
-export const BancoFormularioContaPagar: React.FC = () => {
+export function BancoFormularioContaPagar() {
     const formulario = banco_controller_contas_pagar.contexto.jsx.get_formulario();
 
     const {
@@ -328,4 +328,4 @@ export const BancoFormularioContaPagar: React.FC = () => {
             </div>
         </>
     );
-};
+}
