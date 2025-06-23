@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, Plus, Edit, Trash2, Hash, FileText, Circle, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Calendar, DollarSign, User, Tag } from "lucide-react";
 import t from "onda-types";
 //CONTROLLERS
@@ -6,7 +6,7 @@ import { banco_controller_contas_pagar } from "@/controllers";
 //COMPONENTES
 import { BancoFormularioContaPagar } from "../../formulario/ContaPagar";
 
-const BancoPaginaContaPagar = () => {
+export const BancoPaginaContaPagar: React.FC = () => {
     const get_pagina_conta_pagar = banco_controller_contas_pagar.contexto.jsx.get_pagina();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
@@ -299,5 +299,3 @@ const BancoPaginaContaPagar = () => {
         </div>
     );
 };
-
-export default BancoPaginaContaPagar;
