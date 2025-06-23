@@ -2,6 +2,12 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import HomePage from "./HomePage";
 
+// PAGINAS DO WAVE
+// PAGINAS DO PORTAL
+// PAGINAS DO BANCO
+import BancoPaginaContaPagar from "../src/components/banco/pagina/ContaPagar/ContaPagar";
+// PAGINAS DO ANALISANDO
+
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -12,8 +18,8 @@ export const router = createBrowserRouter([
                 element: <HomePage />,
             },
             {
-                path: "banco-s8/formularios/contas-receber-teste-ia",
-                element: <></>,
+                path: "banco/conta-pagar",
+                element: <BancoPaginaContaPagar />,
             },
             {
                 path: "banco-s8/paginas",
