@@ -5,7 +5,7 @@ interface FormLoadingSubmitProps {
     loading: boolean;
 }
 
-const FormLoadingSubmit: React.FC<FormLoadingSubmitProps> = ({ loading }) => {
+export const FormLoadingSubmit: React.FC<FormLoadingSubmitProps> = ({ loading }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [showSuccess, setShowSuccess] = useState(false);
 
@@ -112,5 +112,3 @@ const FormLoadingSubmit: React.FC<FormLoadingSubmitProps> = ({ loading }) => {
         </div>
     );
 };
-
-export default FormLoadingSubmit;

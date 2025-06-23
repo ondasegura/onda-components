@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X, Save, Loader2, DollarSign, Calendar, User, Tag, FileText } from "lucide-react";
@@ -7,9 +7,9 @@ import t from "onda-types";
 //CONTROLLERS
 import { banco_controller_contas_pagar } from "@/controllers/banco/banco_controller_contas_pagar";
 //COMPONENTES
-import FormLoadingSubmit from "@/geral/FormLoadingSubmit";
+import { FormLoadingSubmit } from "@/geral/FormLoadingSubmit";
 
-export function BancoFormularioContaPagar() {
+export const BancoFormularioContaPagar: React.FC = () => {
     const formulario = banco_controller_contas_pagar.contexto.jsx.get_formulario();
 
     const {
@@ -328,4 +328,4 @@ export function BancoFormularioContaPagar() {
             </div>
         </>
     );
-}
+};

@@ -6,7 +6,7 @@ import { banco_controller_contas_pagar } from "@/controllers";
 //COMPONENTES
 import { BancoFormularioContaPagar } from "../../formulario/ContaPagar";
 
-export function BancoPaginaContaPagar() {
+export const BancoPaginaContaPagar: React.FC = () => {
     const get_pagina_conta_pagar = banco_controller_contas_pagar.contexto.jsx.get_pagina();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
@@ -298,4 +298,4 @@ export function BancoPaginaContaPagar() {
             </div>
         </div>
     );
-}
+};
