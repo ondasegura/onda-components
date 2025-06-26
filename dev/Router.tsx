@@ -5,8 +5,10 @@ import HomePage from "./HomePage";
 // PAGINAS DO WAVE
 // PAGINAS DO PORTAL
 // PAGINAS DO BANCO
-import BancoPaginaContaPagar from "../src/components/banco/pagina/ContaPagar/ContaPagar";
+import { BancoPaginaContaPagar } from "../src/components/banco/pagina/ContaPagar/ContaPagar";
 // PAGINAS DO ANALISANDO
+// PAGINAS DO FINANCEIRO
+import { PaginaFinanceiroRecebedor } from "../src/components/financeiro/pagina/Recebedor";
 
 export const router = createBrowserRouter([
     {
@@ -64,6 +66,10 @@ export const router = createBrowserRouter([
             {
                 path: "analisando/modais",
                 element: <></>,
+            },
+            {
+                path: "financeiro/recebedor",
+                element: <PaginaFinanceiroRecebedor />,
             },
         ],
     },

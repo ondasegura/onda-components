@@ -58,6 +58,17 @@ const navigationItems: NavigationItem[] = [
             },
         ],
     },
+    {
+        label: "Financeiro",
+        icon: Package,
+        children: [
+            {
+                label: "Recebedor",
+                icon: FileText,
+                path: "/financeiro/recebedor",
+            },
+        ],
+    },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
