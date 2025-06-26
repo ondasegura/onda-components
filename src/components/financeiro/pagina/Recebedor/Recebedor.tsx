@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { Search, Plus, Edit, Trash2, User, Building2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Mail, Phone, MapPin, CreditCard, Calendar } from "lucide-react";
+import {useEffect, useState} from "react";
+import {Search, Plus, Edit, Trash2, User, Building2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Mail, Phone, MapPin, CreditCard, Calendar} from "lucide-react";
 import utils from "onda-utils";
 
 //CONTROLLER
 import financeiro_controller_recebedor from "@/controllers/financeiro/financeiro_controller_recebedor";
 //COMPONENTES
-import { FinanceiroFormularioRecebedor } from "../../formulario/Recebedor/Recebedor";
+import {FinanceiroFormularioRecebedor} from "../../formulario/Recebedor/Recebedor";
 
 export const PaginaFinanceiroRecebedor = () => {
     const get_pagina_recebedor = financeiro_controller_recebedor.contexto.jsx.get_pagina();
@@ -15,22 +15,21 @@ export const PaginaFinanceiroRecebedor = () => {
     const [tipoFiltro, setTipoFiltro] = useState<"individual" | "empresa" | null>(null);
     const itensPorPagina = get_pagina_recebedor.recebedor.data.paginacao.itens_por_pagina;
 
-    async function buscarDados(pagina: number, termoBusca: string, tipo: "individual" | "empresa" | null) {
+    async function buscarDados(pagina: number, termoBusca: string) {
         await financeiro_controller_recebedor.api.buscar_pelo_filtro({
             filtros: {
                 recebedor: {
                     pagina: pagina,
-                    email: termoBusca,
-                    tipo: tipo,
-                    referencia_externa: null,
-                    documento: null,
+                    nome: termoBusca,
+                    nome_fantasia: termoBusca,
+                    razao_social: termoBusca,
                 },
             },
         });
     }
 
     useEffect(() => {
-        buscarDados(1, "", null);
+        buscarDados(1, "");
     }, []);
 
     function handleEdit(item: any) {
@@ -39,7 +38,7 @@ export const PaginaFinanceiroRecebedor = () => {
 
     async function handleDelete(id: string) {
         if (window.confirm("Tem certeza que deseja deletar este recebedor?")) {
-            await financeiro_controller_recebedor.api.deletar_pelo_id({ _id: id });
+            await financeiro_controller_recebedor.api.deletar_pelo_id({_id: id});
             if (get_pagina_recebedor?.recebedor?.data?.recebedores?.length === 1 && paginaAtual > 1) {
                 irParaPagina(paginaAtual - 1);
             } else {
@@ -50,11 +49,12 @@ export const PaginaFinanceiroRecebedor = () => {
 
     function handleCreate() {
         financeiro_controller_recebedor.contexto.state.set_open_formulario();
+        console.log("chamou handleCreate");
     }
 
     function handleBuscar() {
         setPaginaAtual(1);
-        buscarDados(1, searchTerm, tipoFiltro);
+        buscarDados(1, searchTerm);
     }
 
     const totalItens = get_pagina_recebedor?.recebedor?.data?.paginacao.total_itens;
@@ -63,7 +63,7 @@ export const PaginaFinanceiroRecebedor = () => {
     function irParaPagina(pagina: number) {
         if (pagina >= 1 && pagina <= totalPaginas) {
             setPaginaAtual(pagina);
-            buscarDados(pagina, searchTerm, tipoFiltro);
+            buscarDados(pagina, searchTerm);
         }
     }
 
@@ -156,7 +156,7 @@ export const PaginaFinanceiroRecebedor = () => {
                                     placeholder="Buscar recebedores..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    onKeyPress={(e) => e.key === "Enter" && handleBuscar()}
+                                    onKeyDown={(e) => e.key === "Enter" && handleBuscar()}
                                     className="w-48 sm:w-60 pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-300 focus:w-full sm:focus:w-72"
                                 />
                             </div>

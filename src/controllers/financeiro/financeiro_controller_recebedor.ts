@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+import {create} from "zustand";
+import {immer} from "zustand/middleware/immer";
 import t from "onda-types";
 
 import utils from "onda-utils";
@@ -11,13 +11,13 @@ interface ZustandStore {
         modal: {
             recebedor_item: t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output;
             loading: boolean;
-        }
+        };
         pagina: {
             loading: boolean;
             recebedor: t.Financeiro.Controllers.Recebedor.BuscarPeloFiltro.Output;
-        }
+        };
         formulario: {
-            steep: number,
+            step: number;
             recebedor_id: string;
             recebedor: t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output;
             open: boolean;
@@ -29,26 +29,26 @@ interface ZustandStore {
 
 const initialStates = {
     modal: {
-        recebedor_item: { data: { recebedor: {} } } as t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output,
+        recebedor_item: {data: {recebedor: {}}} as t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output,
         loading: false,
     },
     pagina: {
         loading: false,
-        recebedor: { data: { recebedores: [], paginacao: {} } } as any,
+        recebedor: {data: {recebedores: [], paginacao: {}}} as any,
     },
     formulario: {
-        steep: 0,
+        step: 0,
         recebedor_id: "",
-        recebedor: { data: { recebedor: {} } } as t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output,
+        recebedor: {data: {recebedor: {}}} as t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output,
         open: false,
         loading: false,
-        loading_submit: false
+        loading_submit: false,
     },
 };
 
 const store = create<ZustandStore>()(
     immer(() => ({
-        states: initialStates
+        states: initialStates,
     }))
 );
 
@@ -58,59 +58,95 @@ const controller_recebedor = class controller_recebedor {
             const response = await utils.api.servidor_backend.post(String(PUBLIC_BASE_URL_BACKEND_WORKER_FINANCEIRO), "/financeiro/recebedor", props, true);
             const results: t.Financeiro.Controllers.Recebedor.Criar.Output | undefined = response?.results;
 
-            store.setState((state) => { state.states.modal.loading = true });
+            store.setState((state) => {
+                state.states.modal.loading = true;
+            });
 
             if (results?.data?.recebedor) {
-                store.setState((state) => { state.states.pagina.recebedor.data.recebedores = utils.update_context.update_array_itens({ oldArray: state.states.pagina.recebedor.data.recebedores, newItem: [results.data.recebedor], }); });
+                store.setState((state) => {
+                    state.states.pagina.recebedor.data.recebedores = utils.update_context.update_array_itens({
+                        oldArray: state.states.pagina.recebedor.data.recebedores,
+                        newItem: [results.data.recebedor],
+                    });
+                });
             }
 
             return results as t.Financeiro.Controllers.Recebedor.Criar.Output;
         }
 
         static async buscar_pelo_filtro(props: t.Financeiro.Controllers.Recebedor.BuscarPeloFiltro.Input): Promise<t.Financeiro.Controllers.Recebedor.BuscarPeloFiltro.Output> {
-            store.setState((state) => { state.states.pagina.loading = true });
+            store.setState((state) => {
+                state.states.pagina.loading = true;
+            });
 
             const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND_WORKER_FINANCEIRO), "/financeiro/recebedores", true, props.filtros.recebedor);
             const results: t.Financeiro.Controllers.Recebedor.BuscarPeloFiltro.Output | undefined = response?.results;
 
             if (results?.data?.recebedores) {
-                store.setState((state) => { state.states.pagina.recebedor = results; });
+                store.setState((state) => {
+                    state.states.pagina.recebedor = results;
+                });
             }
 
-            store.setState((state) => { state.states.pagina.loading = false });
+            store.setState((state) => {
+                state.states.pagina.loading = false;
+            });
 
             return results as t.Financeiro.Controllers.Recebedor.BuscarPeloFiltro.Output;
         }
 
         static async buscar_pelo_id(props: t.Financeiro.Controllers.Recebedor.BuscarPeloId.Input): Promise<t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output> {
-            store.setState((state) => { state.states.modal.loading = true });
+            store.setState((state) => {
+                state.states.modal.loading = true;
+            });
 
             const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND_WORKER_FINANCEIRO), `/financeiro/recebedor/${props.data.recebedor._id}`, true, {});
+
             const results: t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output | undefined = response?.results;
+            console.log(results, "results");
 
-            if (results?.data?.recebedor) store.setState((state) => { state.states.modal.recebedor_item = results; })
+            if (results?.data?.recebedor)
+                store.setState((state) => {
+                    state.states.modal.recebedor_item = results;
+                });
 
-            store.setState((state) => { state.states.modal.loading = false });
+            store.setState((state) => {
+                state.states.modal.loading = false;
+            });
 
             return results as t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output;
         }
 
         static async atualizar_pelo_id(props: t.Financeiro.Controllers.Recebedor.AtualizarPeloId.Input): Promise<t.Financeiro.Controllers.Recebedor.AtualizarPeloId.Output> {
-            store.setState((state) => { state.states.modal.loading = true });
+            store.setState((state) => {
+                state.states.modal.loading = true;
+            });
 
-            const response = await utils.api.servidor_backend.patch(String(PUBLIC_BASE_URL_BACKEND_WORKER_FINANCEIRO), `/financeiro/recebedor/${props.data.recebedor._id}`, { data: props.data }, true);
+            const response = await utils.api.servidor_backend.patch(
+                String(PUBLIC_BASE_URL_BACKEND_WORKER_FINANCEIRO),
+                `/financeiro/recebedor/${props.data.recebedor._id}`,
+                {data: props.data},
+                true
+            );
             const results: t.Financeiro.Controllers.Recebedor.AtualizarPeloId.Output | undefined = response?.results;
 
             const recebedorAtualizado = results?.data.recebedor || (results?.data as any)?.recebedor;
 
             if (recebedorAtualizado) {
                 store.setState((state) => {
-                    state.states.pagina.recebedor.data.recebedores = utils.update_context.update_array_itens({ oldArray: state.states.pagina.recebedor.data.recebedores, newItem: [recebedorAtualizado], });
-                    if (state.states.modal.recebedor_item.data.recebedor?._id === recebedorAtualizado._id) { state.states.modal.recebedor_item = { data: { recebedor: recebedorAtualizado } }; }
+                    state.states.pagina.recebedor.data.recebedores = utils.update_context.update_array_itens({
+                        oldArray: state.states.pagina.recebedor.data.recebedores,
+                        newItem: [recebedorAtualizado],
+                    });
+                    if (state.states.modal.recebedor_item.data.recebedor?._id === recebedorAtualizado._id) {
+                        state.states.modal.recebedor_item = {data: {recebedor: recebedorAtualizado}};
+                    }
                 });
             }
 
-            store.setState((state) => { state.states.pagina.loading = false });
+            store.setState((state) => {
+                state.states.pagina.loading = false;
+            });
 
             return results as t.Financeiro.Controllers.Recebedor.AtualizarPeloId.Output;
         }
@@ -120,8 +156,13 @@ const controller_recebedor = class controller_recebedor {
             const results: t.Financeiro.Controllers.Recebedor.DeletarPeloId.Output | undefined = response?.results;
 
             store.setState((state) => {
-                state.states.pagina.recebedor.data.recebedores = utils.update_context.remover_item_pelo_id({ oldArray: state.states.pagina.recebedor.data.recebedores, itemToRemove: props._id, });
-                if (state.states.modal.recebedor_item.data.recebedor?._id === props._id) { state.states.modal.recebedor_item = initialStates.modal.recebedor_item; }
+                state.states.pagina.recebedor.data.recebedores = utils.update_context.remover_item_pelo_id({
+                    oldArray: state.states.pagina.recebedor.data.recebedores,
+                    itemToRemove: props._id,
+                });
+                if (state.states.modal.recebedor_item.data.recebedor?._id === props._id) {
+                    state.states.modal.recebedor_item = initialStates.modal.recebedor_item;
+                }
             });
 
             return results as t.Financeiro.Controllers.Recebedor.DeletarPeloId.Output;
@@ -130,37 +171,44 @@ const controller_recebedor = class controller_recebedor {
 
     static contexto = class contexto {
         static jsx = class jsx {
-            static get_formulario(): ZustandStore['states']['formulario'] {
+            static get_formulario(): ZustandStore["states"]["formulario"] {
                 return store((state) => state.states.formulario);
             }
 
-            static get_pagina(): ZustandStore['states']['pagina'] {
+            static get_pagina(): ZustandStore["states"]["pagina"] {
                 return store((state) => state.states.pagina);
             }
 
-            static get_modal(): ZustandStore['states']['modal'] {
+            static get_modal(): ZustandStore["states"]["modal"] {
                 return store((state) => state.states.modal);
             }
         };
 
         static state = class state {
             static reset() {
-                store.setState(() => ({ states: initialStates }));
+                store.setState(() => ({states: initialStates}));
             }
 
             static set_recebedor_item(recebedorData: t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output) {
-                store.setState((state) => { state.states.modal.recebedor_item = recebedorData; });
+                store.setState((state) => {
+                    state.states.modal.recebedor_item = recebedorData;
+                });
             }
 
             static set_recebedor(recebedorData: t.Financeiro.Controllers.Recebedor.BuscarPeloFiltro.Output) {
-                store.setState((state) => { state.states.pagina.recebedor = recebedorData; });
+                store.setState((state) => {
+                    state.states.pagina.recebedor = recebedorData;
+                });
             }
 
             static async set_open_formulario(recebedor_id?: string) {
-                store.setState((state) => { state.states.formulario.loading = true; });
                 if (recebedor_id) {
+                    store.setState((state) => {
+                        state.states.formulario.loading = true;
+                        state.states.formulario.open = true;
+                    });
                     try {
-                        const result = await controller_recebedor.api.buscar_pelo_id({ data: { recebedor: { _id: recebedor_id } } });
+                        const result = await controller_recebedor.api.buscar_pelo_id({data: {recebedor: {_id: recebedor_id}}});
                         if (result?.data?.recebedor) {
                             store.setState((state) => {
                                 state.states.formulario.recebedor = result;
@@ -169,35 +217,46 @@ const controller_recebedor = class controller_recebedor {
                         } else {
                             store.setState((state) => {
                                 state.states.formulario.loading = false;
+                                state.states.formulario.open = false;
                             });
                         }
-                    } catch (error) { store.setState((state) => { state.states.formulario.loading = false; }); console.error('Erro ao buscar recebedor:', error); }
+                    } catch (error) {
+                        store.setState((state) => {
+                            state.states.formulario.loading = false;
+                            state.states.formulario.open = true;
+                        });
+                        console.error("Erro ao buscar recebedor:", error);
+                    }
                 }
             }
 
             static set_close_formulario() {
-                store.setState((state) => { state.states.formulario = { ...initialStates.formulario }; });
+                store.setState((state) => {
+                    state.states.formulario = {...initialStates.formulario};
+                });
             }
 
             static set_steep_progress(progress: number) {
-                store.setState((state) => { state.states.formulario.steep = progress });
+                store.setState((state) => {
+                    state.states.formulario.step = progress;
+                });
             }
 
-            static get_state_formulario(): ZustandStore['states']['formulario'] {
+            static get_state_formulario(): ZustandStore["states"]["formulario"] {
                 return store.getState().states.formulario;
             }
 
-            static get_state_modal(): ZustandStore['states']['modal'] {
+            static get_state_modal(): ZustandStore["states"]["modal"] {
                 return store.getState().states.modal;
             }
 
-            static get_state_pagina(): ZustandStore['states']['pagina'] {
+            static get_state_pagina(): ZustandStore["states"]["pagina"] {
                 return store.getState().states.pagina;
             }
         };
     };
 
-    static websocket = class websocket { };
-}
+    static websocket = class websocket {};
+};
 
 export default controller_recebedor;
