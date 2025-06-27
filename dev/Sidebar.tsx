@@ -23,6 +23,11 @@ const navigationItems: NavigationItem[] = [
                 icon: FileText,
                 path: "/banco/conta-pagar",
             },
+            {
+                label: "Ordem serviço",
+                icon: FileText,
+                path: "/banco/ordem-servico",
+            },
         ],
     },
     {

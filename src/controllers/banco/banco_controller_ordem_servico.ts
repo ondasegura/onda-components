@@ -32,7 +32,7 @@ const initialStates = {
         loading: false,
     },
     pagina: {
-        ordem_servico: { data: { ordens_servico: [], paginacao: {} } } as t.Banco.Controllers.OrdemServico.BuscarPeloFiltro.Output,
+        ordem_servico: { data: { ordens_servico: [], paginacao: {} as any } } as t.Banco.Controllers.OrdemServico.BuscarPeloFiltro.Output,
         loading: false,
     },
     formulario: {
