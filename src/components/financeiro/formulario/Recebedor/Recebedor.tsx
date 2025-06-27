@@ -1,760 +1,217 @@
-import React, {useEffect} from "react";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {X, Save, Loader2, DollarSign, Calendar, User, Tag, FileText} from "lucide-react";
-import t from "onda-types";
+import React, {useEffect, useRef, useState} from "react";
+import {X, Loader2, CheckCircle, AlertCircle} from "lucide-react";
+import controller_recebedor from "@/controllers/financeiro/financeiro_controller_recebedor";
+import TipoCadastro from "./1-tipo-cadastro";
+import DadosPessoais from "./2-dados-pessoais";
+import DadosBancarios from "./3-dados-bancarios";
+import Header from "./header";
+import Footer from "./footer";
 
-//CONTROLLERS
-import {banco_controller_contas_pagar} from "@/controllers/banco/banco_controller_contas_pagar";
-//COMPONENTES
-import {FormLoadingSubmit} from "@/geral/FormLoadingSubmit";
+const steps = [{label: "Tipo de Cadastro"}, {label: "Dados Pessoais"}, {label: "Dados Bancários"}];
 
-export const FinanceiroFormularioRecebedorCorporation: React.FC = () => {
-    const formulario = banco_controller_contas_pagar.contexto.jsx.get_formulario();
+interface SnackbarProps {
+    open: boolean;
+    message: string;
+    type: "success" | "error";
+    onClose: () => void;
+}
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: {errors, isSubmitting},
-    } = useForm<t.Banco.Controllers.ContaPagar.Criar.Input>({
-        resolver: zodResolver(t.Banco.Controllers.ContaPagar.Criar.InputSchema as t.Banco.Controllers.ContaPagar.Criar.Input | any),
-        defaultValues: {
-            data: {
-                conta_pagar: {
-                    fornecedor: "",
-                    descricao: "",
-                    valor: 0,
-                    data_emissao: new Date().toISOString().split("T")[0],
-                    data_vencimento: "",
-                    data_pagamento: null,
-                    status: "pendente",
-                    forma_pagamento: "boleto",
-                    categoria: "",
-                    deletado: false,
-                    ativo: true,
-                },
-            },
-        },
-    });
-
+const Snackbar: React.FC<SnackbarProps> = ({open, message, type, onClose}) => {
     useEffect(() => {
-        if (formulario.conta_pagar?.data?.conta_pagar && formulario.conta_pagar_id) {
-            const contaPagar = formulario.conta_pagar.data.conta_pagar;
-
-            reset({
-                data: {
-                    conta_pagar: {
-                        fornecedor: contaPagar.fornecedor || "",
-                        descricao: contaPagar.descricao || "",
-                        valor: contaPagar.valor || 0,
-                        data_emissao: contaPagar.data_emissao || new Date().toISOString().split("T")[0],
-                        data_vencimento: contaPagar.data_vencimento || "",
-                        data_pagamento: contaPagar.data_pagamento || null,
-                        status: contaPagar.status || "pendente",
-                        forma_pagamento: contaPagar.forma_pagamento || "boleto",
-                        categoria: contaPagar.categoria || "",
-                        deletado: contaPagar.deletado || false,
-                        ativo: contaPagar.ativo !== undefined ? contaPagar.ativo : true,
-                    },
-                },
-            });
-        } else {
-            reset({
-                data: {
-                    conta_pagar: {
-                        fornecedor: "",
-                        descricao: "",
-                        valor: 0,
-                        data_emissao: new Date().toISOString().split("T")[0],
-                        data_vencimento: "",
-                        data_pagamento: null,
-                        status: "pendente",
-                        forma_pagamento: "boleto",
-                        categoria: "",
-                        deletado: false,
-                        ativo: true,
-                    },
-                },
-            });
+        if (open) {
+            const timer = setTimeout(() => {
+                onClose();
+            }, 6000);
+            return () => clearTimeout(timer);
         }
-    }, [formulario.conta_pagar, formulario.conta_pagar_id, reset]);
+    }, [open, onClose]);
 
-    const onSubmit = async (data: t.Banco.Controllers.ContaPagar.Criar.Input | t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input | any) => {
-        if (formulario.conta_pagar_id) {
-            await banco_controller_contas_pagar.api.atualizar_pelo_id({
-                data: {
-                    conta_pagar: {
-                        ...data.data.conta_pagar,
-                        _id: formulario.conta_pagar_id,
-                    },
-                },
-            } as t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input);
-        } else {
-            await banco_controller_contas_pagar.api.criar({
-                data: {
-                    conta_pagar: {
-                        ...data.data.conta_pagar,
-                    },
-                },
-            } as t.Banco.Controllers.ContaPagar.Criar.Input);
-        }
-        banco_controller_contas_pagar.contexto.state.set_close_formulario();
-    };
-
-    const handleClose = () => {
-        if (!formulario.loading) {
-            banco_controller_contas_pagar.contexto.state.set_close_formulario();
-        }
-    };
-
-    if (!formulario.open) {
-        return null;
-    }
-
-    const isDisabled = formulario.loading || isSubmitting;
+    if (!open) return null;
 
     return (
-        <>
-            <div className="fixed inset-0 bg-black/50 z-40 transition-opacity" onClick={handleClose} />
-
-            <div className="fixed right-0 top-0 h-full w-full max-w-lg bg-white shadow-xl z-50 transform transition-transform">
-                <div className="flex flex-col h-full relative">
-                    <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <DollarSign className="h-5 w-5 text-blue-600" />
-                            </div>
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-900">{formulario.conta_pagar_id ? "Editar Conta a Pagar" : "Nova Conta a Pagar"}</h2>
-                                <p className="text-sm text-gray-500">{formulario.conta_pagar_id ? "Atualize os dados da conta" : "Preencha os dados da nova conta"}</p>
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={handleClose}
-                            disabled={isDisabled}
-                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
-                        >
-                            <X className="h-5 w-5" />
-                        </button>
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto p-6">
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <User className="h-4 w-4" />
-                                    Fornecedor
-                                </label>
-                                <input
-                                    {...register("data.conta_pagar.fornecedor")}
-                                    type="text"
-                                    placeholder="Nome do fornecedor"
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                />
-                                {errors.data?.conta_pagar?.fornecedor && <p className="text-sm text-red-600">{errors.data.conta_pagar.fornecedor.message}</p>}
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <FileText className="h-4 w-4" />
-                                    Descrição *
-                                </label>
-                                <textarea
-                                    {...register("data.conta_pagar.descricao")}
-                                    placeholder="Descrição da conta a pagar"
-                                    rows={3}
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                />
-                                {errors.data?.conta_pagar?.descricao && <p className="text-sm text-red-600">{errors.data.conta_pagar.descricao.message}</p>}
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <DollarSign className="h-4 w-4" />
-                                    Valor *
-                                </label>
-                                <input
-                                    {...register("data.conta_pagar.valor", {valueAsNumber: true})}
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    placeholder="0,00"
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                />
-                                {errors.data?.conta_pagar?.valor && <p className="text-sm text-red-600">{errors.data.conta_pagar.valor.message}</p>}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <Calendar className="h-4 w-4" />
-                                        Data de Emissão *
-                                    </label>
-                                    <input
-                                        {...register("data.conta_pagar.data_emissao")}
-                                        type="date"
-                                        disabled={isDisabled}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                    />
-                                    {errors.data?.conta_pagar?.data_emissao && <p className="text-sm text-red-600">{errors.data.conta_pagar.data_emissao.message}</p>}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <Calendar className="h-4 w-4" />
-                                        Data de Vencimento *
-                                    </label>
-                                    <input
-                                        {...register("data.conta_pagar.data_vencimento")}
-                                        type="date"
-                                        disabled={isDisabled}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                    />
-                                    {errors.data?.conta_pagar?.data_vencimento && <p className="text-sm text-red-600">{errors.data.conta_pagar.data_vencimento.message}</p>}
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <Calendar className="h-4 w-4" />
-                                    Data de Pagamento
-                                </label>
-                                <input
-                                    {...register("data.conta_pagar.data_pagamento")}
-                                    type="date"
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                />
-                                {errors.data?.conta_pagar?.data_pagamento && <p className="text-sm text-red-600">{errors.data.conta_pagar.data_pagamento.message}</p>}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <Tag className="h-4 w-4" />
-                                        Status
-                                    </label>
-                                    <select
-                                        {...register("data.conta_pagar.status")}
-                                        disabled={isDisabled}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                    >
-                                        <option value="pendente">Pendente</option>
-                                        <option value="pago">Pago</option>
-                                        <option value="cancelado">Cancelado</option>
-                                    </select>
-                                    {errors.data?.conta_pagar?.status && <p className="text-sm text-red-600">{errors.data.conta_pagar.status.message}</p>}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <DollarSign className="h-4 w-4" />
-                                        Forma de Pagamento *
-                                    </label>
-                                    <select
-                                        {...register("data.conta_pagar.forma_pagamento")}
-                                        disabled={isDisabled}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                    >
-                                        <option value="boleto">Boleto</option>
-                                        <option value="transferencia">Transferência</option>
-                                        <option value="dinheiro">Dinheiro</option>
-                                        <option value="cartao">Cartão</option>
-                                    </select>
-                                    {errors.data?.conta_pagar?.forma_pagamento && <p className="text-sm text-red-600">{errors.data.conta_pagar.forma_pagamento.message}</p>}
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <Tag className="h-4 w-4" />
-                                    Categoria *
-                                </label>
-                                <select
-                                    {...register("data.conta_pagar.categoria")}
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                >
-                                    <option value="">Selecione uma categoria</option>
-                                    <option value="alimentacao">Alimentação</option>
-                                    <option value="transporte">Transporte</option>
-                                    <option value="moradia">Moradia</option>
-                                    <option value="saude">Saúde</option>
-                                    <option value="educacao">Educação</option>
-                                    <option value="lazer">Lazer</option>
-                                    <option value="outros">Outros</option>
-                                </select>
-                                {errors.data?.conta_pagar?.categoria && <p className="text-sm text-red-600">{errors.data.conta_pagar.categoria.message}</p>}
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-                        <button
-                            type="button"
-                            onClick={handleClose}
-                            disabled={isDisabled}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            Cancelar
-                        </button>
-                        <button
-                            type="submit"
-                            onClick={handleSubmit(onSubmit)}
-                            disabled={isDisabled}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            {isDisabled ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                    Salvando...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="h-4 w-4" />
-                                    Salvar
-                                </>
-                            )}
-                        </button>
-                    </div>
-
-                    <FormLoadingSubmit loading={formulario.loading} />
-                </div>
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-top duration-300">
+            <div
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg ${
+                    type === "success" ? "bg-green-50 border border-green-200 text-green-800" : "bg-red-50 border border-red-200 text-red-800"
+                }`}
+            >
+                {type === "success" ? <CheckCircle className="w-5 h-5 text-green-600" /> : <AlertCircle className="w-5 h-5 text-red-600" />}
+                <span className="text-sm font-medium">{message}</span>
+                <button onClick={onClose} className="ml-2 text-gray-400 hover:text-gray-600 transition-colors">
+                    <X className="w-4 h-4" />
+                </button>
             </div>
-        </>
+        </div>
     );
 };
 
-const FinanceiroFormularioRecebedorIndividual: React.FC = () => {
-    const formulario = banco_controller_contas_pagar.contexto.jsx.get_formulario();
+interface ModalProps {
+    open: boolean;
+    onClose: () => void;
+    title: string;
+    children: React.ReactNode;
+}
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: {errors, isSubmitting},
-    } = useForm<t.Banco.Controllers.ContaPagar.Criar.Input>({
-        resolver: zodResolver(t.Banco.Controllers.ContaPagar.Criar.InputSchema as t.Banco.Controllers.ContaPagar.Criar.Input | any),
-        defaultValues: {
-            data: {
-                conta_pagar: {
-                    fornecedor: "",
-                    descricao: "",
-                    valor: 0,
-                    data_emissao: new Date().toISOString().split("T")[0],
-                    data_vencimento: "",
-                    data_pagamento: null,
-                    status: "pendente",
-                    forma_pagamento: "boleto",
-                    categoria: "",
-                    deletado: false,
-                    ativo: true,
-                },
-            },
-        },
-    });
-
-    useEffect(() => {
-        if (formulario.conta_pagar?.data?.conta_pagar && formulario.conta_pagar_id) {
-            const contaPagar = formulario.conta_pagar.data.conta_pagar;
-
-            reset({
-                data: {
-                    conta_pagar: {
-                        fornecedor: contaPagar.fornecedor || "",
-                        descricao: contaPagar.descricao || "",
-                        valor: contaPagar.valor || 0,
-                        data_emissao: contaPagar.data_emissao || new Date().toISOString().split("T")[0],
-                        data_vencimento: contaPagar.data_vencimento || "",
-                        data_pagamento: contaPagar.data_pagamento || null,
-                        status: contaPagar.status || "pendente",
-                        forma_pagamento: contaPagar.forma_pagamento || "boleto",
-                        categoria: contaPagar.categoria || "",
-                        deletado: contaPagar.deletado || false,
-                        ativo: contaPagar.ativo !== undefined ? contaPagar.ativo : true,
-                    },
-                },
-            });
-        } else {
-            reset({
-                data: {
-                    conta_pagar: {
-                        fornecedor: "",
-                        descricao: "",
-                        valor: 0,
-                        data_emissao: new Date().toISOString().split("T")[0],
-                        data_vencimento: "",
-                        data_pagamento: null,
-                        status: "pendente",
-                        forma_pagamento: "boleto",
-                        categoria: "",
-                        deletado: false,
-                        ativo: true,
-                    },
-                },
-            });
-        }
-    }, [formulario.conta_pagar, formulario.conta_pagar_id, reset]);
-
-    const onSubmit = async (data: t.Banco.Controllers.ContaPagar.Criar.Input | t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input | any) => {
-        if (formulario.conta_pagar_id) {
-            await banco_controller_contas_pagar.api.atualizar_pelo_id({
-                data: {
-                    conta_pagar: {
-                        ...data.data.conta_pagar,
-                        _id: formulario.conta_pagar_id,
-                    },
-                },
-            } as t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input);
-        } else {
-            await banco_controller_contas_pagar.api.criar({
-                data: {
-                    conta_pagar: {
-                        ...data.data.conta_pagar,
-                    },
-                },
-            } as t.Banco.Controllers.ContaPagar.Criar.Input);
-        }
-        banco_controller_contas_pagar.contexto.state.set_close_formulario();
-    };
-
-    const handleClose = () => {
-        if (!formulario.loading) {
-            banco_controller_contas_pagar.contexto.state.set_close_formulario();
-        }
-    };
-
-    if (!formulario.open) {
-        return null;
-    }
-
-    const isDisabled = formulario.loading || isSubmitting;
+const Modal: React.FC<ModalProps> = ({open, onClose, title, children}) => {
+    if (!open) return null;
 
     return (
-        <>
-            <div className="fixed inset-0 bg-black/50 z-40 transition-opacity" onClick={handleClose} />
-
-            <div className="fixed right-0 top-0 h-full w-full max-w-lg bg-white shadow-xl z-50 transform transition-transform">
-                <div className="flex flex-col h-full relative">
-                    <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <DollarSign className="h-5 w-5 text-blue-600" />
-                            </div>
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-900">{formulario.conta_pagar_id ? "Editar Conta a Pagar" : "Nova Conta a Pagar"}</h2>
-                                <p className="text-sm text-gray-500">{formulario.conta_pagar_id ? "Atualize os dados da conta" : "Preencha os dados da nova conta"}</p>
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={handleClose}
-                            disabled={isDisabled}
-                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
-                        >
-                            <X className="h-5 w-5" />
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-screen items-center justify-center p-4">
+                <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={onClose} />
+                <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full animate-in zoom-in-95 duration-300">
+                    <div className="flex items-center justify-between p-6 border-b">
+                        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+                            <X className="w-5 h-5" />
                         </button>
                     </div>
-
-                    <div className="flex-1 overflow-y-auto p-6">
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <User className="h-4 w-4" />
-                                    Fornecedor
-                                </label>
-                                <input
-                                    {...register("data.conta_pagar.fornecedor")}
-                                    type="text"
-                                    placeholder="Nome do fornecedor"
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                />
-                                {errors.data?.conta_pagar?.fornecedor && <p className="text-sm text-red-600">{errors.data.conta_pagar.fornecedor.message}</p>}
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <FileText className="h-4 w-4" />
-                                    Descrição *
-                                </label>
-                                <textarea
-                                    {...register("data.conta_pagar.descricao")}
-                                    placeholder="Descrição da conta a pagar"
-                                    rows={3}
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                />
-                                {errors.data?.conta_pagar?.descricao && <p className="text-sm text-red-600">{errors.data.conta_pagar.descricao.message}</p>}
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <DollarSign className="h-4 w-4" />
-                                    Valor *
-                                </label>
-                                <input
-                                    {...register("data.conta_pagar.valor", {valueAsNumber: true})}
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    placeholder="0,00"
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                />
-                                {errors.data?.conta_pagar?.valor && <p className="text-sm text-red-600">{errors.data.conta_pagar.valor.message}</p>}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <Calendar className="h-4 w-4" />
-                                        Data de Emissão *
-                                    </label>
-                                    <input
-                                        {...register("data.conta_pagar.data_emissao")}
-                                        type="date"
-                                        disabled={isDisabled}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                    />
-                                    {errors.data?.conta_pagar?.data_emissao && <p className="text-sm text-red-600">{errors.data.conta_pagar.data_emissao.message}</p>}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <Calendar className="h-4 w-4" />
-                                        Data de Vencimento *
-                                    </label>
-                                    <input
-                                        {...register("data.conta_pagar.data_vencimento")}
-                                        type="date"
-                                        disabled={isDisabled}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                    />
-                                    {errors.data?.conta_pagar?.data_vencimento && <p className="text-sm text-red-600">{errors.data.conta_pagar.data_vencimento.message}</p>}
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <Calendar className="h-4 w-4" />
-                                    Data de Pagamento
-                                </label>
-                                <input
-                                    {...register("data.conta_pagar.data_pagamento")}
-                                    type="date"
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                />
-                                {errors.data?.conta_pagar?.data_pagamento && <p className="text-sm text-red-600">{errors.data.conta_pagar.data_pagamento.message}</p>}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <Tag className="h-4 w-4" />
-                                        Status
-                                    </label>
-                                    <select
-                                        {...register("data.conta_pagar.status")}
-                                        disabled={isDisabled}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                    >
-                                        <option value="pendente">Pendente</option>
-                                        <option value="pago">Pago</option>
-                                        <option value="cancelado">Cancelado</option>
-                                    </select>
-                                    {errors.data?.conta_pagar?.status && <p className="text-sm text-red-600">{errors.data.conta_pagar.status.message}</p>}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <DollarSign className="h-4 w-4" />
-                                        Forma de Pagamento *
-                                    </label>
-                                    <select
-                                        {...register("data.conta_pagar.forma_pagamento")}
-                                        disabled={isDisabled}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                    >
-                                        <option value="boleto">Boleto</option>
-                                        <option value="transferencia">Transferência</option>
-                                        <option value="dinheiro">Dinheiro</option>
-                                        <option value="cartao">Cartão</option>
-                                    </select>
-                                    {errors.data?.conta_pagar?.forma_pagamento && <p className="text-sm text-red-600">{errors.data.conta_pagar.forma_pagamento.message}</p>}
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <Tag className="h-4 w-4" />
-                                    Categoria *
-                                </label>
-                                <select
-                                    {...register("data.conta_pagar.categoria")}
-                                    disabled={isDisabled}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-50 disabled:opacity-50 transition-colors"
-                                >
-                                    <option value="">Selecione uma categoria</option>
-                                    <option value="alimentacao">Alimentação</option>
-                                    <option value="transporte">Transporte</option>
-                                    <option value="moradia">Moradia</option>
-                                    <option value="saude">Saúde</option>
-                                    <option value="educacao">Educação</option>
-                                    <option value="lazer">Lazer</option>
-                                    <option value="outros">Outros</option>
-                                </select>
-                                {errors.data?.conta_pagar?.categoria && <p className="text-sm text-red-600">{errors.data.conta_pagar.categoria.message}</p>}
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-                        <button
-                            type="button"
-                            onClick={handleClose}
-                            disabled={isDisabled}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            Cancelar
-                        </button>
-                        <button
-                            type="submit"
-                            onClick={handleSubmit(onSubmit)}
-                            disabled={isDisabled}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            {isDisabled ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                    Salvando...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="h-4 w-4" />
-                                    Salvar
-                                </>
-                            )}
+                    <div className="p-6">{children}</div>
+                    <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 rounded-b-lg">
+                        <button onClick={onClose} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                            Fechar
                         </button>
                     </div>
-
-                    <FormLoadingSubmit loading={formulario.loading} />
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
 export const FinanceiroFormularioRecebedor: React.FC = () => {
-    const formulario = banco_controller_contas_pagar.contexto.jsx.get_formulario();
+    // Estados do controller Zustand
+    const formularioState = controller_recebedor.contexto.jsx.get_formulario();
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: {errors, isSubmitting},
-    } = useForm<t.Banco.Controllers.ContaPagar.Criar.Input>({
-        resolver: zodResolver(t.Banco.Controllers.ContaPagar.Criar.InputSchema as t.Banco.Controllers.ContaPagar.Criar.Input | any),
-        defaultValues: {
-            data: {
-                conta_pagar: {
-                    fornecedor: "",
-                    descricao: "",
-                    valor: 0,
-                    data_emissao: new Date().toISOString().split("T")[0],
-                    data_vencimento: "",
-                    data_pagamento: null,
-                    status: "pendente",
-                    forma_pagamento: "boleto",
-                    categoria: "",
-                    deletado: false,
-                    ativo: true,
-                },
-            },
-        },
-    });
+    // Estados locais
+    const [modalOpen, setModalOpen] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    useEffect(() => {
-        if (formulario.conta_pagar?.data?.conta_pagar && formulario.conta_pagar_id) {
-            const contaPagar = formulario.conta_pagar.data.conta_pagar;
+    // Refs para os componentes dos passos
+    const tipoCadastroRef = useRef<any>(null);
+    const dadosPessoaisRef = useRef<any>(null);
+    const dadosBancariosRef = useRef<any>(null);
 
-            reset({
-                data: {
-                    conta_pagar: {
-                        fornecedor: contaPagar.fornecedor || "",
-                        descricao: contaPagar.descricao || "",
-                        valor: contaPagar.valor || 0,
-                        data_emissao: contaPagar.data_emissao || new Date().toISOString().split("T")[0],
-                        data_vencimento: contaPagar.data_vencimento || "",
-                        data_pagamento: contaPagar.data_pagamento || null,
-                        status: contaPagar.status || "pendente",
-                        forma_pagamento: contaPagar.forma_pagamento || "boleto",
-                        categoria: contaPagar.categoria || "",
-                        deletado: contaPagar.deletado || false,
-                        ativo: contaPagar.ativo !== undefined ? contaPagar.ativo : true,
-                    },
-                },
-            });
-        } else {
-            reset({
-                data: {
-                    conta_pagar: {
-                        fornecedor: "",
-                        descricao: "",
-                        valor: 0,
-                        data_emissao: new Date().toISOString().split("T")[0],
-                        data_vencimento: "",
-                        data_pagamento: null,
-                        status: "pendente",
-                        forma_pagamento: "boleto",
-                        categoria: "",
-                        deletado: false,
-                        ativo: true,
-                    },
-                },
-            });
-        }
-    }, [formulario.conta_pagar, formulario.conta_pagar_id, reset]);
-
-    const onSubmit = async (data: t.Banco.Controllers.ContaPagar.Criar.Input | t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input | any) => {
-        if (formulario.conta_pagar_id) {
-            await banco_controller_contas_pagar.api.atualizar_pelo_id({
-                data: {
-                    conta_pagar: {
-                        ...data.data.conta_pagar,
-                        _id: formulario.conta_pagar_id,
-                    },
-                },
-            } as t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input);
-        } else {
-            await banco_controller_contas_pagar.api.criar({
-                data: {
-                    conta_pagar: {
-                        ...data.data.conta_pagar,
-                    },
-                },
-            } as t.Banco.Controllers.ContaPagar.Criar.Input);
-        }
-        banco_controller_contas_pagar.contexto.state.set_close_formulario();
+    const setLoading = (loading: boolean) => {
+        setIsSubmitting(loading);
     };
 
-    const handleClose = () => {
-        if (!formulario.loading) {
-            banco_controller_contas_pagar.contexto.state.set_close_formulario();
+    const setSubmitErrorHandler = (error: string | null) => {
+        setSubmitError(error);
+    };
+
+    const setSubmitSuccessHandler = (success: boolean) => {
+        setSubmitSuccess(success);
+        if (success) {
+            setModalOpen(true);
+            // Reset do formulário usando o controller
+            controller_recebedor.contexto.state.reset();
         }
     };
 
-    if (!formulario.open) {
-        return null;
-    }
+    const getStepContent = (step: number) => {
+        switch (step) {
+            case 0:
+                return <TipoCadastro ref={tipoCadastroRef} />;
+            case 1:
+                return <DadosPessoais ref={dadosPessoaisRef} />;
+            case 2:
+                return <DadosBancarios ref={dadosBancariosRef} setSubmitSuccess={setSubmitSuccessHandler} setSubmitError={setSubmitErrorHandler} setLoading={setLoading} />;
+            default:
+                return <TipoCadastro ref={tipoCadastroRef} />;
+        }
+    };
 
-    const isDisabled = formulario.loading || isSubmitting;
+    const handleClickNext = (step: number) => {
+        if (step === 0) {
+            tipoCadastroRef.current?.onSubmitTipoCadastro();
+        } else if (step === 1) {
+            dadosPessoaisRef.current?.onSubmitDadosPessoais();
+        } else if (step === 2) {
+            dadosBancariosRef.current?.onSubmitDadosBancarios();
+        }
+    };
 
-    return <></>;
+    const validateCurrentForm = async (): Promise<boolean> => {
+        if (formularioState.step === 0 && tipoCadastroRef.current) {
+            return await tipoCadastroRef.current.validateForm();
+        } else if (formularioState.step === 1 && dadosPessoaisRef.current) {
+            return await dadosPessoaisRef.current.validateForm();
+        } else if (formularioState.step === 2 && dadosBancariosRef.current) {
+            return await dadosBancariosRef.current.validateForm();
+        }
+        return true;
+    };
+
+    const handleCloseSnackbar = () => {
+        setSubmitError(null);
+        setSubmitSuccess(false);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        // Navegação - ajuste conforme seu roteador
+        // navigate.push("/resumo");
+        console.log("Navegar para /resumo");
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 py-8">
+            <div className="max-w-4xl mx-auto px-4">
+                <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+                    <Header steps={steps} currentStep={formularioState.step} />
+
+                    <div className="min-h-96 relative">
+                        {/* Loading Overlay */}
+                        {isSubmitting && (
+                            <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                                    <span className="text-gray-700 font-medium">Enviando dados...</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Conteúdo do passo atual */}
+                        {getStepContent(formularioState.step)}
+                    </div>
+
+                    <Footer
+                        currentStep={formularioState.step}
+                        validateForm={validateCurrentForm}
+                        onClickNext={handleClickNext}
+                        onFinalize={async () => {
+                            if (formularioState.step === 2) {
+                                return await dadosBancariosRef.current?.onSubmitDadosBancarios();
+                            }
+                            return await validateCurrentForm();
+                        }}
+                    />
+                </div>
+            </div>
+
+            {/* Modal de Sucesso */}
+            <Modal open={modalOpen} onClose={handleCloseModal} title="Cadastro Concluído">
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <CheckCircle className="w-8 h-8 text-green-600" />
+                        <div>
+                            <h4 className="font-medium text-gray-900">Cadastro realizado com sucesso!</h4>
+                        </div>
+                    </div>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                        A conta foi cadastrada com sucesso. Fique atento para os recebimentos de bonificações. Os pagamentos começarão a ser efetuados através desta conta a partir
+                        de 01/07/2025.
+                    </p>
+                </div>
+            </Modal>
+
+            {/* Snackbar de Sucesso */}
+            <Snackbar open={submitSuccess && !modalOpen} message="Dados enviados com sucesso!" type="success" onClose={handleCloseSnackbar} />
+
+            {/* Snackbar de Erro */}
+            <Snackbar open={!!submitError} message={submitError || "Erro ao enviar dados"} type="error" onClose={handleCloseSnackbar} />
+        </div>
+    );
 };

@@ -23,6 +23,7 @@ interface ZustandStore {
             open: boolean;
             loading: boolean;
             loading_submit: boolean;
+            tipo: t.Financeiro.Controllers.Recebedor.Tipo;
         };
     };
 }
@@ -40,9 +41,10 @@ const initialStates = {
         step: 0,
         recebedor_id: "",
         recebedor: {data: {recebedor: {}}} as t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output,
-        open: false,
+        open: true,
         loading: false,
         loading_submit: false,
+        tipo: "" as t.Financeiro.Controllers.Recebedor.Tipo,
     },
 };
 

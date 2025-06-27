@@ -7,7 +7,7 @@ import financeiro_controller_recebedor from "@/controllers/financeiro/financeiro
 //COMPONENTES
 import {FinanceiroFormularioRecebedor} from "../../formulario/Recebedor/Recebedor";
 
-export const PaginaFinanceiroRecebedor = () => {
+export const FinanceiroPaginaRecebedor = () => {
     const get_pagina_recebedor = financeiro_controller_recebedor.contexto.jsx.get_pagina();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
