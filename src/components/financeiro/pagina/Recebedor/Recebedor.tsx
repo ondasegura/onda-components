@@ -9,6 +9,7 @@ import {FinanceiroFormularioRecebedor} from "../../formulario/Recebedor/Recebedo
 
 export const FinanceiroPaginaRecebedor = () => {
     const get_pagina_recebedor = financeiro_controller_recebedor.contexto.jsx.get_pagina();
+    const get_formulario_recebedor = financeiro_controller_recebedor.contexto.jsx.get_formulario();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
@@ -33,7 +34,7 @@ export const FinanceiroPaginaRecebedor = () => {
     }, []);
 
     function handleEdit(item: any) {
-        financeiro_controller_recebedor.contexto.state.set_open_formulario(item._id);
+        financeiro_controller_recebedor.contexto.state.set_open_formulario();
     }
 
     async function handleDelete(id: string) {
@@ -299,7 +300,7 @@ export const FinanceiroPaginaRecebedor = () => {
                             )}
                         </div>
                     </div>
-                    <FinanceiroFormularioRecebedor />
+                    {get_formulario_recebedor && <FinanceiroFormularioRecebedor />}
                 </div>
             </div>
         </div>

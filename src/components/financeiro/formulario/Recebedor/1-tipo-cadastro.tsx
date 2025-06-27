@@ -5,6 +5,9 @@ import {useForm, Controller, UseFormSetValue, SubmitHandler} from "react-hook-fo
 import {zodResolver} from "@hookform/resolvers/zod";
 import t from "onda-types";
 import z4 from "zod/v4";
+import utils from "onda-utils";
+
+const PUBLIC_BASE_URL_WAVE = process.env.PUBLIC_BASE_URL_WAVE;
 
 const TipoCadastroSchema = z4
     .object({
@@ -58,8 +61,7 @@ export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadast
     const documentField = "documento";
 
     try {
-        // Simulando a chamada da API - você deve ajustar para sua implementação
-        const response = await fetch(`/api/public/locatario/${cpf}`);
+        const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_WAVE), `/api/public/locatario/${cpf}`, true);
         const data: {results: Array<{locatarioNome?: string}>} = await response.json();
 
         setValue(nameField, data.results[0]?.locatarioNome || "", {shouldValidate: true});

@@ -260,7 +260,7 @@ interface DadosPessoaisRef {
 
 const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, ref) => {
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-    const receiverType = formularioState.tipo || "individual";
+    const recebedorTipo = formularioState.tipo || "empresa";
 
     // Estados locais para controle de loading
     const [isLoadingCep, setIsLoadingCep] = useState(false);
@@ -269,7 +269,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
     const [isAddressEditable, setIsAddressEditable] = useState(true);
     const [isPartnerAddressEditable, setIsPartnerAddressEditable] = useState(true);
 
-    const schema = createSchema(receiverType);
+    const schema = createSchema(recebedorTipo);
     type FormData = z4.infer<typeof schema>;
 
     const {
@@ -284,7 +284,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
         resolver: zodResolver(schema),
         mode: "onChange",
         defaultValues:
-            receiverType === "individual"
+            recebedorTipo === "individual"
                 ? ({
                       nome: "",
                       nome_mae: "",
@@ -362,7 +362,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
             if (!response.ok) throw new Error(`Erro na requisição: ${response.status}`);
             const data = await response.json();
 
-            const addressField = receiverType === "individual" ? "endereco" : "endereco_principal";
+            const addressField = recebedorTipo === "individual" ? "endereco" : "endereco_principal";
             const currentAddress = getValues(addressField as any) || {};
             const address = {
                 ...currentAddress,
@@ -460,12 +460,12 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
             <div className="space-y-6">
                 <div>
                     <h2 className="text-xl font-semibold text-blue-600 mb-4">
-                        Dados {receiverType === "individual" ? "Pessoais - Pessoa Física" : "Empresariais - Pessoa Jurídica"}
+                        Dados {recebedorTipo === "individual" ? "Pessoais - Pessoa Física" : "Empresariais - Pessoa Jurídica"}
                     </h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {receiverType === "individual" ? (
+                    {recebedorTipo === "individual" ? (
                         <>
                             {/* Campos Pessoa Física */}
                             <div>
@@ -766,7 +766,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <Controller
-                                name={receiverType === "individual" ? "endereco.cep" : "endereco_principal.cep"}
+                                name={recebedorTipo === "individual" ? "endereco.cep" : "endereco_principal.cep"}
                                 control={control}
                                 render={({field: {onChange, value}}) => (
                                     <div>
@@ -797,7 +797,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
 
                         <div className="md:col-span-2">
                             <Controller
-                                name={receiverType === "individual" ? "endereco.rua" : "endereco_principal.rua"}
+                                name={recebedorTipo === "individual" ? "endereco.rua" : "endereco_principal.rua"}
                                 control={control}
                                 render={({field}) => (
                                     <div>
@@ -820,7 +820,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
 
                         <div>
                             <Controller
-                                name={receiverType === "individual" ? "endereco.bairro" : "endereco_principal.bairro"}
+                                name={recebedorTipo === "individual" ? "endereco.bairro" : "endereco_principal.bairro"}
                                 control={control}
                                 render={({field}) => (
                                     <div>
@@ -843,7 +843,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
 
                         <div>
                             <Controller
-                                name={receiverType === "individual" ? "endereco.cidade" : "endereco_principal.cidade"}
+                                name={recebedorTipo === "individual" ? "endereco.cidade" : "endereco_principal.cidade"}
                                 control={control}
                                 render={({field}) => (
                                     <div>
@@ -866,7 +866,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
 
                         <div>
                             <Controller
-                                name={receiverType === "individual" ? "endereco.estado" : "endereco_principal.estado"}
+                                name={recebedorTipo === "individual" ? "endereco.estado" : "endereco_principal.estado"}
                                 control={control}
                                 render={({field: {onChange, value}}) => (
                                     <Select
@@ -883,7 +883,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
 
                         <div>
                             <Controller
-                                name={receiverType === "individual" ? "endereco.numero_rua" : "endereco_principal.numero_rua"}
+                                name={recebedorTipo === "individual" ? "endereco.numero_rua" : "endereco_principal.numero_rua"}
                                 control={control}
                                 render={({field}) => (
                                     <div>
@@ -906,7 +906,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
 
                         <div className="md:col-span-2">
                             <Controller
-                                name={receiverType === "individual" ? "endereco.complemento" : "endereco_principal.complemento"}
+                                name={recebedorTipo === "individual" ? "endereco.complemento" : "endereco_principal.complemento"}
                                 control={control}
                                 render={({field}) => (
                                     <div>
@@ -929,7 +929,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
 
                         <div className="md:col-span-3">
                             <Controller
-                                name={receiverType === "individual" ? "endereco.ponto_referencia" : "endereco_principal.ponto_referencia"}
+                                name={recebedorTipo === "individual" ? "endereco.ponto_referencia" : "endereco_principal.ponto_referencia"}
                                 control={control}
                                 render={({field}) => (
                                     <div>
@@ -955,7 +955,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                 </div>
 
                 {/* Seção Representante Legal - só para PJ */}
-                {receiverType === "empresa" && (
+                {recebedorTipo === "empresa" && (
                     <div className="border-t pt-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Representante Legal</h3>
 

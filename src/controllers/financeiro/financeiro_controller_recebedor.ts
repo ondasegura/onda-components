@@ -41,7 +41,7 @@ const initialStates = {
         step: 0,
         recebedor_id: "",
         recebedor: {data: {recebedor: {}}} as t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output,
-        open: true,
+        open: false,
         loading: false,
         loading_submit: false,
         tipo: "" as t.Financeiro.Controllers.Recebedor.Tipo,
@@ -203,33 +203,13 @@ const controller_recebedor = class controller_recebedor {
                 });
             }
 
-            static async set_open_formulario(recebedor_id?: string) {
-                if (recebedor_id) {
-                    store.setState((state) => {
-                        state.states.formulario.loading = true;
-                        state.states.formulario.open = true;
-                    });
-                    try {
-                        const result = await controller_recebedor.api.buscar_pelo_id({data: {recebedor: {_id: recebedor_id}}});
-                        if (result?.data?.recebedor) {
-                            store.setState((state) => {
-                                state.states.formulario.recebedor = result;
-                                state.states.formulario.loading = false;
-                            });
-                        } else {
-                            store.setState((state) => {
-                                state.states.formulario.loading = false;
-                                state.states.formulario.open = false;
-                            });
-                        }
-                    } catch (error) {
-                        store.setState((state) => {
-                            state.states.formulario.loading = false;
-                            state.states.formulario.open = true;
-                        });
-                        console.error("Erro ao buscar recebedor:", error);
-                    }
-                }
+            static async set_open_formulario() {
+                store.setState((state) => {
+                    (state.states.formulario.loading = true), (state.states.formulario.open = true);
+                });
+                store.setState((state) => {
+                    state.states.formulario.loading = false;
+                });
             }
 
             static set_close_formulario() {
