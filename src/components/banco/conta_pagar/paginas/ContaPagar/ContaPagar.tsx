@@ -7,13 +7,11 @@ import { controller } from "@/controllers";
 
 export const BancoPaginaContaPagar: React.FC = () => {
     const store = new controller({ entidade: "conta_pagar" });
-    // Usando a nova estrutura get_jsx
     const pagina_estados = store.get_jsx.pagina;
-    const formulario_estados = store.get_jsx.formulario;
 
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const itensPorPagina = 10; // Definir um valor padrão já que não temos mais a estrutura de paginação
+    const itensPorPagina = 10;
 
     async function buscarDados(pagina: number, termoBusca: string) {
         await store.api.buscar_pelo_filtro({
@@ -31,7 +29,6 @@ export const BancoPaginaContaPagar: React.FC = () => {
     }, [0]);
 
     function handleEdit(item: t.Banco.Controllers.ContaPagar.ContaPagarBase) {
-        // Atualiza o estado do formulário com o item selecionado
         store.set_state((store) => {
             store.states.formulario.open = true;
             store.states.formulario.item = item;
@@ -45,7 +42,6 @@ export const BancoPaginaContaPagar: React.FC = () => {
     }
 
     async function handleCreate() {
-        // Abre o formulário sem item (criação)
         store.set_state((store) => {
             store.states.formulario.open = true;
             store.states.formulario.item = undefined;
@@ -57,11 +53,9 @@ export const BancoPaginaContaPagar: React.FC = () => {
         buscarDados(1, searchTerm);
     }
 
-    // Calcular total de itens e páginas baseado no array de itens
     const totalItens = pagina_estados.itens?.length || 0;
     const totalPaginas = Math.ceil(totalItens / itensPorPagina);
 
-    // Paginar os itens manualmente
     const itensPaginados = pagina_estados.itens?.slice((paginaAtual - 1) * itensPorPagina, paginaAtual * itensPorPagina) || [];
 
     function irParaPagina(pagina: number) {
