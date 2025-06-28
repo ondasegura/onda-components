@@ -5,8 +5,8 @@ import HomePage from "./HomePage";
 // PAGINAS DO WAVE
 // PAGINAS DO PORTAL
 // PAGINAS DO BANCO
-import { BancoPaginaContaPagar } from "../src/components/banco/pagina/ContaPagar/ContaPagar";
-import { PaginaBancoOrdemServico } from "../src/components/banco/pagina/OrdemServico/OrdemServico";
+import { BancoPaginaContaPagar } from "../src/components/banco/conta_pagar/paginas/ContaPagar";
+import { PaginaBancoOrdemServico } from "../src/components/banco/ordem_servico/paginas/OrdemServico";
 // PAGINAS DO ANALISANDO
 // PAGINAS DO FINANCEIRO
 import { FinanceiroPaginaRecebedor } from "../src/components/financeiro/pagina/Recebedor";

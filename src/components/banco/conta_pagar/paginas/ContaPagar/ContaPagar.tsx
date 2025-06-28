@@ -4,7 +4,7 @@ import t from "onda-types";
 //CONTROLLERS
 import { banco_controller_contas_pagar } from "@/controllers";
 //COMPONENTES
-import { BancoFormularioContaPagar } from "../../formulario/ContaPagar";
+import { BancoFormularioContaPagar } from "../../formularios/ContaPagar/ContaPagar";
 
 export const BancoPaginaContaPagar: React.FC = () => {
     const get_pagina_conta_pagar = banco_controller_contas_pagar.contexto.jsx.get_pagina();
