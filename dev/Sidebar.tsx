@@ -100,6 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
         return (
             <div key={item.label} className="w-full">
                 <button
+                    color="default"
                     onClick={() => {
                         if (hasChildren) {
                             toggleExpanded(item.label);
@@ -141,7 +142,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
 
     return (
         <>
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-900 rounded-lg shadow-lg lg:hidden">
+            <button
+                color="default"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-900 rounded-lg shadow-lg lg:hidden"
+            >
                 {isSidebarOpen ? <X className="w-5 h-5 text-gray-700 dark:text-gray-300" /> : <Menu className="w-5 h-5 text-gray-700 dark:text-gray-300" />}
             </button>
 

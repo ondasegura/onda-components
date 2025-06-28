@@ -5,12 +5,13 @@ import { X, Save, Loader2, DollarSign, Calendar, User, Tag, FileText } from "luc
 import t from "onda-types";
 
 //CONTROLLERS
-import { banco_controller_contas_pagar } from "@/controllers/banco/banco_controller_contas_pagar";
+import { contasPagarController } from "@/controllers"; // Importa a nova instância do DynamicController
 //COMPONENTES
 import { FormLoadingSubmit } from "@/geral/FormLoadingSubmit";
 
 export const BancoFormularioContaPagar: React.FC = () => {
-    const formulario = banco_controller_contas_pagar.contexto.jsx.get_formulario();
+    // Usando o novo sistema dinâmico com seleção específica para evitar loops
+    const { formulario_open, formulario_loading, formulario_conta_pagar, conta_pagar_item } = contasPagarController.get_jsx();
 
     const {
         register,
@@ -38,28 +39,32 @@ export const BancoFormularioContaPagar: React.FC = () => {
         },
     });
 
-    useEffect(() => {
-        if (formulario.conta_pagar?.data?.conta_pagar && formulario.conta_pagar_id) {
-            const contaPagar = formulario.conta_pagar.data.conta_pagar;
+    // Determina se é edição baseado na existência de dados de conta_pagar
+    const isEditing = !!(formulario_conta_pagar?.data?.conta_pagar?._id || conta_pagar_item?.data?.conta_pagar?._id);
+    const contaPagarData = formulario_conta_pagar?.data?.conta_pagar || conta_pagar_item?.data?.conta_pagar;
 
+    useEffect(() => {
+        if (contaPagarData && isEditing) {
+            // Modo edição - preenche o formulário com os dados existentes
             reset({
                 data: {
                     conta_pagar: {
-                        fornecedor: contaPagar.fornecedor || "",
-                        descricao: contaPagar.descricao || "",
-                        valor: contaPagar.valor || 0,
-                        data_emissao: contaPagar.data_emissao || new Date().toISOString().split("T")[0],
-                        data_vencimento: contaPagar.data_vencimento || "",
-                        data_pagamento: contaPagar.data_pagamento || null,
-                        status: contaPagar.status || "pendente",
-                        forma_pagamento: contaPagar.forma_pagamento || "boleto",
-                        categoria: contaPagar.categoria || "",
-                        deletado: contaPagar.deletado || false,
-                        ativo: contaPagar.ativo !== undefined ? contaPagar.ativo : true,
+                        fornecedor: contaPagarData.fornecedor || "",
+                        descricao: contaPagarData.descricao || "",
+                        valor: contaPagarData.valor || 0,
+                        data_emissao: contaPagarData.data_emissao || new Date().toISOString().split("T")[0],
+                        data_vencimento: contaPagarData.data_vencimento || "",
+                        data_pagamento: contaPagarData.data_pagamento || null,
+                        status: contaPagarData.status || "pendente",
+                        forma_pagamento: contaPagarData.forma_pagamento || "boleto",
+                        categoria: contaPagarData.categoria || "",
+                        deletado: contaPagarData.deletado || false,
+                        ativo: contaPagarData.ativo !== undefined ? contaPagarData.ativo : true,
                     },
                 },
             });
-        } else {
+        } else if (formulario_open) {
+            // Modo criação - reseta o formulário com valores padrão
             reset({
                 data: {
                     conta_pagar: {
@@ -78,41 +83,56 @@ export const BancoFormularioContaPagar: React.FC = () => {
                 },
             });
         }
-    }, [formulario.conta_pagar, formulario.conta_pagar_id, reset]);
+    }, [contaPagarData, isEditing, formulario_open, reset]);
 
     const onSubmit = async (data: t.Banco.Controllers.ContaPagar.Criar.Input | t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input | any) => {
-        if (formulario.conta_pagar_id) {
-            await banco_controller_contas_pagar.api.atualizar_pelo_id({
-                data: {
-                    conta_pagar: {
-                        ...data.data.conta_pagar,
-                        _id: formulario.conta_pagar_id,
+        try {
+            if (isEditing) {
+                // Modo edição - atualiza a conta existente
+                await contasPagarController.api.atualizar_pelo_id({
+                    data: {
+                        conta_pagar: {
+                            ...data.data.conta_pagar,
+                            _id: contaPagarData._id,
+                        },
                     },
-                },
-            } as t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input);
-        } else {
-            await banco_controller_contas_pagar.api.criar({
-                data: {
-                    conta_pagar: {
-                        ...data.data.conta_pagar,
+                } as t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input);
+            } else {
+                // Modo criação - cria nova conta
+                await contasPagarController.api.criar({
+                    data: {
+                        conta_pagar: {
+                            ...data.data.conta_pagar,
+                        },
                     },
-                },
-            } as t.Banco.Controllers.ContaPagar.Criar.Input);
+                } as t.Banco.Controllers.ContaPagar.Criar.Input);
+            }
+
+            // Fecha o formulário após sucesso
+            handleClose();
+        } catch (error) {
+            console.error("Erro ao salvar conta a pagar:", error);
         }
-        banco_controller_contas_pagar.contexto.state.set_close_formulario();
     };
 
     const handleClose = () => {
-        if (!formulario.loading) {
-            banco_controller_contas_pagar.contexto.state.set_close_formulario();
+        if (!formulario_loading && !isSubmitting) {
+            // Fecha o formulário e limpa os dados
+            contasPagarController.set_state({
+                formulario_open: false,
+                formulario_loading: false,
+                formulario_conta_pagar: {},
+                conta_pagar_item: {},
+            });
         }
     };
 
-    if (!formulario.open) {
+    // Se o formulário não está aberto, não renderiza nada
+    if (!formulario_open) {
         return null;
     }
 
-    const isDisabled = formulario.loading || isSubmitting;
+    const isDisabled = formulario_loading || isSubmitting;
 
     return (
         <>
@@ -126,8 +146,8 @@ export const BancoFormularioContaPagar: React.FC = () => {
                                 <DollarSign className="h-5 w-5 text-blue-600" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-semibold text-gray-900">{formulario.conta_pagar_id ? "Editar Conta a Pagar" : "Nova Conta a Pagar"}</h2>
-                                <p className="text-sm text-gray-500">{formulario.conta_pagar_id ? "Atualize os dados da conta" : "Preencha os dados da nova conta"}</p>
+                                <h2 className="text-xl font-semibold text-gray-900">{isEditing ? "Editar Conta a Pagar" : "Nova Conta a Pagar"}</h2>
+                                <p className="text-sm text-gray-500">{isEditing ? "Atualize os dados da conta" : "Preencha os dados da nova conta"}</p>
                             </div>
                         </div>
                         <button
@@ -323,7 +343,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                         </button>
                     </div>
 
-                    <FormLoadingSubmit loading={formulario.loading} />
+                    <FormLoadingSubmit loading={formulario_loading} />
                 </div>
             </div>
         </>
