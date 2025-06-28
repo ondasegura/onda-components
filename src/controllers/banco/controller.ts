@@ -4,7 +4,6 @@ import utils from "onda-utils";
 
 const PUBLIC_BASE_URL_BACKEND = process.env.PUBLIC_BASE_URL_BACKEND;
 
-
 interface ZustandStore {
     states: {
         modal: {
@@ -68,7 +67,7 @@ export class controller {
 
                 if (data?.results?.data?.[this.entidade]) this.set_state((store) => { store.states.pagina.itens = data?.results?.data?.[this.entidade] })
             } finally {
-                this.set_state((store) => { store.states.pagina.loading = true })
+                this.set_state((store) => { store.states.pagina.loading = false })
             }
         },
 
