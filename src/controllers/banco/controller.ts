@@ -22,8 +22,6 @@ interface ZustandStore {
             loading_submit?: boolean
         };
     };
-
-
 }
 
 const store = create<ZustandStore>()(
@@ -39,9 +37,13 @@ const store = create<ZustandStore>()(
     }))
 );
 
+interface Controller {
+    entidade: string
+}
+
 export class controller {
     private entidade: string;
-    constructor({ entidade }: { entidade: string }) {
+    constructor({ entidade }: Controller) {
         this.entidade = entidade;
     }
 
@@ -103,8 +105,6 @@ export class controller {
                 this.set_state((store) => { store.states.formulario.loading = false })
                 this.set_state((store) => { store.states.modal.loading = false })
             }
-
-
         },
 
         deletar_pelo_id: async (props: any) => {
@@ -114,11 +114,9 @@ export class controller {
                 const data = await utils.api.servidor_backend.delete(String(PUBLIC_BASE_URL_BACKEND), `${this.entidade}/${props._id}`);
 
                 if (data?.results?.data?.[this.entidade]) {
-                    const update_itens = utils.update_context.remover_item_pelo_id({ oldArray: this.get_state.pagina.itens as any, itemToRemove: data?.results?.data?.[this.entidade] })
+                    const update_itens = utils.update_context.remover_item_pelo_id({ oldArray: this.get_state.pagina.itens as any, itemToRemove: { _id: props._id } })
                     this.set_state((store) => { store.states.pagina.itens = update_itens })
-
                 }
-
             } finally {
                 this.set_state((store) => { store.states.modal.loading = false })
             }
