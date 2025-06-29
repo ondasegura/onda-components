@@ -12,7 +12,7 @@ interface ZustandStore {
         }
         pagina: {
             loading?: boolean;
-            itens?: any[];
+            itens?: any;
             paginacao: {
                 total_itens: number,
                 total_paginas: number,
@@ -66,10 +66,21 @@ export class controller {
 
                 const data = await utils.api.servidor_backend.post(String(PUBLIC_BASE_URL_BACKEND), this.entidade, props, false);
 
-                if (data?.results?.data?.[this.entidade]) this.set_state((store) => { store.states.pagina.itens?.unshift(data?.results?.data?.[this.entidade]) })
+                if (data?.results?.data?.[this.entidade]) this.set_state((store) => {
+                    store.states.pagina = {
+                        itens: utils.update_context.update_array_itens({ oldArray: this.get_state.pagina.itens, newItem: data?.results?.data?.[this.entidade] }),
+                        loading: false,
+                        paginacao: {
+                            itens_por_pagina: store.states.pagina.paginacao.itens_por_pagina + 1,
+                            total_itens: store.states.pagina.paginacao.total_itens + 1,
+                            total_itens_pagina_atual: store.states.pagina.paginacao.total_itens_pagina_atual + 1,
+                            total_paginas: store.states.pagina.paginacao.total_paginas
+                        }
+                    }
+                })
 
             } finally {
-                this.set_state((store) => { store.states.formulario.loading = false })
+                if (this.get_state.pagina.loading !== true) return this.set_state((store) => { store.states.pagina.loading = false })
             }
         },
 
@@ -138,7 +149,18 @@ export class controller {
 
                 if (data?.results?.data?.[this.entidade]) {
                     const update_itens = utils.update_context.remover_item_pelo_id({ oldArray: this.get_state.pagina.itens as any, itemToRemove: { _id: props._id } })
-                    this.set_state((store) => { store.states.pagina.itens = update_itens })
+                    this.set_state((store) => {
+                        store.states.pagina = {
+                            itens: update_itens,
+                            loading: false,
+                            paginacao: {
+                                itens_por_pagina: store.states.pagina.paginacao.itens_por_pagina - 1,
+                                total_itens: store.states.pagina.paginacao.total_itens - 1,
+                                total_itens_pagina_atual: store.states.pagina.paginacao.total_itens_pagina_atual - 1,
+                                total_paginas: store.states.pagina.paginacao.total_paginas
+                            }
+                        }
+                    })
                 }
             } finally {
                 this.set_state((store) => { store.states.modal.loading = false })
