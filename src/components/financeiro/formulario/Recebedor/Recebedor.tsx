@@ -37,7 +37,7 @@ const Snackbar: React.FC<SnackbarProps> = ({open, message, type, onClose}) => {
             >
                 {type === "success" ? <CheckCircle className="w-5 h-5 text-green-600" /> : <AlertCircle className="w-5 h-5 text-red-600" />}
                 <span className="text-sm font-medium">{message}</span>
-                <button onClick={onClose} className="ml-2 text-gray-400 hover:text-gray-600 transition-colors">
+                <button onClick={onClose} className="ml-2 text-gray-400 hover:text-gray-600 transition-colors" color="default">
                     <X className="w-4 h-4" />
                 </button>
             </div>
@@ -62,13 +62,13 @@ const Modal: React.FC<ModalProps> = ({open, onClose, title, children}) => {
                 <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full animate-in zoom-in-95 duration-300">
                     <div className="flex items-center justify-between p-6 border-b">
                         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors" color="default">
                             <X className="w-5 h-5" />
                         </button>
                     </div>
                     <div className="p-6">{children}</div>
                     <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 rounded-b-lg">
-                        <button onClick={onClose} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        <button onClick={onClose} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors" color="default">
                             Fechar
                         </button>
                     </div>
