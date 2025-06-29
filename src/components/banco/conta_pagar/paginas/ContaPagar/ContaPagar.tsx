@@ -13,7 +13,6 @@ export const BancoPaginaContaPagar: React.FC = () => {
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Dados de paginação que virão do backend (similar ao primeiro componente)
     const itensPorPagina = pagina_estados.paginacao?.itens_por_pagina || 10;
     const totalItens = pagina_estados.paginacao?.total_itens || 0;
     const totalPaginas = Math.ceil(totalItens / itensPorPagina);
