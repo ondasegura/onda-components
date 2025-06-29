@@ -83,6 +83,7 @@ export const FinanceiroPaginaRecebedor = () => {
             botoes.push(
                 <button
                     key={i}
+                    color="default"
                     onClick={() => irParaPagina(i)}
                     className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${paginaAtual === i ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
                 >
@@ -131,7 +132,6 @@ export const FinanceiroPaginaRecebedor = () => {
 
     return (
         <div className="h-screen min-w-full bg-gray-50 p-6 flex flex-col">
-            <FinanceiroFormularioRecebedor />
             <div className="min-w-full mx-auto flex-1 flex flex-col min-h-0">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col flex-1 min-h-0">
                     <div className="p-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
@@ -155,6 +155,7 @@ export const FinanceiroPaginaRecebedor = () => {
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <input
                                     type="text"
+                                    color="primary"
                                     placeholder="Buscar recebedores..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -165,6 +166,7 @@ export const FinanceiroPaginaRecebedor = () => {
 
                             <button
                                 onClick={handleCreate}
+                                color="primary"
                                 className="inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-shrink-0"
                                 title="Novo Recebedor"
                             >
@@ -231,6 +233,7 @@ export const FinanceiroPaginaRecebedor = () => {
                                         <div className="flex items-center space-x-1 ml-4">
                                             <button
                                                 onClick={() => handleEdit(item)}
+                                                color="primary"
                                                 className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                                                 title="Editar"
                                             >
@@ -238,6 +241,7 @@ export const FinanceiroPaginaRecebedor = () => {
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(item._id)}
+                                                color="primary"
                                                 className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                 title="Excluir"
                                             >
@@ -266,6 +270,7 @@ export const FinanceiroPaginaRecebedor = () => {
                                 <div className="flex items-center space-x-2">
                                     <button
                                         onClick={() => irParaPagina(1)}
+                                        color="default"
                                         disabled={paginaAtual === 1 || get_pagina_recebedor.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Primeira página"
@@ -274,6 +279,7 @@ export const FinanceiroPaginaRecebedor = () => {
                                     </button>
                                     <button
                                         onClick={() => irParaPagina(paginaAtual - 1)}
+                                        color="default"
                                         disabled={paginaAtual === 1 || get_pagina_recebedor.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Página anterior"
@@ -283,6 +289,7 @@ export const FinanceiroPaginaRecebedor = () => {
                                     <div className="flex items-center space-x-1">{gerarBotoesPaginacao()}</div>
                                     <button
                                         onClick={() => irParaPagina(paginaAtual + 1)}
+                                        color="default"
                                         disabled={paginaAtual === totalPaginas || get_pagina_recebedor.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Próxima página"
@@ -291,6 +298,7 @@ export const FinanceiroPaginaRecebedor = () => {
                                     </button>
                                     <button
                                         onClick={() => irParaPagina(totalPaginas)}
+                                        color="default"
                                         disabled={paginaAtual === totalPaginas || get_pagina_recebedor.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Última página"
