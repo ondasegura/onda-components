@@ -205,10 +205,7 @@ const controller_recebedor = class controller_recebedor {
 
             static async set_open_formulario() {
                 store.setState((state) => {
-                    (state.states.formulario.loading = true), (state.states.formulario.open = true);
-                });
-                store.setState((state) => {
-                    state.states.formulario.loading = false;
+                    (state.states.formulario.loading = false), (state.states.formulario.open = true);
                 });
             }
 

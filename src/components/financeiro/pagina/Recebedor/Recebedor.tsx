@@ -131,6 +131,7 @@ export const FinanceiroPaginaRecebedor = () => {
 
     return (
         <div className="h-screen min-w-full bg-gray-50 p-6 flex flex-col">
+            <FinanceiroFormularioRecebedor />
             <div className="min-w-full mx-auto flex-1 flex flex-col min-h-0">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col flex-1 min-h-0">
                     <div className="p-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
@@ -300,7 +301,6 @@ export const FinanceiroPaginaRecebedor = () => {
                             )}
                         </div>
                     </div>
-                    {get_formulario_recebedor && <FinanceiroFormularioRecebedor />}
                 </div>
             </div>
         </div>
