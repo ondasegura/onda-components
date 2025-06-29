@@ -4,6 +4,7 @@ import t from "onda-types";
 //CONTROLLERS
 import { controller } from "@/controllers";
 //COMPONENTES
+import { BancoFormularioContaPagar } from "../../formularios/ContaPagar";
 
 export const BancoPaginaContaPagar: React.FC = () => {
     const store = new controller({ entidade: "conta_pagar" });
@@ -138,6 +139,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     return (
         <div className="h-screen min-w-full bg-gray-50 p-6 flex flex-col">
+            <BancoFormularioContaPagar />
             <div className="min-w-full mx-auto flex-1 flex flex-col min-h-0">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col flex-1 min-h-0">
                     <div className="p-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
@@ -147,11 +149,11 @@ export const BancoPaginaContaPagar: React.FC = () => {
                         </div>
 
                         <div className="flex items-center gap-x-3">
-                            <div className="relative">
+                            <div className="relative w-2xs">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <input
                                     color="primary"
-                                    type="text"
+                                    type="search"
                                     placeholder="Buscar fornecedor..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -262,20 +264,13 @@ export const BancoPaginaContaPagar: React.FC = () => {
                             </div>
                             {totalPaginas > 1 && (
                                 <div className="flex items-center space-x-2">
-                                    <button
-                                        color="default"
-                                        onClick={() => irParaPagina(1)}
-                                        disabled={paginaAtual === 1 || pagina_estados.loading}
-                                        className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        title="Primeira página"
-                                    >
+                                    <button color="default" onClick={() => irParaPagina(1)} disabled={paginaAtual === 1 || pagina_estados.loading} title="Primeira página">
                                         <ChevronsLeft className="w-4 h-4" />
                                     </button>
                                     <button
                                         color="default"
                                         onClick={() => irParaPagina(paginaAtual - 1)}
                                         disabled={paginaAtual === 1 || pagina_estados.loading}
-                                        className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Página anterior"
                                     >
                                         <ChevronLeft className="w-4 h-4" />
@@ -285,7 +280,6 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                         color="default"
                                         onClick={() => irParaPagina(paginaAtual + 1)}
                                         disabled={paginaAtual === totalPaginas || pagina_estados.loading}
-                                        className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Próxima página"
                                     >
                                         <ChevronRight className="w-4 h-4" />
@@ -294,7 +288,6 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                         color="default"
                                         onClick={() => irParaPagina(totalPaginas)}
                                         disabled={paginaAtual === totalPaginas || pagina_estados.loading}
-                                        className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Última página"
                                     >
                                         <ChevronsRight className="w-4 h-4" />

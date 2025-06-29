@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 
 interface FormLoadingSubmitProps {
-    loading: boolean;
+    loading?: boolean;
 }
 
 export const FormLoadingSubmit: React.FC<FormLoadingSubmitProps> = ({ loading }) => {
