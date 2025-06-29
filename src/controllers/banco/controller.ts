@@ -13,6 +13,12 @@ interface ZustandStore {
         pagina: {
             loading?: boolean;
             itens?: any[];
+            paginacao: {
+                total_itens: number,
+                total_paginas: number,
+                total_itens_pagina_atual: number,
+                itens_por_pagina: number
+            }
         }
         formulario: {
             open?: boolean,
@@ -30,6 +36,12 @@ const store = create<ZustandStore>()(
             modal: {
             },
             pagina: {
+                paginacao: {
+                    total_itens: 0,
+                    total_paginas: 10,
+                    total_itens_pagina_atual: 0,
+                    itens_por_pagina: 0
+                }
             },
             formulario: {
             }
@@ -67,9 +79,20 @@ export class controller {
 
                 const data = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND), this.entidade, true, props?.filtros?.[this.entidade] || {});
 
-                if (data?.results?.data?.[this.entidade]) this.set_state((store) => { store.states.pagina.itens = data?.results?.data?.[this.entidade] })
+                if (data?.results?.data?.[this.entidade]) this.set_state((store) => {
+                    store.states.pagina = {
+                        paginacao: {
+                            itens_por_pagina: data?.results?.data?.paginacao?.itens_por_pagina | 0,
+                            total_itens: data?.results?.data?.paginacao?.total_itens | 0,
+                            total_itens_pagina_atual: data?.results?.data?.paginacao?.total_itens_pagina_atual | 0,
+                            total_paginas: data?.results?.data?.paginacao?.total_paginas | 0,
+                        },
+                        itens: data?.results?.data?.[this.entidade],
+                        loading: false
+                    }
+                })
             } finally {
-                this.set_state((store) => { store.states.pagina.loading = false })
+                if (this.get_state.pagina.loading !== true) return this.set_state((store) => { store.states.pagina.loading = false })
             }
         },
 

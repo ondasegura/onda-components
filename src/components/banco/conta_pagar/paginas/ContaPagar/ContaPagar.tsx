@@ -11,7 +11,11 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const itensPorPagina = 10;
+
+    // Dados de paginação que virão do backend (similar ao primeiro componente)
+    const itensPorPagina = pagina_estados.paginacao?.itens_por_pagina || 10;
+    const totalItens = pagina_estados.paginacao?.total_itens || 0;
+    const totalPaginas = Math.ceil(totalItens / itensPorPagina);
 
     async function buscarDados(pagina: number, termoBusca: string) {
         await store.api.buscar_pelo_filtro({
@@ -26,7 +30,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     useEffect(() => {
         buscarDados(1, "");
-    }, [0]);
+    }, []);
 
     function handleEdit(item: t.Banco.Controllers.ContaPagar.ContaPagarBase) {
         store.set_state((store) => {
@@ -53,14 +57,10 @@ export const BancoPaginaContaPagar: React.FC = () => {
         buscarDados(1, searchTerm);
     }
 
-    const totalItens = pagina_estados.itens?.length || 0;
-    const totalPaginas = Math.ceil(totalItens / itensPorPagina);
-
-    const itensPaginados = pagina_estados.itens?.slice((paginaAtual - 1) * itensPorPagina, paginaAtual * itensPorPagina) || [];
-
     function irParaPagina(pagina: number) {
         if (pagina >= 1 && pagina <= totalPaginas) {
             setPaginaAtual(pagina);
+            buscarDados(pagina, searchTerm);
         }
     }
 
@@ -77,12 +77,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
         for (let i = inicio; i <= fim; i++) {
             botoes.push(
-                <button
-                    color="primary"
-                    key={i}
-                    onClick={() => irParaPagina(i)}
-                    className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${paginaAtual === i ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
-                >
+                <button color={paginaAtual === i ? "primary" : "standard"} key={i} onClick={() => irParaPagina(i)}>
                     {i}
                 </button>
             );
@@ -161,7 +156,6 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleBuscar()}
-                                    className="w-48 sm:w-60 pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-300 focus:w-full sm:focus:w-72"
                                 />
                             </div>
 
@@ -187,7 +181,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                             </div>
                         )}
                         <div className="space-y-3">
-                            {itensPaginados.map((item: any) => (
+                            {pagina_estados.itens?.map((item: any) => (
                                 <div key={item._id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-gray-300 transition-all duration-200">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-4 flex-1">
@@ -264,12 +258,12 @@ export const BancoPaginaContaPagar: React.FC = () => {
                         <div className="flex items-center justify-between">
                             <div className="text-sm text-gray-700">
                                 Mostrando {totalItens > 0 ? (paginaAtual - 1) * itensPorPagina + 1 : 0} até {Math.min(paginaAtual * itensPorPagina, totalItens) || 0} de{" "}
-                                {totalItens} resultados
+                                {totalItens} resultados, total de {pagina_estados.paginacao?.total_itens_pagina_atual || 0} itens
                             </div>
                             {totalPaginas > 1 && (
                                 <div className="flex items-center space-x-2">
                                     <button
-                                        color="primary"
+                                        color="default"
                                         onClick={() => irParaPagina(1)}
                                         disabled={paginaAtual === 1 || pagina_estados.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -278,7 +272,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                         <ChevronsLeft className="w-4 h-4" />
                                     </button>
                                     <button
-                                        color="primary"
+                                        color="default"
                                         onClick={() => irParaPagina(paginaAtual - 1)}
                                         disabled={paginaAtual === 1 || pagina_estados.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -288,7 +282,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                     </button>
                                     <div className="flex items-center space-x-1">{gerarBotoesPaginacao()}</div>
                                     <button
-                                        color="primary"
+                                        color="default"
                                         onClick={() => irParaPagina(paginaAtual + 1)}
                                         disabled={paginaAtual === totalPaginas || pagina_estados.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -297,7 +291,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
                                     <button
-                                        color="primary"
+                                        color="default"
                                         onClick={() => irParaPagina(totalPaginas)}
                                         disabled={paginaAtual === totalPaginas || pagina_estados.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
