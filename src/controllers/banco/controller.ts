@@ -65,7 +65,7 @@ export class controller {
             try {
                 this.set_state((store) => { store.states.pagina.loading = true })
 
-                const data = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND), this.entidade, true, props?.filtros || {});
+                const data = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND), this.entidade, true, props?.filtros?.[this.entidade] || {});
 
                 if (data?.results?.data?.[this.entidade]) this.set_state((store) => { store.states.pagina.itens = data?.results?.data?.[this.entidade] })
             } finally {
