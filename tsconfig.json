@@ -21,9 +21,9 @@
         "isolatedModules": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["src/*", "dev/*"]
         }
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist", "dev"]
+    "include": ["src", "dev", "**/*.ts", "**/*.tsx", "**/*.d.ts", "types.d.ts"],
+    "exclude": ["node_modules", "dist"]
 }

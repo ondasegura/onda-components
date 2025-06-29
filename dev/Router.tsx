@@ -1,14 +1,15 @@
-import {createBrowserRouter} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import HomePage from "./HomePage";
 
 // PAGINAS DO WAVE
 // PAGINAS DO PORTAL
 // PAGINAS DO BANCO
-import {BancoPaginaContaPagar} from "../src/components/banco/pagina/ContaPagar/ContaPagar";
+import { BancoPaginaContaPagar } from "../src/components/banco/conta_pagar/paginas/ContaPagar";
+import { PaginaBancoOrdemServico } from "../src/components/banco/ordem_servico/paginas/OrdemServico";
 // PAGINAS DO ANALISANDO
 // PAGINAS DO FINANCEIRO
-import {FinanceiroPaginaRecebedor} from "../src/components/financeiro/pagina/Recebedor";
+import { FinanceiroPaginaRecebedor } from "../src/components/financeiro/pagina/Recebedor";
 
 export const router = createBrowserRouter([
     {
@@ -24,8 +25,8 @@ export const router = createBrowserRouter([
                 element: <BancoPaginaContaPagar />,
             },
             {
-                path: "banco-s8/paginas",
-                element: <></>,
+                path: "banco/ordem-servico",
+                element: <PaginaBancoOrdemServico />,
             },
             {
                 path: "banco-s8/modais",

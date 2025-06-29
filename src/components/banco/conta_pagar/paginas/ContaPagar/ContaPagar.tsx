@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Search, Plus, Edit, Trash2, Hash, FileText, Circle, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Calendar, DollarSign, User, Tag } from "lucide-react";
 import t from "onda-types";
 //CONTROLLERS
-import { banco_controller_contas_pagar } from "@/controllers";
+import { controller } from "@/controllers";
 //COMPONENTES
-import { BancoFormularioContaPagar } from "../../formulario/ContaPagar";
 
 export const BancoPaginaContaPagar: React.FC = () => {
-    const get_pagina_conta_pagar = banco_controller_contas_pagar.contexto.jsx.get_pagina();
+    const store = new controller({ entidade: "conta_pagar" });
+    const pagina_estados = store.get_jsx.pagina;
 
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const itensPorPagina = get_pagina_conta_pagar?.conta_pagar?.data?.paginacao?.itens_por_pagina;
+    const itensPorPagina = 10;
 
     async function buscarDados(pagina: number, termoBusca: string) {
-        await banco_controller_contas_pagar.api.buscar_pelo_filtro({
+        await store.api.buscar_pelo_filtro({
             filtros: {
                 conta_pagar: {
                     pagina: pagina,
@@ -26,20 +26,26 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     useEffect(() => {
         buscarDados(1, "");
-    }, [1]);
+    }, [0]);
 
     function handleEdit(item: t.Banco.Controllers.ContaPagar.ContaPagarBase) {
-        banco_controller_contas_pagar.contexto.state.set_open_formulario(item._id);
+        store.set_state((store) => {
+            store.states.formulario.open = true;
+            store.states.formulario.item = item;
+        });
     }
 
     async function handleDelete(id: string) {
         if (window.confirm("Tem certeza que deseja deletar esta conta a pagar?")) {
-            await banco_controller_contas_pagar.api.deletar_pelo_id({ _id: id });
+            await store.api.deletar_pelo_id({ _id: id });
         }
     }
 
     async function handleCreate() {
-        await banco_controller_contas_pagar.contexto.state.set_open_formulario();
+        store.set_state((store) => {
+            store.states.formulario.open = true;
+            store.states.formulario.item = undefined;
+        });
     }
 
     function handleBuscar() {
@@ -47,13 +53,14 @@ export const BancoPaginaContaPagar: React.FC = () => {
         buscarDados(1, searchTerm);
     }
 
-    const totalItens = get_pagina_conta_pagar?.conta_pagar?.data?.paginacao?.total_itens;
+    const totalItens = pagina_estados.itens?.length || 0;
     const totalPaginas = Math.ceil(totalItens / itensPorPagina);
+
+    const itensPaginados = pagina_estados.itens?.slice((paginaAtual - 1) * itensPorPagina, paginaAtual * itensPorPagina) || [];
 
     function irParaPagina(pagina: number) {
         if (pagina >= 1 && pagina <= totalPaginas) {
             setPaginaAtual(pagina);
-            buscarDados(pagina, searchTerm);
         }
     }
 
@@ -71,6 +78,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
         for (let i = inicio; i <= fim; i++) {
             botoes.push(
                 <button
+                    color="primary"
                     key={i}
                     onClick={() => irParaPagina(i)}
                     className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${paginaAtual === i ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
@@ -122,7 +130,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
         }
     };
 
-    if (get_pagina_conta_pagar?.loading && !get_pagina_conta_pagar) {
+    if (pagina_estados.loading && !pagina_estados.itens) {
         return (
             <div className="h-screen bg-gray-50 flex items-center justify-center">
                 <div className="flex items-center space-x-2">
@@ -135,7 +143,6 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     return (
         <div className="h-screen min-w-full bg-gray-50 p-6 flex flex-col">
-            <BancoFormularioContaPagar />
             <div className="min-w-full mx-auto flex-1 flex flex-col min-h-0">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col flex-1 min-h-0">
                     <div className="p-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
@@ -148,6 +155,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <input
+                                    color="primary"
                                     type="text"
                                     placeholder="Buscar fornecedor..."
                                     value={searchTerm}
@@ -158,6 +166,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                             </div>
 
                             <button
+                                color="primary"
                                 onClick={handleCreate}
                                 className="inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-shrink-0"
                                 title="Nova Conta"
@@ -168,8 +177,8 @@ export const BancoPaginaContaPagar: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-6">
-                        {get_pagina_conta_pagar?.loading && (
+                    <div className="flex-1 overflow-y-auto p-6 relative">
+                        {pagina_estados.loading && (
                             <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
                                 <div className="flex items-center space-x-2">
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -178,7 +187,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                             </div>
                         )}
                         <div className="space-y-3">
-                            {get_pagina_conta_pagar?.conta_pagar?.data?.conta_pagar?.map((item) => (
+                            {itensPaginados.map((item: any) => (
                                 <div key={item._id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-gray-300 transition-all duration-200">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-4 flex-1">
@@ -223,6 +232,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                         </div>
                                         <div className="flex items-center space-x-1 ml-4">
                                             <button
+                                                color="primary"
                                                 onClick={() => handleEdit(item)}
                                                 className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                                                 title="Editar"
@@ -230,6 +240,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                                 <Edit className="w-4 h-4" />
                                             </button>
                                             <button
+                                                color="primary"
                                                 onClick={() => handleDelete(item._id)}
                                                 className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                 title="Excluir"
@@ -240,7 +251,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                     </div>
                                 </div>
                             ))}
-                            {!get_pagina_conta_pagar?.loading && get_pagina_conta_pagar?.conta_pagar?.data?.conta_pagar?.length === 0 && (
+                            {!pagina_estados.loading && (!pagina_estados.itens || pagina_estados.itens.length === 0) && (
                                 <div className="text-center py-12 text-gray-500">
                                     <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                                     <p>Nenhuma conta a pagar encontrada para os filtros aplicados.</p>
@@ -253,21 +264,23 @@ export const BancoPaginaContaPagar: React.FC = () => {
                         <div className="flex items-center justify-between">
                             <div className="text-sm text-gray-700">
                                 Mostrando {totalItens > 0 ? (paginaAtual - 1) * itensPorPagina + 1 : 0} até {Math.min(paginaAtual * itensPorPagina, totalItens) || 0} de{" "}
-                                {totalItens} resultados, total de {get_pagina_conta_pagar?.conta_pagar?.data?.paginacao?.total_itens_pagina_atual} itens
+                                {totalItens} resultados
                             </div>
                             {totalPaginas > 1 && (
                                 <div className="flex items-center space-x-2">
                                     <button
+                                        color="primary"
                                         onClick={() => irParaPagina(1)}
-                                        disabled={paginaAtual === 1 || get_pagina_conta_pagar?.loading}
+                                        disabled={paginaAtual === 1 || pagina_estados.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Primeira página"
                                     >
                                         <ChevronsLeft className="w-4 h-4" />
                                     </button>
                                     <button
+                                        color="primary"
                                         onClick={() => irParaPagina(paginaAtual - 1)}
-                                        disabled={paginaAtual === 1 || get_pagina_conta_pagar?.loading}
+                                        disabled={paginaAtual === 1 || pagina_estados.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Página anterior"
                                     >
@@ -275,16 +288,18 @@ export const BancoPaginaContaPagar: React.FC = () => {
                                     </button>
                                     <div className="flex items-center space-x-1">{gerarBotoesPaginacao()}</div>
                                     <button
+                                        color="primary"
                                         onClick={() => irParaPagina(paginaAtual + 1)}
-                                        disabled={paginaAtual === totalPaginas || get_pagina_conta_pagar?.loading}
+                                        disabled={paginaAtual === totalPaginas || pagina_estados.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Próxima página"
                                     >
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
                                     <button
+                                        color="primary"
                                         onClick={() => irParaPagina(totalPaginas)}
-                                        disabled={paginaAtual === totalPaginas || get_pagina_conta_pagar?.loading}
+                                        disabled={paginaAtual === totalPaginas || pagina_estados.loading}
                                         className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Última página"
                                     >
