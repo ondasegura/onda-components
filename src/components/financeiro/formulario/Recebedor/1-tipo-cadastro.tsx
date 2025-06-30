@@ -227,6 +227,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                                             <label className="block text-sm font-medium text-gray-700 mb-1">{tipoRecebedor === "individual" ? "CPF*" : "CNPJ*"}</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 value={value || ""}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -257,6 +258,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                                             <label className="block text-sm font-medium text-gray-700 mb-1">E-mail*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="email"
                                                 value={user?.onda_imob_email || field.value || ""}
                                                 disabled={!!user?.onda_imob_email}
@@ -281,6 +283,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
                                         <input
                                             {...field}
+                                            color="default"
                                             value={field.value || ""} // Garante que o input não receba `undefined`
                                             type="url"
                                             placeholder="https://"

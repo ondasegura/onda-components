@@ -156,6 +156,7 @@ const Select: React.FC<SelectProps> = ({label, value, onChange, options, error, 
             <div className="relative">
                 <button
                     type="button"
+                    color="default"
                     disabled={disabled}
                     onClick={() => !disabled && setIsOpen(!isOpen)}
                     className={`w-full px-3 py-2 text-left border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${error ? "border-red-500" : "border-gray-300"} ${
@@ -221,6 +222,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({label, value, onChange, erro
             <div className="relative">
                 <button
                     type="button"
+                    color="default"
                     onClick={() => setIsOpen(!isOpen)}
                     className={`w-full px-3 py-2 text-left border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                         error ? "border-red-500" : "border-gray-300"
@@ -477,6 +479,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.nome ? "border-red-500" : "border-gray-300"
@@ -497,6 +500,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Mãe</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.nome_mae ? "border-red-500" : "border-gray-300"
@@ -518,6 +522,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <input
                                                 {...field}
                                                 type="date"
+                                                color="default"
                                                 min="1900-01-01"
                                                 max={new Date().toISOString().split("T")[0]}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -539,6 +544,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Ocupação Profissional*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.ocupacao_profissional ? "border-red-500" : "border-gray-300"
@@ -559,6 +565,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Renda Mensal (R$)*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={formatReais(value || 0)}
                                                 onChange={(e) => onChange(Number(e.target.value.replace(/\D/g, "")))}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -581,6 +588,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">DDD*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={value || ""}
                                                 onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 2))}
                                                 maxLength={2}
@@ -603,6 +611,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Número de Telefone*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={formatPhoneNumber(value || "", true)}
                                                 onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 9))}
                                                 maxLength={10}
@@ -628,6 +637,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Nome Fantasia*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.nome_fantasia ? "border-red-500" : "border-gray-300"
@@ -648,6 +658,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Razão Social*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.razao_social ? "border-red-500" : "border-gray-300"
@@ -678,6 +689,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Data de Fundação*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="date"
                                                 max={new Date().toISOString().split("T")[0]}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -699,6 +711,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Receita Anual (R$)*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={formatReais(value || 0)}
                                                 onChange={(e) => onChange(Number(e.target.value.replace(/\D/g, "")))}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -721,6 +734,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">DDD*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={value || ""}
                                                 onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 2))}
                                                 maxLength={2}
@@ -743,6 +757,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Telefone fixo da Empresa*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={formatPhoneNumber(value || "", false)}
                                                 onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 8))}
                                                 maxLength={9}
@@ -774,6 +789,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         <div className="relative">
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={formatCEP(value || "")}
                                                 onChange={(e) => handleCepChange(e, onChange)}
                                                 disabled={isLoadingCep}
@@ -804,6 +820,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Logradouro*</label>
                                         <input
                                             {...field}
+                                            color="default"
                                             type="text"
                                             disabled={isLoadingCep || !isAddressEditable}
                                             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -827,6 +844,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Bairro*</label>
                                         <input
                                             {...field}
+                                            color="default"
                                             type="text"
                                             disabled={isLoadingCep || !isAddressEditable}
                                             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -850,6 +868,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Cidade*</label>
                                         <input
                                             {...field}
+                                            color="default"
                                             type="text"
                                             disabled={isLoadingCep || !isAddressEditable}
                                             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -891,6 +910,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         <input
                                             {...field}
                                             type="text"
+                                            color="default"
                                             disabled={isLoadingCep}
                                             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                 errors.endereco?.numero_rua || errors.endereco_principal?.numero_rua ? "border-red-500" : "border-gray-300"
@@ -914,6 +934,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         <input
                                             {...field}
                                             type="text"
+                                            color="default"
                                             disabled={isLoadingCep}
                                             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                 errors.endereco?.complemento || errors.endereco_principal?.complemento ? "border-red-500" : "border-gray-300"
@@ -936,6 +957,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Ponto de referência*</label>
                                         <input
                                             {...field}
+                                            color="default"
                                             type="text"
                                             disabled={isLoadingCep}
                                             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -970,6 +992,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <div className="relative">
                                                 <input
                                                     type="text"
+                                                    color="default"
                                                     value={formatCPF(value || "")}
                                                     onChange={(e) => handleCpfChange(e, onChange)}
                                                     disabled={isLoadingCpf}
@@ -1001,6 +1024,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.socios_administradores?.[0]?.nome ? "border-red-500" : "border-gray-300"
@@ -1023,6 +1047,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Mãe</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.socios_administradores?.[0]?.nome_mae ? "border-red-500" : "border-gray-300"
@@ -1045,6 +1070,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="date"
                                                 min="1900-01-01"
                                                 max={new Date().toISOString().split("T")[0]}
@@ -1069,6 +1095,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Ocupação Profissional*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="text"
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.socios_administradores?.[0]?.ocupacao_profissional ? "border-red-500" : "border-gray-300"
@@ -1091,6 +1118,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Renda Mensal (R$)*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={formatReais(value || 0)}
                                                 onChange={(e) => onChange(Number(e.target.value.replace(/\D/g, "")))}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -1114,6 +1142,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">E-mail*</label>
                                             <input
                                                 {...field}
+                                                color="default"
                                                 type="email"
                                                 disabled={isLoadingCpf}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -1137,6 +1166,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">DDD*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={value || ""}
                                                 onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 2))}
                                                 disabled={isLoadingCpf}
@@ -1162,6 +1192,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Telefone móvel do Representante*</label>
                                             <input
                                                 type="text"
+                                                color="default"
                                                 value={formatPhoneNumber(value || "", true)}
                                                 onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 9))}
                                                 disabled={isLoadingCpf}
@@ -1209,6 +1240,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                                 <div className="relative">
                                                     <input
                                                         type="text"
+                                                        color="default"
                                                         value={formatCEP(value || "")}
                                                         onChange={(e) => handlePartnerCepChange(e, onChange)}
                                                         disabled={isLoadingPartnerCep}
@@ -1239,6 +1271,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Logradouro*</label>
                                                 <input
                                                     {...field}
+                                                    color="default"
                                                     type="text"
                                                     disabled={isLoadingPartnerCep || !isPartnerAddressEditable}
                                                     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -1262,6 +1295,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Bairro*</label>
                                                 <input
                                                     {...field}
+                                                    color="default"
                                                     type="text"
                                                     disabled={isLoadingPartnerCep || !isPartnerAddressEditable}
                                                     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -1285,6 +1319,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Cidade*</label>
                                                 <input
                                                     {...field}
+                                                    color="default"
                                                     type="text"
                                                     disabled={isLoadingPartnerCep || !isPartnerAddressEditable}
                                                     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -1325,6 +1360,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Número*</label>
                                                 <input
                                                     {...field}
+                                                    color="default"
                                                     type="text"
                                                     disabled={isLoadingPartnerCep}
                                                     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -1348,6 +1384,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Complemento*</label>
                                                 <input
                                                     {...field}
+                                                    color="default"
                                                     type="text"
                                                     disabled={isLoadingPartnerCep}
                                                     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${

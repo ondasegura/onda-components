@@ -48,6 +48,7 @@ const BankSelect: React.FC<BankSelectProps> = ({label, value, onChange, banks, l
             <div className="relative">
                 <button
                     type="button"
+                    color="default"
                     onClick={() => {
                         if (!isOpen && banks.length === 0 && !loading) {
                             onOpen();
@@ -236,6 +237,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Titular*</label>
                                     <input
                                         {...field}
+                                        color="default"
                                         type="text"
                                         disabled
                                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 ${
@@ -252,7 +254,13 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Documento do Titular*</label>
-                        <input type="text" disabled className="w-full px-3 py-2 border rounded-md bg-gray-100 border-gray-300" placeholder="Mesmo documento do recebedor" />
+                        <input
+                            type="text"
+                            disabled
+                            className="w-full px-3 py-2 border rounded-md bg-gray-100 border-gray-300"
+                            placeholder="Mesmo documento do recebedor"
+                            color="default"
+                        />
                         <p className="mt-1 text-sm text-gray-500">Mesmo documento do recebedor</p>
                     </div>
 
@@ -309,6 +317,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Agência*</label>
                                     <input
                                         {...field}
+                                        color="default"
                                         type="text"
                                         maxLength={4}
                                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -330,6 +339,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Dígito da Agência</label>
                                     <input
                                         {...field}
+                                        color="default"
                                         type="text"
                                         maxLength={1}
                                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -351,6 +361,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Número da Conta*</label>
                                     <input
                                         {...field}
+                                        color="default"
                                         type="text"
                                         maxLength={13}
                                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -372,6 +383,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Dígito da Conta*</label>
                                     <input
                                         {...field}
+                                        color="default"
                                         type="text"
                                         maxLength={1}
                                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
