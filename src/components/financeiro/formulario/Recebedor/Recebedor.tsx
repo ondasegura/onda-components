@@ -144,6 +144,11 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
         return true;
     };
 
+    const handleFinalize = async () => {
+        if (formularioState.step === 2) return await dadosBancariosRef?.current?.onSubmitDadosBancarios();
+        return await validateCurrentForm();
+    };
+
     const handleCloseSnackbar = () => {
         setSubmitError(null);
         setSubmitSuccess(false);
@@ -162,56 +167,41 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
                 <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
                     <Header steps={steps} currentStep={formularioState.step} />
 
-                    <div className="min-h-96 relative">
-                        {/* Loading Overlay */}
-                        {isSubmitting && (
-                            <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-lg">
-                                <div className="flex items-center gap-3">
-                                    <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-                                    <span className="text-gray-700 font-medium">Enviando dados...</span>
+                    <div className="p-6 md:p-8 flex-1 overflow-y-auto">
+                        <div className="relative">
+                            {isSubmitting && (
+                                <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-lg">
+                                    <div className="flex items-center gap-3">
+                                        <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                                        <span className="text-gray-700 font-medium">Enviando dados...</span>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-
-                        {/* Conteúdo do passo atual */}
-                        {getStepContent(formularioState.step)}
-                    </div>
-
-                    <Footer
-                        currentStep={formularioState.step}
-                        validateForm={validateCurrentForm}
-                        onClickNext={handleClickNext}
-                        onFinalize={async () => {
-                            if (formularioState.step === 2) {
-                                return await dadosBancariosRef.current?.onSubmitDadosBancarios();
-                            }
-                            return await validateCurrentForm();
-                        }}
-                    />
-                </div>
-            </div>
-
-            {/* Modal de Sucesso */}
-            <Modal open={modalOpen} onClose={handleCloseModal} title="Cadastro Concluído">
-                <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                        <CheckCircle className="w-8 h-8 text-green-600" />
-                        <div>
-                            <h4 className="font-medium text-gray-900">Cadastro realizado com sucesso!</h4>
+                            )}
+                            {getStepContent(formularioState.step)}
                         </div>
                     </div>
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                        A conta foi cadastrada com sucesso. Fique atento para os recebimentos de bonificações. Os pagamentos começarão a ser efetuados através desta conta a partir
-                        de 01/07/2025.
-                    </p>
+
+                    {/* 3. RODAPÉ (FIXO NA BASE DO PAINEL) */}
+                    <div className="p-6 md:p-8 bg-gray-50 border-t border-gray-200 rounded-b-xl flex-shrink-0">
+                        <Footer currentStep={formularioState.step} validateForm={validateCurrentForm} onClickNext={handleClickNext} onFinalize={handleFinalize} />
+                    </div>
+
+                    {/* As notificações podem continuar aqui, pois são fixas na tela */}
+                    <Modal open={modalOpen} onClose={handleCloseModal} title="Cadastro Concluído">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <CheckCircle className="w-8 h-8 text-green-600" />
+                                <div>
+                                    <h4 className="font-medium text-gray-900">Cadastro realizado com sucesso!</h4>
+                                </div>
+                            </div>
+                            <p className="text-gray-600 text-sm leading-relaxed">A conta foi cadastrada com sucesso. Fique atento para os recebimentos de bonificações.</p>
+                        </div>
+                    </Modal>
+                    <Snackbar open={submitSuccess && !modalOpen} message="Dados enviados com sucesso!" type="success" onClose={handleCloseSnackbar} />
+                    <Snackbar open={!!submitError} message={submitError || "Erro ao enviar dados"} type="error" onClose={handleCloseSnackbar} />
                 </div>
-            </Modal>
-
-            {/* Snackbar de Sucesso */}
-            <Snackbar open={submitSuccess && !modalOpen} message="Dados enviados com sucesso!" type="success" onClose={handleCloseSnackbar} />
-
-            {/* Snackbar de Erro */}
-            <Snackbar open={!!submitError} message={submitError || "Erro ao enviar dados"} type="error" onClose={handleCloseSnackbar} />
+            </div>
         </div>
     );
 };

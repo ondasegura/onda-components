@@ -93,7 +93,7 @@ const addressSchema = z4.object({
 
 const telefoneSchema = z4.object({
     ddd: z4.string().min(2, "DDD é obrigatório").max(2, "DDD deve ter 2 dígitos"),
-    numero: z4.string().min(9, "Número é obrigatório"),
+    numero: z4.string().min(8, "Número é obrigatório"),
     tipo: z4.string().optional(),
 });
 
@@ -265,7 +265,7 @@ interface DadosPessoaisRef {
 
 const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, ref) => {
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-    const recebedorTipo = formularioState.tipo || "empresa";
+    const recebedorTipo = formularioState.tipo;
     const [isLoadingCep, setIsLoadingCep] = useState(false);
     const [isLoadingPartnerCep, setIsLoadingPartnerCep] = useState(false);
     const [isLoadingCpf, setIsLoadingCpf] = useState(false);
@@ -289,7 +289,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
         defaultValues:
             recebedorTipo === "individual"
                 ? ({
-                      nome: "",
+                      nome: formularioState?.dados_recebedor?.nome || "",
                       nome_mae: "",
                       data_nascimento: "",
                       renda_mensal: 0,
@@ -307,11 +307,11 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                       },
                   } as any)
                 : ({
-                      razao_social: "",
-                      nome_fantasia: "",
+                      razao_social: formularioState?.dados_recebedor?.razao_social || "",
+                      nome_fantasia: formularioState?.dados_recebedor?.nome_fantasia || "",
                       faturamento_anual: 0,
                       tipo_empresa: "",
-                      data_fundacao: "",
+                      data_fundacao: formularioState?.dados_recebedor?.data_fundacao || "",
                       telefones: [{ddd: "", numero: "", tipo: ""}],
                       endereco_principal: {
                           rua: "",
@@ -775,7 +775,12 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                 </div>
 
                 <div className="border-t pt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Endereço</h3>
+                    {recebedorTipo === "individual" ? (
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Endereço</h3>
+                    ) : (
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Endereço Principal</h3>
+                    )}
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4"></h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <Controller

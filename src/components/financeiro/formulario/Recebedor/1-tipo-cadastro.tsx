@@ -33,6 +33,9 @@ const TipoCadastroSchema = z4
                 },
                 {message: "URL inválida. Inclua http:// ou https://"}
             ),
+        nome_fantasia: z4.string().optional(),
+        razao_social: z4.string().optional(),
+        data_fundacao: z4.string().optional(),
     })
     .superRefine((data, ctx) => {
         // Valida o campo 'documento' com base no valor do campo 'tipo'
@@ -65,10 +68,14 @@ export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadast
     // Os nomes dos campos agora correspondem ao schema
     const nameField = "nome";
     const documentField = "documento";
-
     try {
         const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_WAVE), `/public/locatario/${cpfApenasNumeros}`, true);
-        const data: {results: Array<{locatarioNome?: string}>} = await response.json();
+        const data: {results: Array<{locatarioNome: string}>} = await response;
+
+        controller_recebedor.contexto.state.set_state((state) => {
+            state.formulario.dados_recebedor.nome = data.results[0]?.locatarioNome;
+        });
+        console.log(data.results[0]?.locatarioNome, "data.results[0]?.locatarioNome");
 
         setValue(nameField, data.results[0]?.locatarioNome || "", {shouldValidate: true});
         setValue(documentField, cpf, {shouldValidate: true});
@@ -121,6 +128,9 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
             email: loginUser?.email || "",
             site_url: undefined,
             nome: "",
+            nome_fantasia: "",
+            data_fundacao: "",
+            razao_social: "",
         },
     });
 
@@ -129,9 +139,16 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
     const handleTipoChange = async (tipo: t.Financeiro.Controllers.Recebedor.Tipo) => {
         controller_recebedor.contexto.state.set_steep_progress(0);
+        controller_recebedor.contexto.state.set_state((state) => {
+            state.formulario.tipo = tipo;
+        });
         setValue("tipo", tipo, {shouldValidate: true});
         setValue("documento", "", {shouldValidate: false});
         setValue("site_url", "", {shouldValidate: true});
+        setValue("nome", "", {shouldValidate: true});
+        setValue("razao_social", "", {shouldValidate: true});
+        setValue("nome_fantasia", "", {shouldValidate: true});
+        setValue("data_fundacao", "", {shouldValidate: true});
         setValue("email", loginUser?.email || "", {shouldValidate: true});
         clearErrors();
     };
@@ -141,8 +158,21 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
             try {
                 const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj.replace(/[^\d]/g, "")}`);
                 if (!response.ok) throw new Error("Erro ao buscar CNPJ");
-                const data: {site?: string} = await response.json();
-                setValue("site_url", data.site || "", {shouldValidate: true});
+                const data: {
+                    razao_social: string;
+                    nome_fantasia: string;
+                    data_fundacao: string;
+                } = await response.json();
+                controller_recebedor.contexto.state.set_state((state) => {
+                    state.formulario.dados_recebedor.razao_social = data?.razao_social;
+                    state.formulario.dados_recebedor.nome_fantasia = data?.nome_fantasia;
+                    state.formulario.dados_recebedor.data_fundacao = data?.data_fundacao;
+                });
+                setValue("site_url", "", {shouldValidate: true});
+                setValue("razao_social", data?.razao_social || "", {shouldValidate: true});
+                setValue("nome_fantasia", data?.nome_fantasia || "", {shouldValidate: true});
+                setValue("data_fundacao", data?.data_fundacao || "", {shouldValidate: true});
+
                 clearErrors("site_url");
             } catch (error) {
                 console.error("Erro ao buscar dados do CNPJ:", error);

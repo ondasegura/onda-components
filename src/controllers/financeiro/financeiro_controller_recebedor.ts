@@ -24,6 +24,13 @@ interface ZustandStore {
             loading: boolean;
             loading_submit: boolean;
             tipo: t.Financeiro.Controllers.Recebedor.Tipo;
+            dados_recebedor: {
+                nome: string;
+                nome_fantasia: string;
+                razao_social: string;
+                data_fundacao: string;
+                email: string;
+            };
         };
     };
 }
@@ -35,7 +42,7 @@ const initialStates = {
     },
     pagina: {
         loading: false,
-        recebedor: {data: {recebedores: [], paginacao: {}}} as any,
+        recebedor: {data: {recebedor: [], paginacao: {}}} as any,
     },
     formulario: {
         step: 0,
@@ -45,6 +52,13 @@ const initialStates = {
         loading: false,
         loading_submit: false,
         tipo: "" as t.Financeiro.Controllers.Recebedor.Tipo,
+        dados_recebedor: {
+            nome: "",
+            nome_fantasia: "",
+            razao_social: "",
+            data_fundacao: "",
+            email: "",
+        },
     },
 };
 
@@ -66,8 +80,8 @@ const controller_recebedor = class controller_recebedor {
 
             if (results?.data?.recebedor) {
                 store.setState((state) => {
-                    state.states.pagina.recebedor.data.recebedores = utils.update_context.update_array_itens({
-                        oldArray: state.states.pagina.recebedor.data.recebedores,
+                    state.states.pagina.recebedor.data.recebedor = utils.update_context.update_array_itens({
+                        oldArray: state.states.pagina.recebedor.data.recebedor,
                         newItem: [results.data.recebedor],
                     });
                 });
@@ -81,10 +95,10 @@ const controller_recebedor = class controller_recebedor {
                 state.states.pagina.loading = true;
             });
 
-            const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND_WORKER_FINANCEIRO), "/financeiro/recebedores", true, props.filtros.recebedor);
+            const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND_WORKER_FINANCEIRO), "/financeiro/recebedor", true, props.filtros.recebedor);
             const results: t.Financeiro.Controllers.Recebedor.BuscarPeloFiltro.Output | undefined = response?.results;
 
-            if (results?.data?.recebedores) {
+            if (results?.data?.recebedor) {
                 store.setState((state) => {
                     state.states.pagina.recebedor = results;
                 });
@@ -136,8 +150,8 @@ const controller_recebedor = class controller_recebedor {
 
             if (recebedorAtualizado) {
                 store.setState((state) => {
-                    state.states.pagina.recebedor.data.recebedores = utils.update_context.update_array_itens({
-                        oldArray: state.states.pagina.recebedor.data.recebedores,
+                    state.states.pagina.recebedor.data.recebedor = utils.update_context.update_array_itens({
+                        oldArray: state.states.pagina.recebedor.data.recebedor,
                         newItem: [recebedorAtualizado],
                     });
                     if (state.states.modal.recebedor_item.data.recebedor?._id === recebedorAtualizado._id) {
@@ -158,8 +172,8 @@ const controller_recebedor = class controller_recebedor {
             const results: t.Financeiro.Controllers.Recebedor.DeletarPeloId.Output | undefined = response?.results;
 
             store.setState((state) => {
-                state.states.pagina.recebedor.data.recebedores = utils.update_context.remover_item_pelo_id({
-                    oldArray: state.states.pagina.recebedor.data.recebedores,
+                state.states.pagina.recebedor.data.recebedor = utils.update_context.remover_item_pelo_id({
+                    oldArray: state.states.pagina.recebedor.data.recebedor,
                     itemToRemove: props._id,
                 });
                 if (state.states.modal.recebedor_item.data.recebedor?._id === props._id) {
@@ -189,6 +203,12 @@ const controller_recebedor = class controller_recebedor {
         static state = class state {
             static reset() {
                 store.setState(() => ({states: initialStates}));
+            }
+
+            static set_state(updater: (props: ZustandStore["states"]) => void) {
+                store.setState((state) => {
+                    updater(state.states);
+                });
             }
 
             static set_recebedor_item(recebedorData: t.Financeiro.Controllers.Recebedor.BuscarPeloId.Output) {
