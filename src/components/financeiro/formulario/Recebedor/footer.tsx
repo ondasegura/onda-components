@@ -15,7 +15,7 @@ const Footer: React.FC<FooterProps> = ({currentStep, validateForm, onClickNext, 
 
     const handleNextOrFinalize = async () => {
         const isValid = await validateForm();
-        if (isValid || loading_submit) {
+        if (!isValid || loading_submit) {
             return;
         }
         if (currentStep === 2) {

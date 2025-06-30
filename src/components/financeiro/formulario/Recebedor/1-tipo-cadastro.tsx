@@ -101,7 +101,7 @@ interface TipoCadastroRef {
 
 const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate}, ref) => {
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-    const user = api.usuario_auth().data.usuario_auth;
+    const user = api?.usuario_auth()?.data?.usuario_auth;
     const loginUser = user as Extract<typeof user, {type: "login"}>;
 
     const {
@@ -118,7 +118,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         defaultValues: {
             tipo: (formularioState.tipo as t.Financeiro.Controllers.Recebedor.Tipo) || undefined,
             documento: "",
-            email: loginUser.email || "",
+            email: loginUser?.email || "",
             site_url: undefined,
             nome: "",
         },
@@ -132,7 +132,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         setValue("tipo", tipo, {shouldValidate: true});
         setValue("documento", "", {shouldValidate: false});
         setValue("site_url", "", {shouldValidate: true});
-        setValue("email", loginUser.email || "", {shouldValidate: true});
+        setValue("email", loginUser?.email || "", {shouldValidate: true});
         clearErrors();
     };
 
@@ -267,11 +267,11 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                                                 {...field}
                                                 color="default"
                                                 type="email"
-                                                value={loginUser.email || field.value || ""}
-                                                disabled={!!loginUser.email}
+                                                value={loginUser?.email || field.value || ""}
+                                                disabled={!!loginUser?.email}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.email ? "border-red-500" : "border-gray-300"
-                                                } ${!!loginUser.email ? "bg-gray-100" : ""}`}
+                                                } ${!!loginUser?.email ? "bg-gray-100" : ""}`}
                                             />
                                             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
                                         </div>
