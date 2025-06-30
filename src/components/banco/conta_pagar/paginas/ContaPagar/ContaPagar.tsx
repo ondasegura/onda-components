@@ -34,8 +34,8 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     function handleEdit(item: t.Banco.Controllers.ContaPagar.Base) {
         store.set_state((store) => {
-            store.states.formulario.open = true;
-            store.states.formulario.item = item;
+            store.formulario.open = true;
+            store.formulario.item = item;
         });
     }
 
@@ -47,8 +47,9 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     async function handleCreate() {
         store.set_state((store) => {
-            store.states.formulario.open = true;
-            store.states.formulario.item = undefined;
+            store.formulario.open = true;
+            store.formulario.loading = false;
+            store.formulario.item = undefined;
         });
     }
 

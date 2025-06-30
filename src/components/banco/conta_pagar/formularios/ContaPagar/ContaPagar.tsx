@@ -119,9 +119,9 @@ export const BancoFormularioContaPagar: React.FC = () => {
         if (!formulario_estados.loading && !isSubmitting) {
             // Fecha o formulário e limpa os dados usando a nova controller
             store.set_state((store) => {
-                store.states.formulario.open = false;
-                store.states.formulario.loading = false;
-                store.states.formulario.item = undefined;
+                store.formulario.open = false;
+                store.formulario.loading = false;
+                store.formulario.item = undefined;
             });
         }
     };
