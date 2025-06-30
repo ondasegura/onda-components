@@ -6,6 +6,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import t from "onda-types";
 import z4 from "zod/v4";
 import utils from "onda-utils";
+import api from "onda-utils/src/api";
 
 const PUBLIC_BASE_URL_WAVE = process.env.PUBLIC_BASE_URL_WAVE;
 
@@ -56,12 +57,17 @@ type TipoCadastroForm = z4.infer<typeof TipoCadastroSchema>;
 
 // 4. Função `buscaCpf` com a tipagem correta para `setValue`
 export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadastroForm>): Promise<void> => {
+    const apenasNumeros = (valor: string | undefined | null): string => {
+        if (!valor) return "";
+        return valor.replace(/\D/g, "");
+    };
+    const cpfApenasNumeros = apenasNumeros(cpf);
     // Os nomes dos campos agora correspondem ao schema
     const nameField = "nome";
     const documentField = "documento";
 
     try {
-        const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_WAVE), `/api/public/locatario/${cpf}`, true);
+        const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_WAVE), `/public/locatario/${cpfApenasNumeros}`, true);
         const data: {results: Array<{locatarioNome?: string}>} = await response.json();
 
         setValue(nameField, data.results[0]?.locatarioNome || "", {shouldValidate: true});
@@ -95,7 +101,8 @@ interface TipoCadastroRef {
 
 const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate}, ref) => {
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-    const user: {onda_imob_email?: string} = {onda_imob_email: "usuario@exemplo.com"};
+    const user = api.usuario_auth().data.usuario_auth;
+    const loginUser = user as Extract<typeof user, {type: "login"}>;
 
     const {
         control,
@@ -111,7 +118,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         defaultValues: {
             tipo: (formularioState.tipo as t.Financeiro.Controllers.Recebedor.Tipo) || undefined,
             documento: "",
-            email: user?.onda_imob_email || "",
+            email: loginUser.email || "",
             site_url: undefined,
             nome: "",
         },
@@ -125,7 +132,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         setValue("tipo", tipo, {shouldValidate: true});
         setValue("documento", "", {shouldValidate: false});
         setValue("site_url", "", {shouldValidate: true});
-        setValue("email", user?.onda_imob_email || "", {shouldValidate: true});
+        setValue("email", loginUser.email || "", {shouldValidate: true});
         clearErrors();
     };
 
@@ -260,11 +267,11 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                                                 {...field}
                                                 color="default"
                                                 type="email"
-                                                value={user?.onda_imob_email || field.value || ""}
-                                                disabled={!!user?.onda_imob_email}
+                                                value={loginUser.email || field.value || ""}
+                                                disabled={!!loginUser.email}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.email ? "border-red-500" : "border-gray-300"
-                                                } ${!!user?.onda_imob_email ? "bg-gray-100" : ""}`}
+                                                } ${!!loginUser.email ? "bg-gray-100" : ""}`}
                                             />
                                             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
                                         </div>

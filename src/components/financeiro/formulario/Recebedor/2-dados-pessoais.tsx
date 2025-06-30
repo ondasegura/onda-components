@@ -285,66 +285,90 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
     } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange",
-        defaultValues:
-            recebedorTipo === "individual"
-                ? ({
-                      nome: "",
-                      nome_mae: "",
-                      data_nascimento: "",
-                      renda_mensal: 0,
-                      ocupacao_profissional: "",
-                      telefones: [{ddd: "", numero: "", tipo: ""}],
-                      endereco: {
-                          rua: "",
-                          numero_rua: "",
-                          complemento: "",
-                          bairro: "",
-                          cidade: "",
-                          estado: "",
-                          cep: "",
-                          ponto_referencia: "",
-                      },
-                  } as any)
-                : ({
-                      razao_social: "",
-                      nome_fantasia: "",
-                      faturamento_anual: 0,
-                      tipo_empresa: "",
-                      data_fundacao: "",
-                      telefones: [{ddd: "", numero: "", tipo: ""}],
-                      endereco_principal: {
-                          rua: "",
-                          numero_rua: "",
-                          complemento: "",
-                          bairro: "",
-                          cidade: "",
-                          estado: "",
-                          cep: "",
-                          ponto_referencia: "",
-                      },
-                      socios_administradores: [
-                          {
-                              nome: "",
-                              email: "",
-                              documento: "",
-                              nome_mae: "",
-                              ocupacao_profissional: "",
-                              representante_legal_autodeclarado: null,
-                              renda_mensal: 0,
-                              telefones: [{ddd: "", numero: "", tipo: ""}],
-                              endereco: {
-                                  rua: "",
-                                  numero_rua: "",
-                                  complemento: "",
-                                  bairro: "",
-                                  cidade: "",
-                                  estado: "",
-                                  cep: "",
-                                  ponto_referencia: "",
-                              },
-                          },
-                      ],
-                  } as any),
+        defaultValues: {
+            data: {
+                recebedor: {
+                    tipo: "",
+                    documento: "",
+                    telefones: [{ddd: "", numero: "", tipo: ""}],
+                    nome: "",
+                    nome_mae: "",
+                    data_nascimento: "",
+                    renda_mensal: 0,
+                    ocupacao_profissional: "",
+                    razao_social: "",
+                    nome_fantasia: "",
+                    faturamento_anual: 0,
+                    tipo_empresa: "",
+                    data_fundacao: "",
+                    endereco: {
+                        rua: "",
+                        numero_rua: "",
+                        complemento: "",
+                        bairro: "",
+                        cidade: "",
+                        estado: "",
+                        cep: "",
+                        ponto_referencia: "",
+                    },
+                    endereco_principal: {
+                        rua: "",
+                        numero_rua: "",
+                        complemento: "",
+                        bairro: "",
+                        cidade: "",
+                        estado: "",
+                        cep: "",
+                        ponto_referencia: "",
+                    },
+                    socios_administradores: [
+                        {
+                            nome: "",
+                            email: "",
+                            documento: "",
+                            nome_mae: "",
+                            ocupacao_profissional: "",
+                            representante_legal_autodeclarado: null,
+                            renda_mensal: 0,
+                            telefones: [{ddd: "", numero: "", tipo: ""}],
+                            endereco: {
+                                rua: "",
+                                numero_rua: "",
+                                complemento: "",
+                                bairro: "",
+                                cidade: "",
+                                estado: "",
+                                cep: "",
+                                ponto_referencia: "",
+                            },
+                        },
+                    ],
+                    configuracoes_antecipacao: {
+                        atraso: "10",
+                        habilitado: false,
+                        percentual_volume: 100,
+                        tipo: "completa",
+                    },
+                    configuracoes_transferencia: {
+                        dia_transferencia: "10",
+                        intervalo_transferencia: "10",
+                        transferencia_habilitada: false,
+                    },
+                    conta_bancaria: {
+                        banco: "",
+                        digito_agencia: "",
+                        digito_conta: "",
+                        documento_titular: "",
+                        nome_titular: "",
+                        numero_agencia: "",
+                        numero_conta: "",
+                        tipo: "",
+                        tipo_titular: "",
+                    },
+                    codigo: "",
+                },
+            },
+        } as any,
     });
 
     const handleCepChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void) => {
@@ -1408,6 +1432,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Ponto de referência*</label>
                                                 <input
                                                     {...field}
+                                                    color="default"
                                                     type="text"
                                                     disabled={isLoadingPartnerCep}
                                                     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
