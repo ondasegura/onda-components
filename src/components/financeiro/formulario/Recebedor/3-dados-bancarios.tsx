@@ -118,10 +118,13 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
     // Estados locais
     const [banks, setBanks] = useState<Banco[]>([]);
     const [isLoadingBanks, setIsLoadingBanks] = useState(false);
+    const formularioState = controller_recebedor.contexto.jsx.get_formulario();
+    controller_recebedor.contexto.state.set_state((state) => {
+        state.formulario.tipo === "empresa" ? state.formulario.dados_recebedor.razao_social : state.formulario.dados_recebedor.nome;
+        state.formulario.dados_recebedor.conta_bancaria.documento_titular = formularioState.recebedor.data.recebedor.documento;
+    });
 
     // Obter dados do formulário do controller
-    const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-
     const {
         control,
         handleSubmit,
@@ -135,9 +138,9 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
         mode: "onChange",
         defaultValues: {
             conta_bancaria: {
-                nome_titular: "", // Será preenchido dinamicamente
+                nome_titular: formularioState.tipo === "individual" ? formularioState.dados_recebedor.nome : formularioState.dados_recebedor.razao_social,
                 tipo_titular: formularioState.tipo === "individual" ? "individual" : "empresa",
-                documento_titular: "", // Será preenchido dinamicamente
+                documento_titular: formularioState.recebedor.data.recebedor.documento,
                 banco: "",
                 numero_agencia: "",
                 digito_agencia: "",
@@ -148,6 +151,8 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
         },
     });
 
+    setValue("conta_bancaria.nome_titular", "", {shouldValidate: true});
+    setValue("conta_bancaria.documento_titular", "", {shouldValidate: true});
     const bankValue = watch("conta_bancaria.banco");
 
     const buscaBanco = async () => {

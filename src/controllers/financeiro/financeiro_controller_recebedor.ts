@@ -30,6 +30,10 @@ interface ZustandStore {
                 razao_social: string;
                 data_fundacao: string;
                 email: string;
+                conta_bancaria: {
+                    nome_titular: string;
+                    documento_titular: string;
+                };
             };
         };
     };
@@ -58,6 +62,10 @@ const initialStates = {
             razao_social: "",
             data_fundacao: "",
             email: "",
+            conta_bancaria: {
+                nome_titular: "",
+                documento_titular: "",
+            },
         },
     },
 };

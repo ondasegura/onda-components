@@ -1,10 +1,14 @@
-import React, {useImperativeHandle, forwardRef, useCallback, useEffect} from "react";
-import controller_recebedor from "@/controllers/financeiro/financeiro_controller_recebedor";
+//REACT
+import React, {useImperativeHandle, forwardRef, useCallback, useEffect, useState} from "react";
 import {UserRound, Building2, AlertCircle} from "lucide-react";
 import {useForm, Controller, UseFormSetValue, SubmitHandler} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import t from "onda-types";
+//ZOD
 import z4 from "zod/v4";
+import {zodResolver} from "@hookform/resolvers/zod";
+//TYPES
+import t from "onda-types";
+import controller_recebedor from "@/controllers/financeiro/financeiro_controller_recebedor";
+//UTILS
 import utils from "onda-utils";
 import api from "onda-utils/src/api";
 
@@ -107,9 +111,10 @@ interface TipoCadastroRef {
 }
 
 const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate}, ref) => {
+    const [loginUser, setLoginUser] = useState<Extract<t.Financeiro.Controllers.UserPayload.AuthPayload, {type: "login"}> | null>(null);
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
     const user = api?.usuario_auth()?.data?.usuario_auth;
-    const loginUser = user as Extract<typeof user, {type: "login"}>;
+    console.log(user, "user");
 
     const {
         control,
