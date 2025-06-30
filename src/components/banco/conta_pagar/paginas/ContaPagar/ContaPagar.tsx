@@ -6,54 +6,8 @@ import { controller } from "@/controllers";
 //COMPONENTES
 import { BancoFormularioContaPagar } from "../../formularios/ContaPagar";
 
-type ContaPagarActions = {
-    Criar: {
-        Input: t.Banco.Controllers.ContaPagar.Criar.Input;
-        Output: t.Banco.Controllers.ContaPagar.Criar.Output;
-    };
-    BuscarPeloFiltro: {
-        Input: t.Banco.Controllers.ContaPagar.BuscarPeloFiltro.Input;
-        Output: t.Banco.Controllers.ContaPagar.BuscarPeloFiltro.Output;
-    };
-    BuscarPeloId: {
-        Input: t.Banco.Controllers.ContaPagar.BuscarPeloId.Input;
-        Output: t.Banco.Controllers.ContaPagar.BuscarPeloId.Output;
-    };
-    AtualizarPeloId: {
-        Input: t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input;
-        Output: t.Banco.Controllers.ContaPagar.AtualizarPeloId.Output;
-    };
-    DeletarPeloId: {
-        Input: t.Banco.Controllers.ContaPagar.DeletarPeloId.Input;
-        Output: t.Banco.Controllers.ContaPagar.DeletarPeloId.Output;
-    };
-    states: {
-        modal: {
-            item: t.Banco.Controllers.ContaPagar.BuscarPeloId.Output["data"]["conta_pagar"];
-            loading?: boolean;
-        };
-        pagina: {
-            loading?: boolean;
-            itens: t.Banco.Controllers.ContaPagar.BuscarPeloFiltro.Output["data"]["conta_pagar"];
-            paginacao: {
-                total_itens: number;
-                total_paginas: number;
-                total_itens_pagina_atual: number;
-                itens_por_pagina: number;
-            };
-        };
-        formulario: {
-            open?: boolean;
-            item: t.Banco.Controllers.ContaPagar.BuscarPeloId.Output["data"]["conta_pagar"];
-            progress?: number;
-            loading?: boolean;
-            loading_submit?: boolean;
-        };
-    };
-};
-
 export const BancoPaginaContaPagar: React.FC = () => {
-    const store = new controller<ContaPagarActions>({ entidade: "conta_pagar" });
+    const store = new controller<t.Banco.Controllers.ContaPagar.TController>({ entidade: "conta_pagar" });
     const pagina_estados = store.get_jsx.pagina;
 
     const [paginaAtual, setPaginaAtual] = useState(1);
