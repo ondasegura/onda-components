@@ -6,8 +6,9 @@ import { controller } from "@/controllers";
 //COMPONENTES
 import { BancoFormularioContaPagar } from "../../formularios/ContaPagar";
 
+const store = new controller<t.Banco.Controllers.ContaPagar.ContaPagarBase>({ entidade: "conta_pagar" });
+
 export const BancoPaginaContaPagar: React.FC = () => {
-    const store = new controller({ entidade: "conta_pagar" });
     const pagina_estados = store.get_jsx.pagina;
 
     const [paginaAtual, setPaginaAtual] = useState(1);
