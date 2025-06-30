@@ -9,7 +9,7 @@ import {FinanceiroFormularioRecebedor} from "../../formulario/Recebedor/Recebedo
 
 export const FinanceiroPaginaRecebedor = () => {
     const get_pagina_recebedor = financeiro_controller_recebedor.contexto.jsx.get_pagina();
-    const get_formulario_recebedor = financeiro_controller_recebedor.contexto.jsx.get_formulario();
+    const {open: get_formulario_recebedor} = financeiro_controller_recebedor.contexto.jsx.get_formulario();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
@@ -132,6 +132,7 @@ export const FinanceiroPaginaRecebedor = () => {
 
     return (
         <div className="h-screen min-w-full bg-gray-50 p-6 flex flex-col">
+            {get_formulario_recebedor && <FinanceiroFormularioRecebedor />}
             <div className="min-w-full mx-auto flex-1 flex flex-col min-h-0">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col flex-1 min-h-0">
                     <div className="p-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
