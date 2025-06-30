@@ -4,6 +4,9 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import z4 from "zod/v4";
 import {Loader2, ChevronDown} from "lucide-react";
 import controller_recebedor from "@/controllers/financeiro/financeiro_controller_recebedor";
+import utils from "onda-utils";
+
+const PUBLIC_BASE_URL_WORKER_FINANCEIRO = process.env.PUBLIC_BASE_URL_WORKER_FINANCEIRO;
 
 // Schema Zod para validação
 const schema = z4.object({
@@ -107,7 +110,7 @@ interface DadosBancariosProps {
 }
 
 interface DadosBancariosRef {
-    onSubmitDadosBancarios: () => Promise<boolean>;
+    onSubmitDadosBancarios: () => Promise<void>;
     validateForm: () => Promise<boolean>;
 }
 
@@ -185,16 +188,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
     const onSubmit = async (data: FormData) => {
         try {
             setLoading(true);
-
-            // Simular chamada à API
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
-            // Aqui você faria a chamada real para a API
-            // const response = await controller_recebedor.api.criar({
-            //   data: {
-            //     recebedor: { ...formularioState, ...data }
-            //   }
-            // });
+            const response = await controller_recebedor.api.criar(formularioState.recebedor);
 
             setSubmitSuccess(true);
             return true;
@@ -213,7 +207,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
             if (isValid) {
                 return await handleSubmit(onSubmit)();
             }
-            return false;
+            return;
         },
         validateForm: async () => {
             return await trigger();
@@ -300,7 +294,6 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                                     >
                                         <option value="">Selecione</option>
                                         <option value="corrente">Conta Corrente</option>
-                                        <option value="poupanca">Conta Poupança</option>
                                     </select>
                                     {errors.conta_bancaria?.tipo && <p className="mt-1 text-sm text-red-600">{errors.conta_bancaria.tipo.message}</p>}
                                 </div>
