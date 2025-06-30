@@ -5,13 +5,13 @@ import { X, Save, Loader2, DollarSign, Calendar, User, Tag, FileText } from "luc
 import t from "onda-types";
 
 //CONTROLLERS
-import { contasPagarController } from "@/controllers"; // Importa a nova instância do DynamicController
+import { controller } from "@/controllers";
 //COMPONENTES
 import { FormLoadingSubmit } from "@/geral/FormLoadingSubmit";
 
 export const BancoFormularioContaPagar: React.FC = () => {
-    // Usando o novo sistema dinâmico com seleção específica para evitar loops
-    const { formulario_open, formulario_loading, formulario_conta_pagar, conta_pagar_item } = contasPagarController.get_jsx();
+    const store = new controller({ entidade: "conta_pagar" });
+    const formulario_estados = store.get_jsx.formulario;
 
     const {
         register,
@@ -39,9 +39,9 @@ export const BancoFormularioContaPagar: React.FC = () => {
         },
     });
 
-    // Determina se é edição baseado na existência de dados de conta_pagar
-    const isEditing = !!(formulario_conta_pagar?.data?.conta_pagar?._id || conta_pagar_item?.data?.conta_pagar?._id);
-    const contaPagarData = formulario_conta_pagar?.data?.conta_pagar || conta_pagar_item?.data?.conta_pagar;
+    // Determina se é edição baseado na existência de item no formulário
+    const isEditing = !!formulario_estados.item?._id;
+    const contaPagarData = formulario_estados.item;
 
     useEffect(() => {
         if (contaPagarData && isEditing) {
@@ -63,7 +63,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                     },
                 },
             });
-        } else if (formulario_open) {
+        } else if (formulario_estados.open) {
             // Modo criação - reseta o formulário com valores padrão
             reset({
                 data: {
@@ -83,13 +83,13 @@ export const BancoFormularioContaPagar: React.FC = () => {
                 },
             });
         }
-    }, [contaPagarData, isEditing, formulario_open, reset]);
+    }, [contaPagarData, isEditing, formulario_estados.open, reset]);
 
     const onSubmit = async (data: t.Banco.Controllers.ContaPagar.Criar.Input | t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input | any) => {
         try {
             if (isEditing) {
                 // Modo edição - atualiza a conta existente
-                await contasPagarController.api.atualizar_pelo_id({
+                await store.api.atualizar_pelo_id({
                     data: {
                         conta_pagar: {
                             ...data.data.conta_pagar,
@@ -99,7 +99,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                 } as t.Banco.Controllers.ContaPagar.AtualizarPeloId.Input);
             } else {
                 // Modo criação - cria nova conta
-                await contasPagarController.api.criar({
+                await store.api.criar({
                     data: {
                         conta_pagar: {
                             ...data.data.conta_pagar,
@@ -116,23 +116,22 @@ export const BancoFormularioContaPagar: React.FC = () => {
     };
 
     const handleClose = () => {
-        if (!formulario_loading && !isSubmitting) {
-            // Fecha o formulário e limpa os dados
-            contasPagarController.set_state({
-                formulario_open: false,
-                formulario_loading: false,
-                formulario_conta_pagar: {},
-                conta_pagar_item: {},
+        if (!formulario_estados.loading && !isSubmitting) {
+            // Fecha o formulário e limpa os dados usando a nova controller
+            store.set_state((store) => {
+                store.states.formulario.open = false;
+                store.states.formulario.loading = false;
+                store.states.formulario.item = undefined;
             });
         }
     };
 
     // Se o formulário não está aberto, não renderiza nada
-    if (!formulario_open) {
+    if (!formulario_estados.open) {
         return null;
     }
 
-    const isDisabled = formulario_loading || isSubmitting;
+    const isDisabled = formulario_estados.loading || formulario_estados.loading_submit || isSubmitting;
 
     return (
         <>
@@ -151,6 +150,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                             </div>
                         </div>
                         <button
+                            color="primary"
                             type="button"
                             onClick={handleClose}
                             disabled={isDisabled}
@@ -168,6 +168,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                                     Fornecedor
                                 </label>
                                 <input
+                                    color="primary"
                                     {...register("data.conta_pagar.fornecedor")}
                                     type="text"
                                     placeholder="Nome do fornecedor"
@@ -198,6 +199,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                                     Valor *
                                 </label>
                                 <input
+                                    color="primary"
                                     {...register("data.conta_pagar.valor", { valueAsNumber: true })}
                                     type="number"
                                     step="0.01"
@@ -216,6 +218,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                                         Data de Emissão *
                                     </label>
                                     <input
+                                        color="primary"
                                         {...register("data.conta_pagar.data_emissao")}
                                         type="date"
                                         disabled={isDisabled}
@@ -230,6 +233,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                                         Data de Vencimento *
                                     </label>
                                     <input
+                                        color="primary"
                                         {...register("data.conta_pagar.data_vencimento")}
                                         type="date"
                                         disabled={isDisabled}
@@ -245,6 +249,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                                     Data de Pagamento
                                 </label>
                                 <input
+                                    color="primary"
                                     {...register("data.conta_pagar.data_pagamento")}
                                     type="date"
                                     disabled={isDisabled}
@@ -316,6 +321,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
 
                     <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
                         <button
+                            color="primary"
                             type="button"
                             onClick={handleClose}
                             disabled={isDisabled}
@@ -324,6 +330,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                             Cancelar
                         </button>
                         <button
+                            color="primary"
                             type="submit"
                             onClick={handleSubmit(onSubmit)}
                             disabled={isDisabled}
@@ -343,7 +350,7 @@ export const BancoFormularioContaPagar: React.FC = () => {
                         </button>
                     </div>
 
-                    <FormLoadingSubmit loading={formulario_loading} />
+                    <FormLoadingSubmit loading={formulario_estados.loading} />
                 </div>
             </div>
         </>

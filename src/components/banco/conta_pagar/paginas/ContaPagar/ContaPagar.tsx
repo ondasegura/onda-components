@@ -4,14 +4,19 @@ import t from "onda-types";
 //CONTROLLERS
 import { controller } from "@/controllers";
 //COMPONENTES
+import { BancoFormularioContaPagar } from "../../formularios/ContaPagar";
+
+const store = new controller<t.Banco.Controllers.ContaPagar.ContaPagarBase>({ entidade: "conta_pagar" });
 
 export const BancoPaginaContaPagar: React.FC = () => {
-    const store = new controller({ entidade: "conta_pagar" });
     const pagina_estados = store.get_jsx.pagina;
 
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const itensPorPagina = 10;
+
+    const itensPorPagina = pagina_estados.paginacao?.itens_por_pagina || 10;
+    const totalItens = pagina_estados.paginacao?.total_itens || 0;
+    const totalPaginas = Math.ceil(totalItens / itensPorPagina);
 
     async function buscarDados(pagina: number, termoBusca: string) {
         await store.api.buscar_pelo_filtro({
@@ -26,7 +31,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     useEffect(() => {
         buscarDados(1, "");
-    }, [0]);
+    }, []);
 
     function handleEdit(item: t.Banco.Controllers.ContaPagar.ContaPagarBase) {
         store.set_state((store) => {
@@ -53,14 +58,10 @@ export const BancoPaginaContaPagar: React.FC = () => {
         buscarDados(1, searchTerm);
     }
 
-    const totalItens = pagina_estados.itens?.length || 0;
-    const totalPaginas = Math.ceil(totalItens / itensPorPagina);
-
-    const itensPaginados = pagina_estados.itens?.slice((paginaAtual - 1) * itensPorPagina, paginaAtual * itensPorPagina) || [];
-
     function irParaPagina(pagina: number) {
         if (pagina >= 1 && pagina <= totalPaginas) {
             setPaginaAtual(pagina);
+            buscarDados(pagina, searchTerm);
         }
     }
 
@@ -77,12 +78,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
         for (let i = inicio; i <= fim; i++) {
             botoes.push(
-                <button
-                    color="primary"
-                    key={i}
-                    onClick={() => irParaPagina(i)}
-                    className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${paginaAtual === i ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
-                >
+                <button color={paginaAtual === i ? "primary" : "standard"} key={i} onClick={() => irParaPagina(i)}>
                     {i}
                 </button>
             );
@@ -143,6 +139,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
 
     return (
         <div className="h-screen min-w-full bg-gray-50 p-6 flex flex-col">
+            <BancoFormularioContaPagar />
             <div className="min-w-full mx-auto flex-1 flex flex-col min-h-0">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col flex-1 min-h-0">
                     <div className="p-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
@@ -152,16 +149,15 @@ export const BancoPaginaContaPagar: React.FC = () => {
                         </div>
 
                         <div className="flex items-center gap-x-3">
-                            <div className="relative">
+                            <div className="relative w-2xs">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <input
                                     color="primary"
-                                    type="text"
+                                    type="search"
                                     placeholder="Buscar fornecedor..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleBuscar()}
-                                    className="w-48 sm:w-60 pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-300 focus:w-full sm:focus:w-72"
                                 />
                             </div>
 
@@ -187,7 +183,7 @@ export const BancoPaginaContaPagar: React.FC = () => {
                             </div>
                         )}
                         <div className="space-y-3">
-                            {itensPaginados.map((item: any) => (
+                            {pagina_estados.itens?.map((item: any) => (
                                 <div key={item._id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-gray-300 transition-all duration-200">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-4 flex-1">
@@ -264,43 +260,34 @@ export const BancoPaginaContaPagar: React.FC = () => {
                         <div className="flex items-center justify-between">
                             <div className="text-sm text-gray-700">
                                 Mostrando {totalItens > 0 ? (paginaAtual - 1) * itensPorPagina + 1 : 0} até {Math.min(paginaAtual * itensPorPagina, totalItens) || 0} de{" "}
-                                {totalItens} resultados
+                                {totalItens} resultados, total de {pagina_estados.paginacao?.total_itens_pagina_atual || 0} itens
                             </div>
                             {totalPaginas > 1 && (
                                 <div className="flex items-center space-x-2">
-                                    <button
-                                        color="primary"
-                                        onClick={() => irParaPagina(1)}
-                                        disabled={paginaAtual === 1 || pagina_estados.loading}
-                                        className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        title="Primeira página"
-                                    >
+                                    <button color="default" onClick={() => irParaPagina(1)} disabled={paginaAtual === 1 || pagina_estados.loading} title="Primeira página">
                                         <ChevronsLeft className="w-4 h-4" />
                                     </button>
                                     <button
-                                        color="primary"
+                                        color="default"
                                         onClick={() => irParaPagina(paginaAtual - 1)}
                                         disabled={paginaAtual === 1 || pagina_estados.loading}
-                                        className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Página anterior"
                                     >
                                         <ChevronLeft className="w-4 h-4" />
                                     </button>
                                     <div className="flex items-center space-x-1">{gerarBotoesPaginacao()}</div>
                                     <button
-                                        color="primary"
+                                        color="default"
                                         onClick={() => irParaPagina(paginaAtual + 1)}
                                         disabled={paginaAtual === totalPaginas || pagina_estados.loading}
-                                        className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Próxima página"
                                     >
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
                                     <button
-                                        color="primary"
+                                        color="default"
                                         onClick={() => irParaPagina(totalPaginas)}
                                         disabled={paginaAtual === totalPaginas || pagina_estados.loading}
-                                        className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Última página"
                                     >
                                         <ChevronsRight className="w-4 h-4" />
