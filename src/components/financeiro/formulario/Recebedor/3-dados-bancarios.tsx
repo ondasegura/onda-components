@@ -8,11 +8,10 @@ import utils from "onda-utils";
 
 const PUBLIC_BASE_URL_WORKER_FINANCEIRO = process.env.PUBLIC_BASE_URL_WORKER_FINANCEIRO;
 
-// Schema Zod para validação
 const schema = z4.object({
     conta_bancaria: z4.object({
         nome_titular: z4.string().min(1, "Nome do titular é obrigatório"),
-        documento_titular: z4.string().min(1, "Documento do titular é obrigatório"),
+        documento_titular: z4.string().optional(),
         banco: z4.string().min(1, "Banco é obrigatório"),
         tipo_titular: z4.union([z4.literal("individual"), z4.literal("empresa")], "Tipo de titular é obrigatório"),
         numero_agencia: z4.string().min(1, "Agência é obrigatória").max(4, "Agência deve ter no máximo 4 dígitos"),
@@ -30,7 +29,6 @@ interface Banco {
     nome: string;
 }
 
-// Componente Select customizado para bancos
 interface BankSelectProps {
     label: string;
     value: string;
@@ -71,7 +69,7 @@ const BankSelect: React.FC<BankSelectProps> = ({label, value, onChange, banks, l
                     </div>
                 </button>
                 {isOpen && !loading && banks.length > 0 && (
-                    <div className="absolute z4-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                         <div
                             onClick={() => {
                                 onChange("");
@@ -115,16 +113,10 @@ interface DadosBancariosRef {
 }
 
 const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setSubmitSuccess, setSubmitError, setLoading}, ref) => {
-    // Estados locais
     const [banks, setBanks] = useState<Banco[]>([]);
     const [isLoadingBanks, setIsLoadingBanks] = useState(false);
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-    controller_recebedor.contexto.state.set_state((state) => {
-        state.formulario.tipo === "empresa" ? state.formulario.dados_recebedor.razao_social : state.formulario.dados_recebedor.nome;
-        state.formulario.dados_recebedor.conta_bancaria.documento_titular = formularioState.recebedor.data.recebedor.documento;
-    });
 
-    // Obter dados do formulário do controller
     const {
         control,
         handleSubmit,
@@ -138,9 +130,9 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
         mode: "onChange",
         defaultValues: {
             conta_bancaria: {
-                nome_titular: formularioState.tipo === "individual" ? formularioState.dados_recebedor.nome : formularioState.dados_recebedor.razao_social,
+                nome_titular: (formularioState.tipo === "individual" ? formularioState.dados_recebedor.nome : formularioState.dados_recebedor.razao_social) || "",
                 tipo_titular: formularioState.tipo === "individual" ? "individual" : "empresa",
-                documento_titular: formularioState.recebedor.data.recebedor.documento,
+                documento_titular: "44708926880",
                 banco: "",
                 numero_agencia: "",
                 digito_agencia: "",
@@ -151,26 +143,29 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
         },
     });
 
-    setValue("conta_bancaria.nome_titular", "", {shouldValidate: true});
-    setValue("conta_bancaria.documento_titular", "", {shouldValidate: true});
     const bankValue = watch("conta_bancaria.banco");
+
+    useEffect(() => {
+        const nomeTitular = (formularioState.tipo === "individual" ? formularioState.dados_recebedor.nome : formularioState.dados_recebedor.razao_social) || "";
+        const documentoTitular = formularioState.dados_recebedor.documento?.replace(/\D/g, "") || "";
+
+        setValue("conta_bancaria.nome_titular", nomeTitular, {shouldValidate: true});
+        setValue("conta_bancaria.documento_titular", documentoTitular, {shouldValidate: true});
+    }, [formularioState.tipo, formularioState.dados_recebedor.nome, formularioState.dados_recebedor.razao_social, formularioState.dados_recebedor.documento, setValue]);
 
     const buscaBanco = async () => {
         if (banks.length > 0) return;
-
         try {
             setIsLoadingBanks(true);
             const response = await fetch("https://brasilapi.com.br/api/banks/v1");
             if (!response.ok) throw new Error("Erro ao buscar bancos");
             const data = await response.json();
-
             const formattedBanks: Banco[] = data
                 .filter((bank: any) => bank.code && bank.name)
                 .map((bank: any) => ({
                     codigo: bank.code.toString().padStart(3, "0"),
                     nome: bank.name,
                 }));
-
             setBanks(formattedBanks);
         } catch (error) {
             console.error("Erro ao buscar bancos:", error);
@@ -183,27 +178,15 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
         buscaBanco();
     }, []);
 
-    useEffect(() => {
-        const selectedBank = banks.find((bank) => bank.codigo === bankValue) || null;
-        if (selectedBank && bankValue) {
-            setValue("conta_bancaria.banco", selectedBank.codigo, {shouldValidate: false});
-        }
-    }, [banks, bankValue, setValue]);
-
     const onSubmit = async (data: FormData) => {
-        try {
-            setLoading(true);
-            const response = await controller_recebedor.api.criar(formularioState.recebedor);
+        console.log(data, "data passo 2");
 
-            setSubmitSuccess(true);
-            return true;
-        } catch (error: any) {
-            console.error("Erro ao enviar dados:", error);
-            setSubmitError(error.message || "Erro ao enviar os dados");
-            return false;
-        } finally {
-            setLoading(false);
-        }
+        controller_recebedor.contexto.state.set_state((currentStates) => {
+            currentStates.formulario = {
+                ...currentStates.formulario,
+                ...data,
+            };
+        });
     };
 
     useImperativeHandle(ref, () => ({
@@ -212,7 +195,6 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
             if (isValid) {
                 return await handleSubmit(onSubmit)();
             }
-            return;
         },
         validateForm: async () => {
             return await trigger();
@@ -225,7 +207,6 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                 <div>
                     <h2 className="text-xl font-semibold text-blue-600 mb-4">Dados Bancários</h2>
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <Controller
@@ -250,19 +231,29 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Documento do Titular*</label>
-                        <input
-                            type="text"
-                            disabled
-                            className="w-full px-3 py-2 border rounded-md bg-gray-100 border-gray-300"
-                            placeholder="Mesmo documento do recebedor"
-                            color="default"
+                        <Controller
+                            name="conta_bancaria.documento_titular"
+                            control={control}
+                            render={({field}) => (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Documento do Titular*</label>
+                                    <input
+                                        {...field}
+                                        color="default"
+                                        type="text"
+                                        disabled
+                                        className={`w-full px-3 py-2 border rounded-md bg-gray-100 ${
+                                            errors.conta_bancaria?.documento_titular ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                        placeholder="Será preenchido automaticamente"
+                                    />
+                                    {errors.conta_bancaria?.documento_titular && <p className="mt-1 text-sm text-red-600">{errors.conta_bancaria.documento_titular.message}</p>}
+                                    {!errors.conta_bancaria?.documento_titular && <p className="mt-1 text-sm text-gray-500">Mesmo documento do recebedor</p>}
+                                </div>
+                            )}
                         />
-                        <p className="mt-1 text-sm text-gray-500">Mesmo documento do recebedor</p>
                     </div>
-
                     <div>
                         <Controller
                             name="conta_bancaria.banco"
@@ -283,7 +274,6 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-
                     <div>
                         <Controller
                             name="conta_bancaria.tipo"
@@ -305,7 +295,6 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-
                     <div>
                         <Controller
                             name="conta_bancaria.numero_agencia"
@@ -327,7 +316,6 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-
                     <div>
                         <Controller
                             name="conta_bancaria.digito_agencia"
@@ -349,7 +337,6 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-
                     <div>
                         <Controller
                             name="conta_bancaria.numero_conta"
@@ -371,7 +358,6 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-
                     <div>
                         <Controller
                             name="conta_bancaria.digito_conta"

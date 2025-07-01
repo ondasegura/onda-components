@@ -1,5 +1,5 @@
 //REACT
-import React, {useImperativeHandle, forwardRef, useCallback, useEffect, useState} from "react";
+import React, {useImperativeHandle, forwardRef, useCallback, useEffect, useMemo} from "react";
 import {UserRound, Building2, AlertCircle} from "lucide-react";
 import {useForm, Controller, UseFormSetValue, SubmitHandler} from "react-hook-form";
 //ZOD
@@ -40,6 +40,9 @@ const TipoCadastroSchema = z4
         nome_fantasia: z4.string().optional(),
         razao_social: z4.string().optional(),
         data_fundacao: z4.string().optional(),
+        socios_administradores: z4.object({
+            nome: z4.string().optional(),
+        }),
     })
     .superRefine((data, ctx) => {
         // Valida o campo 'documento' com base no valor do campo 'tipo'
@@ -59,29 +62,30 @@ const TipoCadastroSchema = z4
         }
     });
 
-// 3. O tipo do formulário é inferido a partir do schema corrigido
 type TipoCadastroForm = z4.infer<typeof TipoCadastroSchema>;
 
-// 4. Função `buscaCpf` com a tipagem correta para `setValue`
 export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadastroForm>): Promise<void> => {
     const apenasNumeros = (valor: string | undefined | null): string => {
         if (!valor) return "";
         return valor.replace(/\D/g, "");
     };
     const cpfApenasNumeros = apenasNumeros(cpf);
-    // Os nomes dos campos agora correspondem ao schema
+
     const nameField = "nome";
     const documentField = "documento";
+    const nomeSocio = "socios_administradores.nome";
     try {
         const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_WAVE), `/public/locatario/${cpfApenasNumeros}`, true);
         const data: {results: Array<{locatarioNome: string}>} = await response;
 
         controller_recebedor.contexto.state.set_state((state) => {
             state.formulario.dados_recebedor.nome = data.results[0]?.locatarioNome;
+            state.formulario.dados_recebedor.socios_administradores[0].nome = data.results[0]?.locatarioNome;
         });
         console.log(data.results[0]?.locatarioNome, "data.results[0]?.locatarioNome");
 
         setValue(nameField, data.results[0]?.locatarioNome || "", {shouldValidate: true});
+        setValue(nomeSocio, data.results[0].locatarioNome || "", {shouldValidate: true});
         setValue(documentField, cpf, {shouldValidate: true});
     } catch (error) {
         console.error("Erro ao buscar dados do CPF:", error);
@@ -90,7 +94,6 @@ export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadast
     }
 };
 
-// Funções de formatação (mantidas como no original)
 function formatCPF(value: string): string {
     const cpf = value.replace(/\D/g, "").slice(0, 11);
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
@@ -111,11 +114,16 @@ interface TipoCadastroRef {
 }
 
 const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate}, ref) => {
-    const [loginUser, setLoginUser] = useState<Extract<t.Financeiro.Controllers.UserPayload.AuthPayload, {type: "login"}> | null>(null);
+    const user = useMemo(() => {
+        const userData = api?.usuario_auth()?.data?.usuario_auth;
+        console.log(userData, "userData");
+        return userData;
+    }, []);
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-    const user = api?.usuario_auth()?.data?.usuario_auth;
-    console.log(user, "user");
+    console.log(formularioState.dados_recebedor_new.data, "formularioState");
 
+    const loginUser: t.Financeiro.Controllers.UserPayload.AuthPayload = user as Extract<typeof user, {type: "login"}>;
+    const email = loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "";
     const {
         control,
         handleSubmit,
@@ -130,7 +138,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         defaultValues: {
             tipo: (formularioState.tipo as t.Financeiro.Controllers.Recebedor.Tipo) || undefined,
             documento: "",
-            email: loginUser?.email || "",
+            email: email,
             site_url: undefined,
             nome: "",
             nome_fantasia: "",
@@ -146,6 +154,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         controller_recebedor.contexto.state.set_steep_progress(0);
         controller_recebedor.contexto.state.set_state((state) => {
             state.formulario.tipo = tipo;
+            state.formulario.dados_recebedor.documento;
         });
         setValue("tipo", tipo, {shouldValidate: true});
         setValue("documento", "", {shouldValidate: false});
@@ -154,7 +163,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         setValue("razao_social", "", {shouldValidate: true});
         setValue("nome_fantasia", "", {shouldValidate: true});
         setValue("data_fundacao", "", {shouldValidate: true});
-        setValue("email", loginUser?.email || "", {shouldValidate: true});
+        setValue("email", loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "", {shouldValidate: true});
         clearErrors();
     };
 
@@ -166,17 +175,17 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                 const data: {
                     razao_social: string;
                     nome_fantasia: string;
-                    data_fundacao: string;
+                    data_inicio_atividade: string;
                 } = await response.json();
                 controller_recebedor.contexto.state.set_state((state) => {
                     state.formulario.dados_recebedor.razao_social = data?.razao_social;
                     state.formulario.dados_recebedor.nome_fantasia = data?.nome_fantasia;
-                    state.formulario.dados_recebedor.data_fundacao = data?.data_fundacao;
+                    state.formulario.dados_recebedor.data_fundacao = data?.data_inicio_atividade;
                 });
                 setValue("site_url", "", {shouldValidate: true});
                 setValue("razao_social", data?.razao_social || "", {shouldValidate: true});
                 setValue("nome_fantasia", data?.nome_fantasia || "", {shouldValidate: true});
-                setValue("data_fundacao", data?.data_fundacao || "", {shouldValidate: true});
+                setValue("data_fundacao", data?.data_inicio_atividade || "", {shouldValidate: true});
 
                 clearErrors("site_url");
             } catch (error) {
@@ -196,7 +205,26 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
     }, [documento, tipoRecebedor, buscaCnpj, setValue]);
 
     const onSubmit: SubmitHandler<TipoCadastroForm> = async (data) => {
-        console.log("Form data is valid:", data);
+        console.log(data, "data");
+        const setDadosRecebedor: {
+            data?: {
+                // Aqui está a mágica: aplicamos Partial ao tipo do recebedor
+                recebedor?: Partial<t.Financeiro.Controllers.Recebedor.Criar.Input["data"]["recebedor"]>;
+            };
+        } = {
+            data: {
+                recebedor: {
+                    documento: data.documento,
+                    tipo: "individual",
+                    email: data.email,
+                    site: data.site_url as string,
+                },
+            },
+        };
+        controller_recebedor.contexto.state.set_state((currentStates) => {
+            currentStates.formulario.dados_recebedor_new = setDadosRecebedor as t.Financeiro.Controllers.Recebedor.Criar.Input;
+        });
+
         const isValid = await trigger();
         if (isValid) {
             controller_recebedor.contexto.state.set_steep_progress(1);
@@ -302,11 +330,11 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                                                 {...field}
                                                 color="default"
                                                 type="email"
-                                                value={loginUser?.email || field.value || ""}
-                                                disabled={!!loginUser?.email}
+                                                value={email || field.value || ""}
+                                                disabled={!!email}
                                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                                     errors.email ? "border-red-500" : "border-gray-300"
-                                                } ${!!loginUser?.email ? "bg-gray-100" : ""}`}
+                                                } ${!!email ? "bg-gray-100" : ""}`}
                                             />
                                             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
                                         </div>

@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {X, Loader2, CheckCircle, AlertCircle} from "lucide-react";
 import controller_recebedor from "@/controllers/financeiro/financeiro_controller_recebedor";
+import t from "onda-types";
 import TipoCadastro from "./1-tipo-cadastro";
 import DadosPessoais from "./2-dados-pessoais";
 import DadosBancarios from "./3-dados-bancarios";
@@ -79,16 +80,13 @@ const Modal: React.FC<ModalProps> = ({open, onClose, title, children}) => {
 };
 
 export const FinanceiroFormularioRecebedor: React.FC = () => {
-    // Estados do controller Zustand
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
 
-    // Estados locais
     const [modalOpen, setModalOpen] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [submitSuccess, setSubmitSuccess] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Refs para os componentes dos passos
     const tipoCadastroRef = useRef<any>(null);
     const dadosPessoaisRef = useRef<any>(null);
     const dadosBancariosRef = useRef<any>(null);
@@ -110,6 +108,43 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
         }
     };
 
+    const handleFinalize = async () => {
+        console.log("passou aqui");
+        const isFormValid = await dadosBancariosRef.current?.validateForm();
+        if (!isFormValid) {
+            setSubmitError("Por favor, preencha os dados bancários corretamente.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        try {
+            await dadosBancariosRef.current?.onSubmitDadosBancarios();
+            const formState = controller_recebedor.contexto.state.get_state_formulario();
+            console.log(formState, "formState");
+
+            const payload: t.Financeiro.Controllers.Recebedor.Criar.Input = {
+                data: {recebedor: formState.recebedor},
+            };
+            console.log(payload, "payload");
+
+            const response = await controller_recebedor.api.criar(payload);
+
+            if (!response?.data?.recebedor) {
+                throw new Error("A resposta da API não continha os dados de sucesso esperados.");
+            }
+
+            console.log("Recebedor cadastrado com sucesso!");
+            setModalOpen(true);
+        } catch (error: any) {
+            console.error("Falha ao finalizar o cadastro do recebedor:", error);
+            const errorMessage = error.response?.data?.message || "Ocorreu um erro. Tente novamente.";
+            setSubmitError(errorMessage);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     const getStepContent = (step: number) => {
         switch (step) {
             case 0:
@@ -144,11 +179,6 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
         return true;
     };
 
-    const handleFinalize = async () => {
-        if (formularioState.step === 2) return await dadosBancariosRef?.current?.onSubmitDadosBancarios();
-        return await validateCurrentForm();
-    };
-
     const handleCloseSnackbar = () => {
         setSubmitError(null);
         setSubmitSuccess(false);
@@ -158,7 +188,6 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
         setModalOpen(false);
         // Navegação - ajuste conforme seu roteador
         // navigate.push("/resumo");
-        console.log("Navegar para /resumo");
     };
 
     return (

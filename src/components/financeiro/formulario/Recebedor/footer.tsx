@@ -1,13 +1,12 @@
 import React from "react";
 import controller_recebedor from "@/controllers/financeiro/financeiro_controller_recebedor";
 import {ChevronLeft, ChevronRight} from "lucide-react";
-import t from "onda-types";
 
 interface FooterProps {
     currentStep: number;
     validateForm: () => Promise<boolean>;
     onClickNext: (step: number) => void;
-    onFinalize: () => Promise<boolean>;
+    onFinalize: () => void;
 }
 
 const Footer: React.FC<FooterProps> = ({currentStep, validateForm, onClickNext, onFinalize}) => {
@@ -18,16 +17,12 @@ const Footer: React.FC<FooterProps> = ({currentStep, validateForm, onClickNext, 
         if (!isValid || loading_submit) {
             return;
         }
-        if (currentStep === 2) {
-            try {
-                const formState = controller_recebedor.contexto.state.get_state_formulario();
-                const payload: t.Financeiro.Controllers.Recebedor.Criar.Input = {data: formState.recebedor.data};
 
-                await controller_recebedor.api.criar(payload);
-            } catch (error) {
-                console.log("Falha ao finalizar o cadastro do recebedor:", error);
-            }
+        if (currentStep === 2) {
+            // Apenas chame a função onFinalize do componente pai.
+            onFinalize();
         } else {
+            // Para as outras etapas, continue chamando onClickNext.
             onClickNext(currentStep);
         }
     };
@@ -55,7 +50,8 @@ const Footer: React.FC<FooterProps> = ({currentStep, validateForm, onClickNext, 
                 type="button"
                 color="default"
                 onClick={handleNextOrFinalize}
-                className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                disabled={loading_submit}
+                className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-blue-400 disabled:cursor-not-allowed"
             >
                 {currentStep === 2 ? "Finalizar" : "Próximo"}
                 {currentStep !== 2 && <ChevronRight className="w-4 h-4" />}

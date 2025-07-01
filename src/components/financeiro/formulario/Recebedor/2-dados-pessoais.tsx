@@ -444,6 +444,12 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
     };
 
     const onSubmit = async (data: FormData) => {
+        console.log(data, "data passo 2");
+
+        controller_recebedor.contexto.state.set_state((currentState) => {
+            Object.assign(currentState.formulario.dados_recebedor, data);
+        });
+
         const isValid = await trigger();
         if (isValid) {
             controller_recebedor.contexto.state.set_steep_progress(2);

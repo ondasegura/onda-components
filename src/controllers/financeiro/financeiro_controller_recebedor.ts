@@ -26,15 +26,20 @@ interface ZustandStore {
             tipo: t.Financeiro.Controllers.Recebedor.Tipo;
             dados_recebedor: {
                 nome: string;
+                documento: string;
                 nome_fantasia: string;
                 razao_social: string;
                 data_fundacao: string;
+                socios_administradores: {
+                    nome: string;
+                }[];
                 email: string;
                 conta_bancaria: {
                     nome_titular: string;
                     documento_titular: string;
                 };
             };
+            dados_recebedor_new: t.Financeiro.Controllers.Recebedor.Criar.Input;
         };
     };
 }
@@ -58,15 +63,22 @@ const initialStates = {
         tipo: "" as t.Financeiro.Controllers.Recebedor.Tipo,
         dados_recebedor: {
             nome: "",
+            documento: "",
             nome_fantasia: "",
             razao_social: "",
             data_fundacao: "",
+            socios_administradores: [
+                {
+                    nome: "",
+                },
+            ],
             email: "",
             conta_bancaria: {
                 nome_titular: "",
                 documento_titular: "",
             },
         },
+        dados_recebedor_new: {} as t.Financeiro.Controllers.Recebedor.Criar.Input,
     },
 };
 
