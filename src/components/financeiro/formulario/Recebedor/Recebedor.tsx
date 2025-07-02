@@ -121,12 +121,13 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
 
         try {
             await dadosBancariosRef.current?.onSubmitDadosBancarios();
+
             const formState = controller_recebedor.contexto.state.get_state_formulario();
             console.log(formState, "formState");
 
             const payload: t.Financeiro.Controllers.Recebedor.Criar.Input = {
                 data: {
-                    recebedor: formularioState.dados_recebedor_new.data.recebedor,
+                    recebedor: formState.dados_recebedor_new.data.recebedor,
                 },
             };
             console.log(payload, "payload");
