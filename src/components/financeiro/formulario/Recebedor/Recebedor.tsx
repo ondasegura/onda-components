@@ -53,6 +53,12 @@ interface ModalProps {
     children: React.ReactNode;
 }
 
+// interface FinanceiroFormularioRecebedorProps {
+//     user: string;
+//     email: string;
+//     referencia_user;
+// }
+
 const Modal: React.FC<ModalProps> = ({open, onClose, title, children}) => {
     if (!open) return null;
 

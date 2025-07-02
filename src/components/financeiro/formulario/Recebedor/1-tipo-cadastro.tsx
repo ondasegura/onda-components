@@ -71,7 +71,6 @@ export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadast
 
     const nameField = "nome";
     const documentField = "documento";
-    const nomeSocio = "socios_administradores.nome";
     try {
         const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_WAVE), `/public/locatario/${cpfApenasNumeros}`, true);
         const data: {results: Array<{locatarioNome: string}>} = await response;
@@ -110,17 +109,28 @@ interface TipoCadastroRef {
 }
 
 const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate}, ref) => {
+    const emailExemplo = "email.exemplo@gmail.com";
+    const userExemplo = {
+        type: "login",
+        _id: "12332313",
+        nome: "ti onda segura",
+        email: "ti@ondasegura.com.br",
+        tipo: "ONDA_USER",
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21lIjoiVGkgb25kYSBzZWd1cmEiLCJlbWFpbCI6InRpQG9uZGFzZWd1cmEuY29tLmJyIiwiaWQiOjUyOCwib25kYV91c2VyX2lkIjo1MjgsImNvZGlnbyI6IlVTRVItNTkxNzMzNjE0MzE2MjgtMjAyNSIsInR5cGVfdXNlciI6Ik9OREFfVVNFUiIsIm9yZ2FuaXphY2FvIjoib25kYV9zZWd1cmEiLCJpYXQiOjE3NTE0NjcyODl9.rn1zLDt628MBVYNtlv0E02dtReQqOLGwsoTglCv5rFk",
+        permissoes: {},
+        authenticator_ativo: false,
+    };
     const user = useMemo(() => {
-        const userData = api?.usuario_auth()?.data?.usuario_auth;
-        console.log(userData, "userData");
+        const userData = api?.usuario_auth();
         return userData;
     }, []);
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
+    console.log(user, "user ");
 
-    const loginUser: t.Financeiro.Controllers.UserPayload.AuthPayload = user as Extract<typeof user, {type: "login"}>;
-    const email = loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "";
-    const referencia_externa = "imobiliaria12355567889999";
-    const codigo = "imobiliaria12355567889999";
+    const loginUser: t.Banco.Controllers.Usuario.AuthFront = user as Extract<typeof user, {type: "login"}>;
+    const email = userExemplo.tipo === "ONDA_USER" ? userExemplo.email : emailExemplo || "";
+    const referencia_externa = "imobiliaria1235556788999900000";
+    const codigo = "imobiliaria1235556788999900000";
 
     const {
         control,
@@ -171,7 +181,6 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         setValue("razao_social", "", {shouldValidate: true});
         setValue("nome_fantasia", "", {shouldValidate: true});
         setValue("data_fundacao", "", {shouldValidate: true});
-        setValue("email", loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "", {shouldValidate: true});
         clearErrors();
     };
 
