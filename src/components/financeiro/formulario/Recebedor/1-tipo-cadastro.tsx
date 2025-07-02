@@ -40,9 +40,6 @@ const TipoCadastroSchema = z4
         nome_fantasia: z4.string().optional(),
         razao_social: z4.string().optional(),
         data_fundacao: z4.string().optional(),
-        socios_administradores: z4.object({
-            nome: z4.string().optional(),
-        }),
         referencia_externa: z4.string(),
         codigo: z4.string(),
     })
@@ -85,7 +82,6 @@ export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadast
         });
 
         setValue(nameField, data.results[0]?.locatarioNome || "", {shouldValidate: true});
-        setValue(nomeSocio, data.results[0].locatarioNome || "", {shouldValidate: true});
         setValue(documentField, cpf, {shouldValidate: true});
     } catch (error) {
         console.error("Erro ao buscar dados do CPF:", error);
@@ -175,8 +171,6 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         setValue("razao_social", "", {shouldValidate: true});
         setValue("nome_fantasia", "", {shouldValidate: true});
         setValue("data_fundacao", "", {shouldValidate: true});
-        setValue("referencia_externa", "", {shouldValidate: true});
-        setValue("codigo", "", {shouldValidate: true});
         setValue("email", loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "", {shouldValidate: true});
         clearErrors();
     };
