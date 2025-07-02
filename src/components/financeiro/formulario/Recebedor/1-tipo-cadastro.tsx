@@ -43,6 +43,8 @@ const TipoCadastroSchema = z4
         socios_administradores: z4.object({
             nome: z4.string().optional(),
         }),
+        referencia_externa: z4.string(),
+        codigo: z4.string(),
     })
     .superRefine((data, ctx) => {
         if (data.tipo === "individual" && data.documento.length !== 14) {
@@ -121,6 +123,9 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
     const loginUser: t.Financeiro.Controllers.UserPayload.AuthPayload = user as Extract<typeof user, {type: "login"}>;
     const email = loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "";
+    const referencia_externa = "imobiliaria1234";
+    const codigo = "imobiliaria1234";
+
     const {
         control,
         handleSubmit,
@@ -141,6 +146,8 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
             nome_fantasia: "",
             data_fundacao: "",
             razao_social: "",
+            referencia_externa: referencia_externa,
+            codigo: codigo,
         },
     });
 
@@ -148,10 +155,18 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
     const documento = watch("documento");
 
     const handleTipoChange = async (tipo: t.Financeiro.Controllers.Recebedor.Tipo) => {
-        controller_recebedor.contexto.state.set_steep_progress(0);
+        controller_recebedor.contexto.state.set_step_progress(0);
         controller_recebedor.contexto.state.set_state((state) => {
+            if (!state.formulario.dados_recebedor_new.data) {
+                state.formulario.dados_recebedor_new.data = {recebedor: {} as any};
+            } else if (!state.formulario.dados_recebedor_new.data.recebedor) {
+                state.formulario.dados_recebedor_new.data.recebedor = {} as any;
+            }
+
             state.formulario.tipo = tipo;
             state.formulario.dados_recebedor.documento;
+            state.formulario.dados_recebedor_new.data.recebedor.referencia_externa = referencia_externa;
+            state.formulario.dados_recebedor_new.data.recebedor.codigo = codigo;
         });
         setValue("tipo", tipo, {shouldValidate: true});
         setValue("documento", "", {shouldValidate: false});
@@ -160,6 +175,8 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         setValue("razao_social", "", {shouldValidate: true});
         setValue("nome_fantasia", "", {shouldValidate: true});
         setValue("data_fundacao", "", {shouldValidate: true});
+        setValue("referencia_externa", "", {shouldValidate: true});
+        setValue("codigo", "", {shouldValidate: true});
         setValue("email", loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "", {shouldValidate: true});
         clearErrors();
     };
@@ -219,6 +236,8 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                 razao_social: data.razao_social,
                 nome_fantasia: data.nome_fantasia,
                 data_fundacao: data.data_fundacao,
+                referencia_externa: data.referencia_externa,
+                codigo: data.codigo,
             };
 
             currentStates.formulario.dados_recebedor_new.data.recebedor = newRecebedorData as any;
@@ -227,7 +246,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
         const isValid = await trigger();
         if (isValid) {
-            controller_recebedor.contexto.state.set_steep_progress(1);
+            controller_recebedor.contexto.state.set_step_progress(1);
         }
     };
 

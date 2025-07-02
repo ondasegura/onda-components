@@ -486,7 +486,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
 
         const isValid = await trigger();
         if (isValid) {
-            controller_recebedor.contexto.state.set_steep_progress(2);
+            controller_recebedor.contexto.state.set_step_progress(2);
         }
     };
 

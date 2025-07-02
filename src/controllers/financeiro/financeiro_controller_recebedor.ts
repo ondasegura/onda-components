@@ -255,7 +255,7 @@ const controller_recebedor = class controller_recebedor {
                 });
             }
 
-            static set_steep_progress(progress: number) {
+            static set_step_progress(progress: number) {
                 store.setState((state) => {
                     state.states.formulario.step = progress;
                 });

@@ -28,7 +28,7 @@ const Footer: React.FC<FooterProps> = ({currentStep, validateForm, onClickNext, 
     };
 
     const handleBack = () => {
-        controller_recebedor.contexto.state.set_steep_progress(currentStep - 1);
+        controller_recebedor.contexto.state.set_step_progress(currentStep - 1);
     };
 
     return (
