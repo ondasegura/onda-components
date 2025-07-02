@@ -449,50 +449,39 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
     };
 
     const onSubmit: SubmitHandler<FormData> = async (data) => {
-        let setDadosRecebedor: {
-            data?: {
-                // Aqui está a mágica: aplicamos Partial ao tipo do recebedor
-                recebedor?: Partial<t.Financeiro.Controllers.Recebedor.Criar.Input["data"]["recebedor"]>;
-            };
-        } = {};
-
-        if (data.tipo === "individual") {
-            // TypeScript agora sabe que 'data' é IndividualFormData
-            setDadosRecebedor = {
-                data: {
-                    recebedor: {
-                        tipo: "individual",
-                        nome: data.nome,
-                        nome_mae: data.nome_mae,
-                        data_nascimento: data.data_nascimento,
-                        renda_mensal: data.renda_mensal,
-                        ocupacao_profissional: data.ocupacao_profissional,
-                        telefones: data.telefones,
-                        endereco: data.endereco,
-                    },
-                },
-            };
-        } else if (data.tipo === "empresa") {
-            setDadosRecebedor = {
-                data: {
-                    recebedor: {
-                        tipo: "empresa",
-                        razao_social: data.razao_social,
-                        nome_fantasia: data.nome_fantasia,
-                        data_fundacao: data.data_fundacao,
-                        faturamento_anual: data.faturamento_anual,
-                        tipo_empresa: data.tipo_empresa,
-                        telefones: data.telefones,
-                        endereco_principal: data.endereco_principal,
-                        socios_administradores: data.socios_administradores,
-                    },
-                },
-            };
-        }
         controller_recebedor.contexto.state.set_state((currentStates) => {
-            console.log(setDadosRecebedor, "setDadosRecebedor");
+            const existingRecebedor = currentStates.formulario.dados_recebedor_new.data.recebedor || {};
+            let newRecebedorData = {};
 
-            currentStates.formulario.dados_recebedor_new = setDadosRecebedor as t.Financeiro.Controllers.Recebedor.Criar.Input;
+            if (data.tipo === "individual") {
+                const individualData = data as IndividualFormData;
+                newRecebedorData = {
+                    nome: individualData.nome,
+                    nome_mae: individualData.nome_mae,
+                    data_nascimento: individualData.data_nascimento,
+                    renda_mensal: individualData.renda_mensal,
+                    ocupacao_profissional: individualData.ocupacao_profissional,
+                    telefones: individualData.telefones,
+                    endereco: individualData.endereco,
+                };
+            } else if (data.tipo === "empresa") {
+                const empresaData = data as EmpresaFormData;
+                newRecebedorData = {
+                    razao_social: empresaData.razao_social,
+                    nome_fantasia: empresaData.nome_fantasia,
+                    faturamento_anual: empresaData.faturamento_anual,
+                    tipo_empresa: empresaData.tipo_empresa,
+                    data_fundacao: empresaData.data_fundacao,
+                    telefones: empresaData.telefones,
+                    endereco_principal: empresaData.endereco_principal,
+                    socios_administradores: empresaData.socios_administradores,
+                };
+            }
+            currentStates.formulario.dados_recebedor_new.data.recebedor = {
+                ...existingRecebedor,
+                ...newRecebedorData,
+            };
+            console.log(currentStates.formulario.dados_recebedor_new.data.recebedor, "data recebedor passo 1 + passo 2");
         });
 
         const isValid = await trigger();

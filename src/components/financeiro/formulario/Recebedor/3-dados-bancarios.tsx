@@ -20,6 +20,17 @@ const schema = z4.object({
         digito_conta: z4.string().min(1, "Dígito da conta é obrigatório"),
         tipo: z4.string().min(1, "Tipo de conta é obrigatório"),
     }),
+    configuracoes_transferencia: z4.object({
+        transferencia_habilitada: z4.boolean(),
+        intervalo_transferencia: z4.union([z4.literal("Diaria"), z4.literal("Semanal"), z4.literal("Mensal")]),
+        dia_transferencia: z4.number().int(),
+    }),
+    configuracoes_antecipacao: z4.object({
+        habilitado: z4.boolean(),
+        tipo: z4.union([z4.literal("completa"), z4.literal("parcial")]),
+        percentual_volume: z4.string(),
+        atraso: z4.number().nullable(),
+    }),
 });
 
 type FormData = z4.infer<typeof schema>;
@@ -116,6 +127,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
     const [banks, setBanks] = useState<Banco[]>([]);
     const [isLoadingBanks, setIsLoadingBanks] = useState(false);
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
+    const recebedorData = formularioState.dados_recebedor_new?.data?.recebedor;
 
     const {
         control,
@@ -130,9 +142,9 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
         mode: "onChange",
         defaultValues: {
             conta_bancaria: {
-                nome_titular: (formularioState.tipo === "individual" ? formularioState.dados_recebedor.nome : formularioState.dados_recebedor.razao_social) || "",
-                tipo_titular: formularioState.tipo === "individual" ? "individual" : "empresa",
-                documento_titular: "44708926880",
+                nome_titular: (recebedorData?.tipo === "individual" ? recebedorData.nome : recebedorData?.razao_social) || "",
+                tipo_titular: recebedorData?.tipo,
+                documento_titular: recebedorData?.documento,
                 banco: "",
                 numero_agencia: "",
                 digito_agencia: "",
@@ -140,19 +152,29 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                 digito_conta: "",
                 tipo: "",
             },
+            configuracoes_transferencia: {
+                transferencia_habilitada: false,
+                intervalo_transferencia: "Mensal",
+                dia_transferencia: 10,
+            },
+            configuracoes_antecipacao: {
+                atraso: 10,
+                habilitado: false,
+                percentual_volume: "100",
+                tipo: "completa",
+            },
         },
     });
 
-    const bankValue = watch("conta_bancaria.banco");
-
     useEffect(() => {
-        const nomeTitular = (formularioState.tipo === "individual" ? formularioState.dados_recebedor.nome : formularioState.dados_recebedor.razao_social) || "";
-        const documentoTitular = formularioState.dados_recebedor.documento?.replace(/\D/g, "") || "";
+        if (recebedorData) {
+            const nomeTitular = (recebedorData.tipo === "individual" ? recebedorData.nome : recebedorData.razao_social) || "";
+            const documentoTitular = recebedorData.documento?.replace(/\D/g, "") || "";
 
-        setValue("conta_bancaria.nome_titular", nomeTitular, {shouldValidate: true});
-        setValue("conta_bancaria.documento_titular", documentoTitular, {shouldValidate: true});
-    }, [formularioState.tipo, formularioState.dados_recebedor.nome, formularioState.dados_recebedor.razao_social, formularioState.dados_recebedor.documento, setValue]);
-
+            setValue("conta_bancaria.nome_titular", nomeTitular, {shouldValidate: true});
+            setValue("conta_bancaria.documento_titular", documentoTitular, {shouldValidate: true});
+        }
+    }, [recebedorData, setValue]);
     const buscaBanco = async () => {
         if (banks.length > 0) return;
         try {
@@ -179,13 +201,21 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
     }, []);
 
     const onSubmit = async (data: FormData) => {
-        console.log(data, "data passo 2");
-
         controller_recebedor.contexto.state.set_state((currentStates) => {
-            currentStates.formulario = {
-                ...currentStates.formulario,
-                ...data,
+            const existingRecebedor = currentStates.formulario.dados_recebedor_new.data?.recebedor || {};
+
+            const finalRecebedorData = {
+                ...existingRecebedor,
+                conta_bancaria: {
+                    ...data.conta_bancaria,
+                    documento_titular: data.conta_bancaria.documento_titular?.replace(/\D/g, ""),
+                },
+                configuracoes_transferencia: data.configuracoes_transferencia,
+                configuracoes_antecipacao: data.configuracoes_antecipacao,
             };
+            if (currentStates.formulario.dados_recebedor_new.data) {
+                currentStates.formulario.dados_recebedor_new.data.recebedor = finalRecebedorData as any;
+            }
         });
     };
 

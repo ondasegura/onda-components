@@ -147,6 +147,7 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
             setIsSubmitting(false);
         }
     };
+
     const getStepContent = (step: number) => {
         switch (step) {
             case 0:

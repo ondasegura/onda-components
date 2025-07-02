@@ -45,11 +45,10 @@ const TipoCadastroSchema = z4
         }),
     })
     .superRefine((data, ctx) => {
-        // Valida o campo 'documento' com base no valor do campo 'tipo'
         if (data.tipo === "individual" && data.documento.length !== 14) {
             ctx.addIssue({
                 code: z4.ZodIssueCode.custom,
-                path: ["documento"], // Adiciona o erro especificamente ao campo 'documento'
+                path: ["documento"],
                 message: "CPF com formato inválido. Deve conter 11 dígitos.",
             });
         }
@@ -203,25 +202,27 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
     }, [documento, tipoRecebedor, buscaCnpj, setValue]);
 
     const onSubmit: SubmitHandler<TipoCadastroForm> = async (data) => {
-        const setDadosRecebedor: {
-            data?: {
-                // Aqui está a mágica: aplicamos Partial ao tipo do recebedor
-                recebedor?: Partial<t.Financeiro.Controllers.Recebedor.Criar.Input["data"]["recebedor"]>;
-            };
-        } = {
-            data: {
-                recebedor: {
-                    documento: data.documento,
-                    tipo: data.tipo,
-                    email: data.email,
-                    site: data.site_url as string,
-                },
-            },
-        };
         controller_recebedor.contexto.state.set_state((currentStates) => {
-            console.log(setDadosRecebedor, "setDadosRecebedor");
+            if (!currentStates.formulario.dados_recebedor_new.data) {
+                currentStates.formulario.dados_recebedor_new.data = {recebedor: {} as any};
+            }
 
-            currentStates.formulario.dados_recebedor_new = setDadosRecebedor as t.Financeiro.Controllers.Recebedor.Criar.Input;
+            const existingRecebedor = currentStates.formulario.dados_recebedor_new.data.recebedor || {};
+
+            const newRecebedorData = {
+                ...existingRecebedor,
+                tipo: data.tipo,
+                documento: data.documento.replace(/\D/g, ""),
+                email: data.email,
+                site: data.site_url || "",
+                nome: data.nome,
+                razao_social: data.razao_social,
+                nome_fantasia: data.nome_fantasia,
+                data_fundacao: data.data_fundacao,
+            };
+
+            currentStates.formulario.dados_recebedor_new.data.recebedor = newRecebedorData as any;
+            console.log(currentStates.formulario.dados_recebedor_new.data.recebedor, "data recebedor passo 1");
         });
 
         const isValid = await trigger();
