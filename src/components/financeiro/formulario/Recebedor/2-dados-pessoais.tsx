@@ -1,5 +1,5 @@
 import React, {useImperativeHandle, forwardRef, useEffect, useState} from "react";
-import {useForm, Controller, FieldErrors} from "react-hook-form";
+import {useForm, Controller, FieldErrors, SubmitHandler} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import z4 from "zod/v4";
 import {Loader2, ChevronDown} from "lucide-react";
@@ -98,6 +98,7 @@ const telefoneSchema = z4.object({
 });
 
 const individualSchema = z4.object({
+    tipo: z4.literal("individual"),
     nome: z4.string().min(1, "Nome é obrigatório"),
     nome_mae: z4.string().optional(),
     data_nascimento: z4.string().min(1, "Data de nascimento é obrigatória"),
@@ -108,6 +109,7 @@ const individualSchema = z4.object({
 });
 
 const socioSchema = z4.object({
+    tipo: z4.literal("individual"),
     nome: z4.string().min(1, "Nome do representante é obrigatório"),
     documento: z4.string().min(11, "CPF deve ter 11 dígitos").max(11, "CPF deve ter 11 dígitos"),
     email: z4.string().email("Email inválido").min(1, "Email é obrigatório"),
@@ -121,6 +123,7 @@ const socioSchema = z4.object({
 });
 
 const empresaSchema = z4.object({
+    tipo: z4.literal("empresa"),
     razao_social: z4.string().min(1, "Razão social é obrigatória"),
     nome_fantasia: z4.string().min(1, "Nome fantasia é obrigatório"),
     faturamento_anual: z4.number().min(1, "Valor deve ser maior que R$ 1,00"),
@@ -289,6 +292,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
         defaultValues:
             recebedorTipo === "individual"
                 ? ({
+                      tipo: "individual",
                       nome: formularioState?.dados_recebedor?.nome || "",
                       nome_mae: "",
                       data_nascimento: "",
@@ -307,6 +311,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                       },
                   } as any)
                 : ({
+                      tipo: "empresa",
                       razao_social: formularioState?.dados_recebedor?.razao_social || "",
                       nome_fantasia: formularioState?.dados_recebedor?.nome_fantasia || "",
                       faturamento_anual: 0,
@@ -443,11 +448,51 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
         }
     };
 
-    const onSubmit = async (data: FormData) => {
-        console.log(data, "data passo 2");
+    const onSubmit: SubmitHandler<FormData> = async (data) => {
+        let setDadosRecebedor: {
+            data?: {
+                // Aqui está a mágica: aplicamos Partial ao tipo do recebedor
+                recebedor?: Partial<t.Financeiro.Controllers.Recebedor.Criar.Input["data"]["recebedor"]>;
+            };
+        } = {};
 
-        controller_recebedor.contexto.state.set_state((currentState) => {
-            Object.assign(currentState.formulario.dados_recebedor, data);
+        if (data.tipo === "individual") {
+            // TypeScript agora sabe que 'data' é IndividualFormData
+            setDadosRecebedor = {
+                data: {
+                    recebedor: {
+                        tipo: "individual",
+                        nome: data.nome,
+                        nome_mae: data.nome_mae,
+                        data_nascimento: data.data_nascimento,
+                        renda_mensal: data.renda_mensal,
+                        ocupacao_profissional: data.ocupacao_profissional,
+                        telefones: data.telefones,
+                        endereco: data.endereco,
+                    },
+                },
+            };
+        } else if (data.tipo === "empresa") {
+            setDadosRecebedor = {
+                data: {
+                    recebedor: {
+                        tipo: "empresa",
+                        razao_social: data.razao_social,
+                        nome_fantasia: data.nome_fantasia,
+                        data_fundacao: data.data_fundacao,
+                        faturamento_anual: data.faturamento_anual,
+                        tipo_empresa: data.tipo_empresa,
+                        telefones: data.telefones,
+                        endereco_principal: data.endereco_principal,
+                        socios_administradores: data.socios_administradores,
+                    },
+                },
+            };
+        }
+        controller_recebedor.contexto.state.set_state((currentStates) => {
+            console.log(setDadosRecebedor, "setDadosRecebedor");
+
+            currentStates.formulario.dados_recebedor_new = setDadosRecebedor as t.Financeiro.Controllers.Recebedor.Criar.Input;
         });
 
         const isValid = await trigger();

@@ -82,7 +82,6 @@ export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadast
             state.formulario.dados_recebedor.nome = data.results[0]?.locatarioNome;
             state.formulario.dados_recebedor.socios_administradores[0].nome = data.results[0]?.locatarioNome;
         });
-        console.log(data.results[0]?.locatarioNome, "data.results[0]?.locatarioNome");
 
         setValue(nameField, data.results[0]?.locatarioNome || "", {shouldValidate: true});
         setValue(nomeSocio, data.results[0].locatarioNome || "", {shouldValidate: true});
@@ -120,7 +119,6 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         return userData;
     }, []);
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-    console.log(formularioState.dados_recebedor_new.data, "formularioState");
 
     const loginUser: t.Financeiro.Controllers.UserPayload.AuthPayload = user as Extract<typeof user, {type: "login"}>;
     const email = loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "";
@@ -205,7 +203,6 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
     }, [documento, tipoRecebedor, buscaCnpj, setValue]);
 
     const onSubmit: SubmitHandler<TipoCadastroForm> = async (data) => {
-        console.log(data, "data");
         const setDadosRecebedor: {
             data?: {
                 // Aqui está a mágica: aplicamos Partial ao tipo do recebedor
@@ -215,13 +212,15 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
             data: {
                 recebedor: {
                     documento: data.documento,
-                    tipo: "individual",
+                    tipo: data.tipo,
                     email: data.email,
                     site: data.site_url as string,
                 },
             },
         };
         controller_recebedor.contexto.state.set_state((currentStates) => {
+            console.log(setDadosRecebedor, "setDadosRecebedor");
+
             currentStates.formulario.dados_recebedor_new = setDadosRecebedor as t.Financeiro.Controllers.Recebedor.Criar.Input;
         });
 
