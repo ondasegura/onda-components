@@ -103,7 +103,6 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
         setSubmitSuccess(success);
         if (success) {
             setModalOpen(true);
-            // Reset do formulário usando o controller
             controller_recebedor.contexto.state.reset();
         }
     };

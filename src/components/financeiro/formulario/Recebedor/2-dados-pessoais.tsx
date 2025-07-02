@@ -80,6 +80,26 @@ function formatPhoneNumber(value: string, isMobile: boolean = false): string {
     return sliced.replace(pattern, (match: string, p1: string, p2: string) => (p2 ? `${p1}-${p2}` : p1));
 }
 
+const DD_MM_AAAA = z4
+    .string()
+    .min(1, "O campo de data é obrigatório")
+    .transform((dateStr, ctx) => {
+        // A data vem do input como "YYYY-MM-DD"
+        const [ano, mes, dia] = dateStr.split("-");
+
+        // Validação simples para garantir que a data tem o formato esperado antes de transformar
+        if (!ano || !mes || !dia || ano.length !== 4 || mes.length !== 2 || dia.length !== 2) {
+            ctx.addIssue({
+                code: z4.ZodIssueCode.custom,
+                message: "Formato de data inválido.",
+            });
+            return z4.NEVER;
+        }
+
+        // Retorna a data no novo formato
+        return `${dia}/${mes}/${ano}`;
+    });
+
 const addressSchema = z4.object({
     rua: z4.string().min(1, "Logradouro é obrigatório"),
     numero_rua: z4.string().min(1, "Número é obrigatório"),
@@ -101,7 +121,7 @@ const individualSchema = z4.object({
     tipo: z4.literal("individual"),
     nome: z4.string().min(1, "Nome é obrigatório"),
     nome_mae: z4.string().optional(),
-    data_nascimento: z4.string().min(1, "Data de nascimento é obrigatória"),
+    data_nascimento: DD_MM_AAAA,
     renda_mensal: z4.number().min(1, "Valor deve ser maior que R$ 1,00"),
     ocupacao_profissional: z4.string().min(1, "Ocupação profissional é obrigatória"),
     telefones: z4.array(telefoneSchema).min(1, "Telefone é obrigatório"),
@@ -114,7 +134,7 @@ const socioSchema = z4.object({
     documento: z4.string().min(11, "CPF deve ter 11 dígitos").max(11, "CPF deve ter 11 dígitos"),
     email: z4.string().email("Email inválido").min(1, "Email é obrigatório"),
     telefones: z4.array(telefoneSchema).min(1, "Telefone móvel é obrigatório"),
-    data_nascimento: z4.string().min(1, "Data de nascimento é obrigatória"),
+    data_nascimento: DD_MM_AAAA,
     nome_mae: z4.string().optional(),
     renda_mensal: z4.number().min(1, "Valor deve ser maior que R$ 1,00"),
     ocupacao_profissional: z4.string().min(1, "Ocupação profissional é obrigatória"),

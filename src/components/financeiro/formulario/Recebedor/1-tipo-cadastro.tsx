@@ -123,8 +123,8 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
     const loginUser: t.Financeiro.Controllers.UserPayload.AuthPayload = user as Extract<typeof user, {type: "login"}>;
     const email = loginUser?.type_user === "ONDA_USER" ? loginUser?.onda_user_email : loginUser?.onda_imob_email || "";
-    const referencia_externa = "imobiliaria1234";
-    const codigo = "imobiliaria1234";
+    const referencia_externa = "imobiliaria12355567889999";
+    const codigo = "imobiliaria12355567889999";
 
     const {
         control,
@@ -236,9 +236,10 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                 razao_social: data.razao_social,
                 nome_fantasia: data.nome_fantasia,
                 data_fundacao: data.data_fundacao,
-                referencia_externa: data.referencia_externa,
-                codigo: data.codigo,
+                referencia_externa: referencia_externa,
+                codigo: codigo,
             };
+            console.log(data.referencia_externa, "data.referencia_externa");
 
             currentStates.formulario.dados_recebedor_new.data.recebedor = newRecebedorData as any;
             console.log(currentStates.formulario.dados_recebedor_new.data.recebedor, "data recebedor passo 1");
