@@ -100,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
         return (
             <div key={item.label} className="w-full">
                 <button
-                    color="default"
+                    color="basic"
                     onClick={() => {
                         if (hasChildren) {
                             toggleExpanded(item.label);
