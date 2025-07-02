@@ -1,0 +1,152 @@
+/* ========== ESTILOS PARA BUTTONS - TEMA LARANJA ========== */
+button {
+    cursor: pointer !important;
+    padding: 0.625rem 1.25rem !important;
+    border-radius: 0.5rem !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    border: none !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transform: translateZ(0) !important;
+
+    /* Cores padrão - Tema Laranja Claro */
+    --bg-color: #fff7ed;
+    --text-color: #ea580c;
+    --hover-bg: #fed7aa;
+    --active-bg: #fdba74;
+
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+button::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.6s, height 0.6s !important;
+}
+
+button:hover {
+    background-color: var(--hover-bg) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15) !important;
+}
+
+button:active {
+    background-color: var(--active-bg) !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 4px rgba(234, 88, 12, 0.15) !important;
+}
+
+button:active::before {
+    width: 300px !important;
+    height: 300px !important;
+}
+
+/* Cor Primary - Laranja Vibrante */
+button[color="primary"] {
+    --bg-color: #f97316;
+    --text-color: #ffffff;
+    --hover-bg: #ea580c;
+    --active-bg: #dc2626;
+}
+
+/* Cor Standard - Laranja Médio */
+button[color="standard"] {
+    --bg-color: #fb923c;
+    --text-color: #ffffff;
+    --hover-bg: #f97316;
+    --active-bg: #ea580c;
+}
+
+/* Cor Default - Transparente com borda laranja */
+button[color="default"] {
+    --bg-color: transparent;
+    --text-color: #f97316;
+    --hover-bg: #fff7ed;
+    --active-bg: #fed7aa;
+    border: 1px solid #f97316 !important;
+}
+
+button:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+button:disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Cor Basic - Para menus de navegação */
+/* Estilo base para os itens do menu */
+button[color="basic"] {
+    --bg-color: transparent;
+    --text-color: #808080;
+    --hover-bg: #fff7ed;
+    --active-bg: #ffedd5;
+
+    border: none;
+    font-weight: 400;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    position: relative;
+    margin: 0 0.25rem;
+}
+
+/* Efeito hover */
+button[color="basic"]:hover {
+    background-color: var(--hover-bg);
+    color: #c2410c;
+}
+
+/* Indicador de item ativo */
+button[color="basic"].active {
+    color: #ea580c;
+    font-weight: 500;
+    background-color: var(--hover-bg);
+}
+
+/* Efeito de sublinhado animado */
+button[color="basic"]::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #ea580c;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+button[color="basic"]:hover::after,
+button[color="basic"].active::after {
+    width: calc(100% - 2rem);
+}
+
+/* Efeito quando clicado */
+button[color="basic"]:active {
+    background-color: var(--active-bg);
+    color: #808080;
+}
+
+/* Melhorias para acessibilidade */
+button[color="basic"]:focus-visible {
+    outline: 2px solid #ea580c;
+    outline-offset: 2px;
+}

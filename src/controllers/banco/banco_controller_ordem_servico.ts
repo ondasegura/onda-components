@@ -53,7 +53,7 @@ const store = create<ZustandStore>()(
 const banco_controller_ordem_servico = class banco_controller_ordem_servico {
     static api = class api {
         static async criar(props: t.Banco.Controllers.OrdemServico.Criar.Input): Promise<t.Banco.Controllers.OrdemServico.Criar.Output> {
-            const response = await utils.api.servidor_backend.post(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), "/ordem-servico", props, true);
+            const response = await utils.api.servidor_backend.post(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), "/ordem_servico", props, true);
             const results: t.Banco.Controllers.OrdemServico.Criar.Output | undefined = response?.results;
 
             store.setState((state) => { state.states.modal.loading = true });
@@ -68,7 +68,7 @@ const banco_controller_ordem_servico = class banco_controller_ordem_servico {
         static async buscar_pelo_filtro(props: t.Banco.Controllers.OrdemServico.BuscarPeloFiltro.Input): Promise<t.Banco.Controllers.OrdemServico.BuscarPeloFiltro.Output> {
             store.setState((state) => { state.states.pagina.loading = true });
 
-            const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), "/ordens-servico", true, props.filtros.ordem_servico);
+            const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), "/ordem_servico", true, props.filtros.ordem_servico);
             const results: t.Banco.Controllers.OrdemServico.BuscarPeloFiltro.Output | undefined = response?.results;
 
             if (results?.data?.ordens_servico) {
@@ -83,7 +83,7 @@ const banco_controller_ordem_servico = class banco_controller_ordem_servico {
         static async buscar_pelo_id(props: t.Banco.Controllers.OrdemServico.BuscarPeloId.Input): Promise<t.Banco.Controllers.OrdemServico.BuscarPeloId.Output> {
             store.setState((state) => { state.states.modal.loading = true });
 
-            const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), `/ordem-servico/${props.data._id}`, true, {});
+            const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), `/ordem_servico/${props.data._id}`, true, {});
             const results: t.Banco.Controllers.OrdemServico.BuscarPeloId.Output | undefined = response?.results;
 
             if (results?.data?.ordem_servico) store.setState((state) => { state.states.modal.ordem_servico_item = results; })
@@ -97,7 +97,7 @@ const banco_controller_ordem_servico = class banco_controller_ordem_servico {
         static async atualizar_pelo_id(props: t.Banco.Controllers.OrdemServico.AtualizarPeloId.Input): Promise<t.Banco.Controllers.OrdemServico.AtualizarPeloId.Output> {
             store.setState((state) => { state.states.modal.loading = true });
 
-            const response = await utils.api.servidor_backend.patch(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), `/ordem-servico/${props.data.ordem_servico._id}`, { data: props.data }, true);
+            const response = await utils.api.servidor_backend.patch(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), `/ordem_servico/${props.data.ordem_servico._id}`, { data: props.data }, true);
             const results: t.Banco.Controllers.OrdemServico.AtualizarPeloId.Output | undefined = response?.results;
 
             const ordemServicoAtualizada = results?.data.ordem_servico || (results?.data as any)?.ordem_servico;
@@ -115,7 +115,7 @@ const banco_controller_ordem_servico = class banco_controller_ordem_servico {
         }
 
         static async deletar_pelo_id(props: t.Banco.Controllers.OrdemServico.DeletarPeloId.Input): Promise<t.Banco.Controllers.OrdemServico.DeletarPeloId.Output> {
-            const response = await utils.api.servidor_backend.delete(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), `/ordem-servico/${props.data._id}`);
+            const response = await utils.api.servidor_backend.delete(String(PUBLIC_BASE_URL_BACKEND_BANCO_S8), `/ordem_servico/${props.data._id}`);
             const results: t.Banco.Controllers.OrdemServico.DeletarPeloId.Output | undefined = response?.results;
 
             store.setState((state) => {

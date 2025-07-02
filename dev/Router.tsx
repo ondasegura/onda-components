@@ -6,7 +6,7 @@ import HomePage from "./HomePage";
 // PAGINAS DO PORTAL
 // PAGINAS DO BANCO
 import { BancoPaginaContaPagar } from "../src/components/banco/conta_pagar/paginas/ContaPagar";
-import { PaginaBancoOrdemServico } from "../src/components/banco/ordem_servico/paginas/OrdemServico";
+import { PaginaBancoOrdemServicoConsultaNome } from "../src/components/banco/ordem_servico/paginas/ConsultaNome";
 // PAGINAS DO ANALISANDO
 // PAGINAS DO FINANCEIRO
 import { FinanceiroPaginaRecebedor } from "../src/components/financeiro/pagina/Recebedor";
@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "banco/ordem-servico",
-                element: <PaginaBancoOrdemServico />,
+                element: <PaginaBancoOrdemServicoConsultaNome />,
             },
             {
                 path: "banco-s8/modais",
