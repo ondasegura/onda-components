@@ -15,7 +15,11 @@ const schema = z4.object({
         banco: z4.string().min(1, "Banco é obrigatório"),
         tipo_titular: z4.union([z4.literal("individual"), z4.literal("empresa")], "Tipo de titular é obrigatório"),
         numero_agencia: z4.string().min(1, "Agência é obrigatória").max(4, "Agência deve ter no máximo 4 dígitos"),
-        digito_agencia: z4.string().optional(),
+        digito_agencia: z4
+            .string()
+            .transform((valor) => (valor === "" ? null : valor))
+            .nullable()
+            .optional(),
         numero_conta: z4.string().min(1, "Número da conta é obrigatório").max(13, "Número da conta deve ter no máximo 13 dígitos"),
         digito_conta: z4.string().min(1, "Dígito da conta é obrigatório"),
         tipo: z4.string().min(1, "Tipo de conta é obrigatório"),
@@ -355,6 +359,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Dígito da Agência</label>
                                     <input
                                         {...field}
+                                        value={field.value ?? undefined}
                                         color="default"
                                         type="text"
                                         maxLength={1}

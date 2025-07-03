@@ -40,7 +40,7 @@ export const FinanceiroPaginaRecebedor = () => {
     async function handleDelete(id: string) {
         if (window.confirm("Tem certeza que deseja deletar este recebedor?")) {
             await financeiro_controller_recebedor.api.deletar_pelo_id({_id: id});
-            if (get_pagina_recebedor?.recebedor?.data?.recebedores?.length === 1 && paginaAtual > 1) {
+            if (get_pagina_recebedor?.recebedor?.data?.recebedor?.length === 1 && paginaAtual > 1) {
                 irParaPagina(paginaAtual - 1);
             } else {
                 irParaPagina(paginaAtual);
@@ -187,7 +187,7 @@ export const FinanceiroPaginaRecebedor = () => {
                             </div>
                         )}
                         <div className="space-y-3">
-                            {get_pagina_recebedor?.recebedor?.data?.recebedores?.map((item: any) => (
+                            {get_pagina_recebedor?.recebedor?.data?.recebedor?.map((item: any) => (
                                 <div key={item._id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-gray-300 transition-all duration-200">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-4 flex-1">
@@ -252,7 +252,7 @@ export const FinanceiroPaginaRecebedor = () => {
                                     </div>
                                 </div>
                             ))}
-                            {!get_pagina_recebedor.loading && get_pagina_recebedor?.recebedor?.data?.recebedores?.length === 0 && (
+                            {!get_pagina_recebedor.loading && get_pagina_recebedor?.recebedor?.data?.recebedor?.length === 0 && (
                                 <div className="text-center py-12 text-gray-500">
                                     <User className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                                     <p>Nenhum recebedor encontrado para os filtros aplicados.</p>

@@ -125,12 +125,11 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
         return userData;
     }, []);
     const formularioState = controller_recebedor.contexto.jsx.get_formulario();
-    console.log(user, "user ");
 
     const loginUser: t.Banco.Controllers.Usuario.AuthFront = user as Extract<typeof user, {type: "login"}>;
     const email = userExemplo.tipo === "ONDA_USER" ? userExemplo.email : emailExemplo || "";
-    const referencia_externa = "imobiliaria1235556788999900000";
-    const codigo = "imobiliaria1235556788999900000";
+    const referencia_externa = "imobiliaria12355567889999000001";
+    const codigo = "imobiliaria12355567889999000001";
 
     const {
         control,
