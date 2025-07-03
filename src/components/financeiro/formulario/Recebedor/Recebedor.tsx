@@ -53,12 +53,6 @@ interface ModalProps {
     children: React.ReactNode;
 }
 
-// interface FinanceiroFormularioRecebedorProps {
-//     user: string;
-//     email: string;
-//     referencia_user;
-// }
-
 const Modal: React.FC<ModalProps> = ({open, onClose, title, children}) => {
     if (!open) return null;
 
@@ -114,7 +108,6 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
     };
 
     const handleFinalize = async () => {
-        console.log("passou aqui");
         const isFormValid = await dadosBancariosRef.current?.validateForm();
         if (!isFormValid) {
             setSubmitError("Por favor, preencha os dados bancários corretamente.");
@@ -128,14 +121,12 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
             await dadosBancariosRef.current?.onSubmitDadosBancarios();
 
             const formState = controller_recebedor.contexto.state.get_state_formulario();
-            console.log(formState, "formState");
 
             const payload: t.Financeiro.Controllers.Recebedor.Criar.Input = {
                 data: {
                     recebedor: formState.dados_recebedor_new.data.recebedor,
                 },
             };
-            console.log(payload, "payload");
 
             const response = await controller_recebedor.api.criar(payload);
 

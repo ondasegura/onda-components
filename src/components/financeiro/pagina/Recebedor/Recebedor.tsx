@@ -50,7 +50,6 @@ export const FinanceiroPaginaRecebedor = () => {
 
     function handleCreate() {
         financeiro_controller_recebedor.contexto.state.set_open_formulario();
-        console.log("chamou handleCreate");
     }
 
     function handleBuscar() {

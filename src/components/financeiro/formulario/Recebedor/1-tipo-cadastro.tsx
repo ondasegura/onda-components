@@ -77,7 +77,6 @@ export const buscaCpf = async (cpf: string, setValue: UseFormSetValue<TipoCadast
 
         controller_recebedor.contexto.state.set_state((state) => {
             state.formulario.dados_recebedor.nome = data.results[0]?.locatarioNome;
-            state.formulario.dados_recebedor.socios_administradores[0].nome = data.results[0]?.locatarioNome;
         });
 
         setValue(nameField, data.results[0]?.locatarioNome || "", {shouldValidate: true});
@@ -128,8 +127,8 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
     const loginUser: t.Banco.Controllers.Usuario.AuthFront = user as Extract<typeof user, {type: "login"}>;
     const email = userExemplo.tipo === "ONDA_USER" ? userExemplo.email : emailExemplo || "";
-    const referencia_externa = "imobiliaria12355567889999000001";
-    const codigo = "imobiliaria12355567889999000001";
+    const referencia_externa = "imobiliaria12355567889999000003";
+    const codigo = "imobiliaria12355567889999000003";
 
     const {
         control,
@@ -241,10 +240,8 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                 referencia_externa: referencia_externa,
                 codigo: codigo,
             };
-            console.log(data.referencia_externa, "data.referencia_externa");
 
             currentStates.formulario.dados_recebedor_new.data.recebedor = newRecebedorData as any;
-            console.log(currentStates.formulario.dados_recebedor_new.data.recebedor, "data recebedor passo 1");
         });
 
         const isValid = await trigger();

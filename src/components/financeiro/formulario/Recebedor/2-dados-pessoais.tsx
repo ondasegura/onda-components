@@ -4,8 +4,10 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import z4 from "zod/v4";
 import {Loader2, ChevronDown} from "lucide-react";
 import controller_recebedor from "@/controllers/financeiro/financeiro_controller_recebedor";
-import t from "onda-types";
-import {buscaCpf} from "./1-tipo-cadastro";
+//UTILS
+import utils from "onda-utils";
+
+const PUBLIC_BASE_URL_WAVE = process.env.PUBLIC_BASE_URL_WAVE;
 
 const estadosBrasileiros = [
     {sigla: "AC", nome: "Acre"},
@@ -138,7 +140,10 @@ const socioSchema = z4.object({
     nome_mae: z4.string().optional(),
     renda_mensal: z4.number().min(1, "Valor deve ser maior que R$ 1,00"),
     ocupacao_profissional: z4.string().min(1, "Ocupação profissional é obrigatória"),
-    representante_legal_autodeclarado: z4.boolean({error: "Campo obrigatório"}),
+    representante_legal_autodeclarado: z4
+        .boolean()
+        .nullable()
+        .refine((val) => val !== null, {message: "A seleção de representante legal é obrigatória"}),
     endereco: addressSchema,
 });
 
@@ -350,14 +355,15 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                       },
                       socios_administradores: [
                           {
+                              tipo: "individual",
                               nome: "",
                               email: "",
                               documento: "",
                               nome_mae: "",
                               ocupacao_profissional: "",
-                              representante_legal_autodeclarado: null,
+                              representante_legal_autodeclarado: true,
                               renda_mensal: 0,
-                              telefones: [{ddd: "", numero: "", tipo: ""}],
+                              telefones: [{ddd: "", numero: "", tipo: "celular"}],
                               endereco: {
                                   rua: "",
                                   numero_rua: "",
@@ -451,22 +457,43 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
         }
     };
 
-    const handleCpfChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void) => {
-        const rawValue = event.target.value.replace(/\D/g, "");
-        onChange(rawValue);
-        if (rawValue.length !== 11 || isLoadingCpf) return;
-
+    const buscaCpfRepresentante = async (cpf: string) => {
         setIsLoadingCpf(true);
-
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            await buscaCpf(rawValue, setValue as any);
+            const cpfApenasNumeros = cpf.replace(/\D/g, "");
+            const response = await utils.api.servidor_backend.get(String(PUBLIC_BASE_URL_WAVE), `/public/locatario/${cpfApenasNumeros}`, true);
+            const data: {results: Array<{locatarioNome: string}>} = await response;
+
+            const nomeRepresentante = data.results[0]?.locatarioNome || "";
+
+            setValue("socios_administradores.0.nome", nomeRepresentante, {shouldValidate: true});
+
+            controller_recebedor.contexto.state.set_state((state) => {
+                if (state.formulario.dados_recebedor.socios_administradores[0]) {
+                    state.formulario.dados_recebedor.socios_administradores[0].nome = nomeRepresentante;
+                }
+            });
         } catch (error) {
-            console.error("Erro ao buscar CPF:", error);
+            console.error("Erro ao buscar dados do CPF do representante:", error);
+            setValue("socios_administradores.0.nome", "", {shouldValidate: true});
         } finally {
             setIsLoadingCpf(false);
         }
     };
+
+    const handleCpfChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void) => {
+        const rawValue = event.target.value.replace(/\D/g, "");
+        onChange(rawValue);
+
+        if (rawValue.length !== 11 || isLoadingCpf) return;
+
+        await buscaCpfRepresentante(rawValue);
+    };
+
+    useImperativeHandle(ref, () => ({
+        validateForm: () => trigger(),
+        onSubmitDadosPessoais: () => handleSubmit(onSubmit)(),
+    }));
 
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         controller_recebedor.contexto.state.set_state((currentStates) => {
@@ -501,19 +528,9 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                 ...existingRecebedor,
                 ...newRecebedorData,
             };
-            console.log(currentStates.formulario.dados_recebedor_new.data.recebedor, "data recebedor passo 1 + passo 2");
         });
-
-        const isValid = await trigger();
-        if (isValid) {
-            controller_recebedor.contexto.state.set_step_progress(2);
-        }
+        controller_recebedor.contexto.state.set_step_progress(2);
     };
-
-    useImperativeHandle(ref, () => ({
-        validateForm: () => trigger(),
-        onSubmitDadosPessoais: () => handleSubmit(onSubmit)(),
-    }));
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-sm">
@@ -814,7 +831,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                     control={control}
                                     render={({field: {onChange, value}}) => (
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Telefone fixo da Empresa*</label>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Telefone da Empresa*</label>
                                             <input
                                                 type="text"
                                                 color="default"
@@ -1144,6 +1161,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento*</label>
                                             <input
                                                 {...field}
+                                                value={field.value || ""}
                                                 color="default"
                                                 type="date"
                                                 min="1900-01-01"
