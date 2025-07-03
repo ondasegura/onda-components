@@ -1,4 +1,4 @@
-import React, {useImperativeHandle, forwardRef, useEffect, useState} from "react";
+import React, {useImperativeHandle, forwardRef, useEffect, useState, useRef, useMemo} from "react";
 import {useForm, Controller} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import z4 from "zod/v4";
@@ -44,7 +44,7 @@ interface Banco {
     nome: string;
 }
 
-interface BankSelectProps {
+interface BankAutocompleteProps {
     label: string;
     value: string;
     onChange: (value: string) => void;
@@ -54,64 +54,97 @@ interface BankSelectProps {
     onOpen: () => void;
 }
 
-const BankSelect: React.FC<BankSelectProps> = ({label, value, onChange, banks, loading, error, onOpen}) => {
+const BankAutocomplete: React.FC<BankAutocompleteProps> = ({label, value, onChange, banks, loading, error, onOpen}) => {
     const [isOpen, setIsOpen] = useState(false);
-    const selectedBank = banks.find((bank) => bank.codigo === value);
+    const [inputValue, setInputValue] = useState("");
+    const wrapperRef = useRef<HTMLDivElement>(null);
+
+    // Efeito para sincronizar o input com o valor do formulário (RHF)
+    useEffect(() => {
+        const selectedBank = banks.find((bank) => bank.codigo === value);
+        if (selectedBank) {
+            setInputValue(`${selectedBank.codigo} - ${selectedBank.nome}`);
+        } else if (!isOpen) {
+            // Limpa o input se o valor for limpo externamente e o dropdown estiver fechado
+            setInputValue("");
+        }
+    }, [value, banks, isOpen]);
+
+    // Efeito para fechar o dropdown ao clicar fora
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    // Filtra os bancos com base no que o usuário digita (otimizado com useMemo)
+    const filteredBanks = useMemo(() => {
+        if (!inputValue || !isOpen) {
+            return banks;
+        }
+        // Quando o usuário selecionou um valor, não filtre para que ele possa reabrir e ver a lista completa
+        const selectedValueFormatted = banks.find((b) => b.codigo === value);
+        if (selectedValueFormatted && inputValue === `${selectedValueFormatted.codigo} - ${selectedValueFormatted.nome}`) {
+            return banks;
+        }
+
+        return banks.filter((bank) => bank.nome.toLowerCase().includes(inputValue.toLowerCase()) || bank.codigo.includes(inputValue));
+    }, [inputValue, banks, isOpen, value]);
+
+    const handleSelectBank = (bankCode: string) => {
+        onChange(bankCode);
+        setIsOpen(false);
+    };
 
     return (
-        <div className="relative">
+        <div className="relative" ref={wrapperRef}>
             <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
             <div className="relative">
-                <button
-                    type="button"
+                <input
+                    type="text"
                     color="default"
-                    onClick={() => {
-                        if (!isOpen && banks.length === 0 && !loading) {
+                    value={inputValue}
+                    onChange={(e) => {
+                        setInputValue(e.target.value);
+                        if (!isOpen) setIsOpen(true);
+                    }}
+                    onFocus={() => {
+                        setIsOpen(true);
+                        if (banks.length === 0 && !loading) {
                             onOpen();
                         }
-                        setIsOpen(!isOpen);
                     }}
-                    className={`w-full px-3 py-2 text-left border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        error ? "border-red-500" : "border-gray-300"
-                    } bg-white`}
-                >
-                    <span className={selectedBank ? "text-gray-900" : "text-gray-500"}>
-                        {selectedBank ? `${selectedBank.codigo} - ${selectedBank.nome}` : "Selecione um banco"}
-                    </span>
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center">
-                        {loading && <Loader2 className="w-4 h-4 animate-spin text-blue-600 mr-2" />}
-                        <ChevronDown className="w-4 h-4 text-gray-400" />
-                    </div>
-                </button>
-                {isOpen && !loading && banks.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                        <div
-                            onClick={() => {
-                                onChange("");
-                                setIsOpen(false);
-                            }}
-                            className="px-3 py-2 text-gray-500 hover:bg-gray-50 cursor-pointer"
-                        >
-                            Selecione um banco
-                        </div>
-                        {banks.map((bank) => (
-                            <div
-                                key={bank.codigo}
-                                onClick={() => {
-                                    onChange(bank.codigo);
-                                    setIsOpen(false);
-                                }}
-                                className="px-3 py-2 hover:bg-blue-50 cursor-pointer"
-                            >
+                    placeholder="Digite o nome ou código do banco"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${error ? "border-red-500" : "border-gray-300"} bg-white`}
+                />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center">
+                    {loading && <Loader2 className="w-4 h-4 animate-spin text-blue-600 mr-2" />}
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                </div>
+            </div>
+
+            {isOpen && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                    {loading ? (
+                        <p className="px-3 py-2 text-sm text-gray-500">Carregando bancos...</p>
+                    ) : filteredBanks.length > 0 ? (
+                        filteredBanks.map((bank) => (
+                            <div key={bank.codigo} onClick={() => handleSelectBank(bank.codigo)} className="px-3 py-2 hover:bg-blue-50 cursor-pointer">
                                 {bank.codigo} - {bank.nome}
                             </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+                        ))
+                    ) : (
+                        <div className="px-3 py-2 text-gray-500">Nenhum banco encontrado</div>
+                    )}
+                </div>
+            )}
             {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
-            {loading && <p className="mt-1 text-sm text-gray-500">Carregando bancos...</p>}
-            {!loading && banks.length === 0 && <p className="mt-1 text-sm text-gray-500">Nenhum banco disponível</p>}
         </div>
     );
 };
@@ -162,7 +195,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                 dia_transferencia: 10,
             },
             configuracoes_antecipacao: {
-                atraso: 10,
+                atraso: null,
                 habilitado: false,
                 percentual_volume: "100",
                 tipo: "completa",
@@ -293,7 +326,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             name="conta_bancaria.banco"
                             control={control}
                             render={({field: {value, onChange}}) => (
-                                <BankSelect
+                                <BankAutocomplete
                                     label="Banco*"
                                     value={value}
                                     onChange={(newValue) => {

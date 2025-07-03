@@ -127,8 +127,8 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
     const loginUser: t.Banco.Controllers.Usuario.AuthFront = user as Extract<typeof user, {type: "login"}>;
     const email = userExemplo.tipo === "ONDA_USER" ? userExemplo.email : emailExemplo || "";
-    const referencia_externa = "imobiliaria12355567889999000003";
-    const codigo = "imobiliaria12355567889999000003";
+    const referencia_externa = "imobiliaria12355567889999000005";
+    const codigo = "imobiliaria12355567889999000005";
 
     const {
         control,
