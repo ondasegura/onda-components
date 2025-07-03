@@ -224,7 +224,7 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
                                     <h4 className="font-medium text-gray-900">Cadastro realizado com sucesso!</h4>
                                 </div>
                             </div>
-                            <p className="text-gray-600 text-sm leading-relaxed">A conta foi cadastrada com sucesso. Fique atento para os recebimentos de bonificações.</p>
+                            <p className="text-gray-600 text-sm leading-relaxed">A conta foi cadastrada com sucesso. Fique atento para os recebimentos de gratificações.</p>
                         </div>
                     </Modal>
                     <Snackbar open={submitSuccess && !modalOpen} message="Dados enviados com sucesso!" type="success" onClose={handleCloseSnackbar} />
