@@ -10,6 +10,7 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({currentStep, validateForm, onClickNext, onFinalize}) => {
+    const store = controller_recebedor.contexto.state;
     const {loading_submit} = controller_recebedor.contexto.jsx.get_formulario();
 
     const handleNextOrFinalize = async () => {
@@ -31,19 +32,27 @@ const Footer: React.FC<FooterProps> = ({currentStep, validateForm, onClickNext, 
         controller_recebedor.contexto.state.set_step_progress(currentStep - 1);
     };
 
+    const handleCloseForm = () => {
+        if (currentStep === 0) {
+            store.set_state((store) => {
+                store.formulario.open = false;
+                store.formulario.loading = false;
+            });
+        }
+    };
+
     return (
-        <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+        <div className="flex justify-between items-center">
             <button
                 type="button"
                 color="default"
-                onClick={handleBack}
-                disabled={currentStep === 0}
+                onClick={currentStep === 0 ? handleCloseForm : handleBack}
                 className={`flex items-center gap-2 px-6 py-2 rounded-md border transition-colors ${
                     currentStep === 0 ? "border-gray-200 text-gray-400 cursor-not-allowed" : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
                 }`}
             >
                 <ChevronLeft className="w-4 h-4" />
-                Voltar
+                {currentStep === 0 ? "Cancelar" : "Voltar"}
             </button>
 
             <button
