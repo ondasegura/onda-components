@@ -40,8 +40,6 @@ const TipoCadastroSchema = z4
         nome_fantasia: z4.string().optional(),
         razao_social: z4.string().optional(),
         data_fundacao: z4.string().optional(),
-        referencia_externa: z4.string(),
-        codigo: z4.string(),
     })
     .superRefine((data, ctx) => {
         if (data.tipo === "individual" && data.documento.length !== 14) {
@@ -127,8 +125,6 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
     const loginUser: t.Banco.Controllers.Usuario.AuthFront = user as Extract<typeof user, {type: "login"}>;
     const email = userExemplo.tipo === "ONDA_USER" ? userExemplo.email : emailExemplo || "";
-    const referencia_externa = "imobiliaria1111111122222";
-    const codigo = "imobiliaria1111111122222";
 
     const {
         control,
@@ -150,8 +146,6 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
             nome_fantasia: "",
             data_fundacao: "",
             razao_social: "",
-            referencia_externa: referencia_externa,
-            codigo: codigo,
         },
     });
 
@@ -169,8 +163,6 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
             state.formulario.tipo = tipo;
             state.formulario.dados_recebedor.documento;
-            state.formulario.dados_recebedor_new.data.recebedor.referencia_externa = referencia_externa;
-            state.formulario.dados_recebedor_new.data.recebedor.codigo = codigo;
         });
         setValue("tipo", tipo, {shouldValidate: true});
         setValue("documento", "", {shouldValidate: false});
@@ -237,8 +229,6 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
                 razao_social: data.razao_social,
                 nome_fantasia: data.nome_fantasia,
                 data_fundacao: data.data_fundacao,
-                referencia_externa: referencia_externa,
-                codigo: codigo,
             };
 
             currentStates.formulario.dados_recebedor_new.data.recebedor = newRecebedorData as any;

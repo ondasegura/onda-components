@@ -191,13 +191,13 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
     };
 
     return (
-        <div className="fixed right-0 top-0 h-full w-full max-w-lg bg-white shadow-xl z-50 transform transition-transform">
+        <div className="fixed right-0 top-0 h-full w-full max-w-lg bg-white shadow-xl z-50 transform transition-transform overflow-x-auto">
             <div className="min-h-screen bg-gray-50 py-8">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
                         <Header steps={steps} currentStep={formularioState.step} />
 
-                        <div className="p-6 md:p-8 flex-1 overflow-y-auto">
+                        <div className="p-6 md:p-8 flex-1 overflow-y-auto  overflow-x-auto">
                             <div className="relative min-h[calc(100%-120px)]">
                                 {isSubmitting && (
                                     <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-lg">
