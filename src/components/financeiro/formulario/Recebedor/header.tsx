@@ -12,8 +12,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({steps, currentStep}) => {
     return (
-        <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Cadastro de Recebedor</h1>
+        <div className="mb-2">
+            <h1 className="text-[1rem] font-bold text-gray-900 mb-6 text-center">Cadastro de Recebedor</h1>
 
             <div className="flex items-center justify-between">
                 {steps.map((step, index) => (

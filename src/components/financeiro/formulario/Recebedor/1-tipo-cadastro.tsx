@@ -295,7 +295,7 @@ const TipoCadastro = forwardRef<TipoCadastroRef, TipoCadastroProps>(({onValidate
 
                 {tipoRecebedor && (
                     <div className="space-y-4 animate-in slide-in-from-top duration-500">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-column[1/3] gap-4">
                             {/* Campo Documento */}
                             <div>
                                 <Controller

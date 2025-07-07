@@ -194,14 +194,14 @@ export const FinanceiroFormularioRecebedor: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 z-40 transition-opacity">
             <div className="h-full w-full max-w-lg bg-white flex flex-col ml-auto animate-in slide-in-from-right duration-300">
                 {/* Header fixo */}
-                <div className="bg-white rounded-t-lg shadow-sm p-8">
+                <div className="bg-white rounded-t-lg shadow-sm p-2">
                     <Header steps={steps} currentStep={formularioState.step} />
                 </div>
 
                 {/* Área rolável do formulário */}
                 <div className="flex-1 overflow-y-auto px-4">
-                    <div className="bg-white p-6 md:p-8">
-                        <div className="relative min-h-[calc(100%-120px)]">
+                    <div className="bg-white p-2 md:p-2">
+                        <div className="relative min-h-[calc(100%-300px)]">
                             {isSubmitting && (
                                 <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-lg">
                                     <div className="flex items-center gap-3">
