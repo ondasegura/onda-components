@@ -566,7 +566,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                     />
                                 </div>
 
-                                <div className="md:col-span-2">
+                                <div className="md:col-span-4">
                                     <Controller
                                         name="nome_mae"
                                         control={control}
