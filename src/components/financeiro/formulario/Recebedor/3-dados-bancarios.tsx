@@ -274,8 +274,8 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                 <div>
                     <h2 className="text-xl font-semibold text-blue-600 mb-4">Dados Bancários</h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="grid md:col-span-2">
                         <Controller
                             name="conta_bancaria.nome_titular"
                             control={control}
@@ -298,7 +298,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-                    <div>
+                    <div className="grid md:col-span-2 gap-2">
                         <Controller
                             name="conta_bancaria.documento_titular"
                             control={control}
@@ -321,7 +321,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-                    <div>
+                    <div className="grid md:col-span-2 gap-2">
                         <Controller
                             name="conta_bancaria.banco"
                             control={control}
@@ -341,7 +341,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-                    <div>
+                    <div className="grid md:col-span-2 gap-2">
                         <Controller
                             name="conta_bancaria.tipo"
                             control={control}
@@ -362,7 +362,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-                    <div>
+                    <div className="grid md:col-span-2 gap-2">
                         <Controller
                             name="conta_bancaria.numero_agencia"
                             control={control}
@@ -383,7 +383,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-                    <div>
+                    <div className="grid md:col-span-2 gap-2">
                         <Controller
                             name="conta_bancaria.digito_agencia"
                             control={control}
@@ -405,7 +405,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-                    <div>
+                    <div className="grid md:col-span-2 gap-2">
                         <Controller
                             name="conta_bancaria.numero_conta"
                             control={control}
@@ -426,7 +426,7 @@ const DadosBancarios = forwardRef<DadosBancariosRef, DadosBancariosProps>(({setS
                             )}
                         />
                     </div>
-                    <div>
+                    <div className="grid md:col-span-2 gap-2">
                         <Controller
                             name="conta_bancaria.digito_conta"
                             control={control}
