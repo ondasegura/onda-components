@@ -83,7 +83,7 @@ const BankAutocomplete: React.FC<BankAutocompleteProps> = ({label, value, onChan
         };
     }, []);
 
-    // Filtra os bancos com base no que o usuário digita (otimizado com useMemo)
+    // Filtra os bancos com base no que o usuário digita
     const filteredBanks = useMemo(() => {
         if (!inputValue || !isOpen) {
             return banks;

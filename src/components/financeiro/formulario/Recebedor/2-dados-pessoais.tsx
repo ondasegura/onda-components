@@ -86,7 +86,7 @@ const DD_MM_AAAA = z4
     .string()
     .min(1, "O campo de data é obrigatório")
     .transform((dateStr, ctx) => {
-        // A data vem do input
+        // A data vem do input color="default"
         //  color="default" color="default"como "YYYY-MM-DD"
         const [ano, mes, dia] = dateStr.split("-");
 
@@ -541,11 +541,11 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                     <h2 className="text-xl font-semibold text-blue-600 mb-4">
                         {recebedorTipo === "individual" ? "Dados Pessoais - Pessoa Física" : "Dados Empresariais - Pessoa Jurídica"}
                     </h2>
+
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-4">
                         {recebedorTipo === "individual" ? (
                             <>
                                 <div className="md:col-span-4">
-                                    {" "}
                                     <Controller
                                         name="nome"
                                         control={control}
@@ -588,7 +588,6 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    {" "}
                                     <Controller
                                         name="data_nascimento"
                                         control={control}
@@ -635,7 +634,6 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    {" "}
                                     <Controller
                                         name="renda_mensal"
                                         control={control}
@@ -658,8 +656,6 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                 </div>
 
                                 <div className="md:col-span-4 grid grid-cols-3 gap-4">
-                                    {" "}
-                                    {/* Telefone agrupado */}
                                     <div className="col-span-1">
                                         <Controller
                                             name="telefones.0.ddd"
@@ -784,7 +780,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         )}
                                     />
                                 </div>
-                                <div className="md:col-span-2">
+                                <div className="md:col-span-1">
                                     <Controller
                                         name="faturamento_anual"
                                         control={control}
@@ -805,8 +801,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         )}
                                     />
                                 </div>
-                                {/* Telefone da empresa agrupado */}
-                                <div className="md:col-span-2 grid grid-cols-3 gap-4">
+                                <div className="md:col-span-2 grid grid-cols-3 gap-4 items-end">
                                     <div className="col-span-1">
                                         <Controller
                                             name="telefones.0.ddd"
@@ -860,6 +855,7 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                 {/* SEÇÃO DE ENDEREÇO */}
                 <div className="border-t pt-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">{recebedorTipo === "individual" ? "Endereço" : "Endereço Principal"}</h3>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-x-6 gap-y-4">
                         <div className="lg:col-span-2">
                             <Controller
@@ -920,7 +916,6 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                             />
                         </div>
                         <div className="lg:col-span-1">
-                            {" "}
                             <Controller
                                 name={recebedorTipo === "individual" ? "endereco.numero_rua" : "endereco_principal.numero_rua"}
                                 control={control}
@@ -946,8 +941,6 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                             />
                         </div>
                         <div className="lg:col-span-2">
-                            {" "}
-                            {/* ALTERAÇÃO AQUI: Campo Complemento menor */}
                             <Controller
                                 name={recebedorTipo === "individual" ? "endereco.complemento" : "endereco_principal.complemento"}
                                 control={control}
@@ -973,8 +966,6 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                             />
                         </div>
                         <div className="lg:col-span-3">
-                            {" "}
-                            {/* Bairro preenche o resto da linha */}
                             <Controller
                                 name={recebedorTipo === "individual" ? "endereco.bairro" : "endereco_principal.bairro"}
                                 control={control}
@@ -1073,10 +1064,8 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                 {/* SEÇÃO DO REPRESENTANTE LEGAL (apenas para empresa) */}
                 {recebedorTipo === "empresa" && (
                     <div className="border-t pt-6 space-y-6">
-                        {/* A mesma lógica de grid é aplicada aqui para consistência */}
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-4">Representante Legal</h3>
-                            {/* ALTERAÇÃO AQUI: Grid com 4 colunas em telas médias */}
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-4">
                                 <div className="md:col-span-2">
                                     <Controller
@@ -1131,13 +1120,192 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         )}
                                     />
                                 </div>
-                                {/* ... (outros campos seguem a mesma lógica de distribuição) */}
+                                <div className="md:col-span-2">
+                                    <Controller
+                                        name="socios_administradores.0.nome_mae"
+                                        control={control}
+                                        render={({field}) => (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Mãe</label>
+                                                <input
+                                                    color="default"
+                                                    {...field}
+                                                    type="text"
+                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                        (errors as any).socios_administradores?.[0]?.nome_mae ? "border-red-500" : "border-gray-300"
+                                                    }`}
+                                                />
+                                                {(errors as any).socios_administradores?.[0]?.nome_mae && (
+                                                    <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].nome_mae?.message}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <Controller
+                                        name="socios_administradores.0.data_nascimento"
+                                        control={control}
+                                        render={({field}) => (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento*</label>
+                                                <input
+                                                    color="default"
+                                                    {...field}
+                                                    value={field.value || ""}
+                                                    type="date"
+                                                    min="1900-01-01"
+                                                    max={new Date().toISOString().split("T")[0]}
+                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                        (errors as any).socios_administradores?.[0]?.data_nascimento ? "border-red-500" : "border-gray-300"
+                                                    }`}
+                                                />
+                                                {(errors as any).socios_administradores?.[0]?.data_nascimento && (
+                                                    <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].data_nascimento?.message}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <Controller
+                                        name="socios_administradores.0.ocupacao_profissional"
+                                        control={control}
+                                        render={({field}) => (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Ocupação Profissional*</label>
+                                                <input
+                                                    color="default"
+                                                    {...field}
+                                                    type="text"
+                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                        (errors as any).socios_administradores?.[0]?.ocupacao_profissional ? "border-red-500" : "border-gray-300"
+                                                    }`}
+                                                />
+                                                {(errors as any).socios_administradores?.[0]?.ocupacao_profissional && (
+                                                    <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].ocupacao_profissional?.message}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <Controller
+                                        name="socios_administradores.0.renda_mensal"
+                                        control={control}
+                                        render={({field: {onChange, value}}) => (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Renda Mensal (R$)*</label>
+                                                <input
+                                                    color="default"
+                                                    type="text"
+                                                    value={formatReais(value || 0)}
+                                                    onChange={(e) => onChange(Number(e.target.value.replace(/\D/g, "")))}
+                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                        (errors as any).socios_administradores?.[0]?.renda_mensal ? "border-red-500" : "border-gray-300"
+                                                    }`}
+                                                />
+                                                {(errors as any).socios_administradores?.[0]?.renda_mensal && (
+                                                    <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].renda_mensal?.message}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                </div>
+                                <div className="md:col-span-4">
+                                    <Controller
+                                        name="socios_administradores.0.email"
+                                        control={control}
+                                        render={({field}) => (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">E-mail*</label>
+                                                <input
+                                                    color="default"
+                                                    {...field}
+                                                    type="email"
+                                                    disabled={isLoadingCpf}
+                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                        (errors as any).socios_administradores?.[0]?.email ? "border-red-500" : "border-gray-300"
+                                                    } ${isLoadingCpf ? "bg-gray-100" : ""}`}
+                                                />
+                                                {(errors as any).socios_administradores?.[0]?.email && (
+                                                    <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].email?.message}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                </div>
+                                <div className="md:col-span-2 grid grid-cols-3 gap-4">
+                                    <div className="col-span-1">
+                                        <Controller
+                                            name="socios_administradores.0.telefones.0.ddd"
+                                            control={control}
+                                            render={({field: {onChange, value}}) => (
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">DDD*</label>
+                                                    <input
+                                                        color="default"
+                                                        type="text"
+                                                        value={value || ""}
+                                                        onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 2))}
+                                                        disabled={isLoadingCpf}
+                                                        maxLength={2}
+                                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                            (errors as any).socios_administradores?.[0]?.telefones?.[0]?.ddd ? "border-red-500" : "border-gray-300"
+                                                        } ${isLoadingCpf ? "bg-gray-100" : ""}`}
+                                                    />
+                                                    {(errors as any).socios_administradores?.[0]?.telefones?.[0]?.ddd && (
+                                                        <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].telefones[0].ddd?.message}</p>
+                                                    )}
+                                                </div>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="col-span-2">
+                                        <Controller
+                                            name="socios_administradores.0.telefones.0.numero"
+                                            control={control}
+                                            render={({field: {onChange, value}}) => (
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Telefone Móvel*</label>
+                                                    <input
+                                                        color="default"
+                                                        type="text"
+                                                        value={formatPhoneNumber(value || "", true)}
+                                                        onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                                                        disabled={isLoadingCpf}
+                                                        maxLength={10}
+                                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                            (errors as any).socios_administradores?.[0]?.telefones?.[0]?.numero ? "border-red-500" : "border-gray-300"
+                                                        } ${isLoadingCpf ? "bg-gray-100" : ""}`}
+                                                    />
+                                                    {(errors as any).socios_administradores?.[0]?.telefones?.[0]?.numero && (
+                                                        <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].telefones[0].numero?.message}</p>
+                                                    )}
+                                                </div>
+                                            )}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <Controller
+                                        name="socios_administradores.0.representante_legal_autodeclarado"
+                                        control={control}
+                                        render={({field: {onChange, value}}) => (
+                                            <Autocomplete
+                                                label="Sou representante legal*"
+                                                value={value}
+                                                onChange={onChange}
+                                                error={(errors as any).socios_administradores?.[0]?.representante_legal_autodeclarado?.message}
+                                            />
+                                        )}
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         <div className="border-t pt-6">
                             <h4 className="text-md font-semibold text-gray-900 mb-4">Endereço do Representante Legal</h4>
-                            {/* ALTERAÇÃO AQUI: Grid com 6 colunas para o endereço do representante */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-x-6 gap-y-4">
                                 <div className="lg:col-span-2">
                                     <Controller
@@ -1194,8 +1362,6 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                     />
                                 </div>
                                 <div className="lg:col-span-1">
-                                    {" "}
-                                    {/* ALTERAÇÃO AQUI: Campo Número menor */}
                                     <Controller
                                         name="socios_administradores.0.endereco.numero_rua"
                                         control={control}
@@ -1219,8 +1385,6 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                     />
                                 </div>
                                 <div className="lg:col-span-2">
-                                    {" "}
-                                    {/* ALTERAÇÃO AQUI: Campo Complemento menor */}
                                     <Controller
                                         name="socios_administradores.0.endereco.complemento"
                                         control={control}
@@ -1243,7 +1407,91 @@ const DadosPessoais = forwardRef<DadosPessoaisRef, DadosPessoaisProps>((props, r
                                         )}
                                     />
                                 </div>
-                                {/* ... (outros campos de endereço do representante seguem o mesmo layout de 6 colunas) */}
+                                <div className="lg:col-span-3">
+                                    <Controller
+                                        name="socios_administradores.0.endereco.bairro"
+                                        control={control}
+                                        render={({field}) => (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Bairro*</label>
+                                                <input
+                                                    color="default"
+                                                    {...field}
+                                                    type="text"
+                                                    disabled={isLoadingPartnerCep || !isPartnerAddressEditable}
+                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                        (errors as any).socios_administradores?.[0]?.endereco?.bairro ? "border-red-500" : "border-gray-300"
+                                                    } ${isLoadingPartnerCep || !isPartnerAddressEditable ? "bg-gray-100" : ""}`}
+                                                />
+                                                {(errors as any).socios_administradores?.[0]?.endereco?.bairro && (
+                                                    <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].endereco.bairro?.message}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                </div>
+                                <div className="lg:col-span-3">
+                                    <Controller
+                                        name="socios_administradores.0.endereco.cidade"
+                                        control={control}
+                                        render={({field}) => (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Cidade*</label>
+                                                <input
+                                                    color="default"
+                                                    {...field}
+                                                    type="text"
+                                                    disabled={isLoadingPartnerCep || !isPartnerAddressEditable}
+                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                        (errors as any).socios_administradores?.[0]?.endereco?.cidade ? "border-red-500" : "border-gray-300"
+                                                    } ${isLoadingPartnerCep || !isPartnerAddressEditable ? "bg-gray-100" : ""}`}
+                                                />
+                                                {(errors as any).socios_administradores?.[0]?.endereco?.cidade && (
+                                                    <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].endereco.cidade?.message}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                </div>
+                                <div className="lg:col-span-3">
+                                    <Controller
+                                        name="socios_administradores.0.endereco.estado"
+                                        control={control}
+                                        render={({field: {onChange, value}}) => (
+                                            <Select
+                                                label="Estado*"
+                                                value={value || ""}
+                                                onChange={onChange}
+                                                options={estadosBrasileiros}
+                                                disabled={isLoadingPartnerCep || !isPartnerAddressEditable}
+                                                error={(errors as any).socios_administradores?.[0]?.endereco?.estado?.message}
+                                            />
+                                        )}
+                                    />
+                                </div>
+                                <div className="md:col-span-2 lg:col-span-6">
+                                    <Controller
+                                        name="socios_administradores.0.endereco.ponto_referencia"
+                                        control={control}
+                                        render={({field}) => (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Ponto de referência*</label>
+                                                <input
+                                                    color="default"
+                                                    {...field}
+                                                    type="text"
+                                                    disabled={isLoadingPartnerCep}
+                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                        (errors as any).socios_administradores?.[0]?.endereco?.ponto_referencia ? "border-red-500" : "border-gray-300"
+                                                    } ${isLoadingPartnerCep ? "bg-gray-100" : ""}`}
+                                                />
+                                                {(errors as any).socios_administradores?.[0]?.endereco?.ponto_referencia && (
+                                                    <p className="mt-1 text-sm text-red-600">{(errors as any).socios_administradores[0].endereco.ponto_referencia?.message}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
